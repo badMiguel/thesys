@@ -1,0 +1,47 @@
+body {
+    font-size: 16px;
+}
+
+header {
+	background-color: rgb(188, 192, 240)cdc;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+	font-size: 48px;
+	font-weight: 300;
+	margin: 0;
+	color: #000000;
+}
+
+main {
+	padding: 50px 20px;
+	text-align: center;
+}
+
+ul {
+    text-align: left;
+}
+
+p {
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 1.5;
+	margin: 0 0 20px;
+	color: #777;
+}
+
+footer {
+	background-color: #fff;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+	font-size: 16px;
+	margin: 0;
+	color: #999;
+}
