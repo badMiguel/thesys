@@ -20,5 +20,6 @@ from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^home/?$', views.home),
+    path('', views.home),
+    # re_path(r'^/?$', )
 ]
