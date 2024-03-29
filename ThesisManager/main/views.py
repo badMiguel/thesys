@@ -77,21 +77,30 @@ def thesis_list():
     ))
     
     topics.append(Thesis(
-        topic_number=,
-        title=,
-        campus=,
-        course=,
-        category=,
-        supervisor=,
+        topic_number=176,
+        title='Artificial Intelligence in Health Informatics',
+        campus= campuses,
+        course= [area['electrical'], area['computer'], area['data'], area['software']],
+        category= categories['artificial'],
+        supervisor= 'Asif Karim',
     ))
     
     topics.append(Thesis(
-        topic_number=,
-        title=,
-        campus=,
-        course=,
-        category=,
-        supervisor=,
+        topic_number= 180,
+        title='Unsupervised Model Development from Autism Screening Data',
+        campus= campuses,
+        course= [area['electrical'], area['computer'], area['data'], area['software']],
+        category= categories['artificial'],
+        supervisor='Asif Karim',
+    ))    
+
+    topics.append(Thesis(
+        topic_number= 226,
+        title= 'Applying Artificial Intelligence to solve real world problems',
+        campus= campuses,
+        course= [area['chemical'], area['civil'], area['computer'], area['cyber'], area['data'], area['electrical'], area['information'], area['mechanical'], area['software']],
+        category= categories['artificial'],
+        supervisor= 'Bharanidharan Shanmugam',
     ))    
     
-    
+    return(topics)
