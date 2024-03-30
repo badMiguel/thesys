@@ -9,6 +9,19 @@
         <li>
             <p>Topic Number: {{ thesis.topic_number }} </p>
             <p>Topic Title: {{ thesis.title }}</p> 
+            <p>Supervisor: {{ thesis.supervisor }}</p>
+            <p>Available Campus:</p>
+            <ul>    
+                {% for campus in thesis.campus %}
+                    <li>{{ campus }}</li>
+                {% endfor %}
+            </ul>
+            <p>Available for these Courses:</p>
+            <ul>
+                {% for course in thesis.course %}
+                    <li>{{course}}</li>
+                {% endfor %}
+            </ul>
         </li>
         {% endfor %}
 
