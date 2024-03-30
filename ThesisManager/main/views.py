@@ -6,11 +6,11 @@ def home(request):
 def about_us(request):
     pass
 
-def project_details(request):
+def thesis_details(request):
     pass
 
-def project_list(request):
-    thesis_list()
+def thesis_list(request):
+    create_thesis()
     
     
 
@@ -24,7 +24,7 @@ class Thesis:
         self.category = category
         self.supervisor = supervisor
 
-def thesis_list():
+def create_thesis():
     topics = []
     
     campuses = ['Casuarina', 'Sydney', 'External']
