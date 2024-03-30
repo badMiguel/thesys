@@ -1,9 +1,7 @@
 .nav_container{
     display: flex;
     justify-content: flex-end;
-    padding-right: 50px;
 }
-
 
 .all_theses{
     list-style-type: none;
@@ -15,7 +13,7 @@
     padding-bottom: 50px;
 }
 
-.main_body{
+.main_body, .heading{
     width: 50%;
     margin: auto;
     min-width: 800px;
