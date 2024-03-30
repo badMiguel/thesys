@@ -9,24 +9,43 @@
         <title>{% block page_title %}{% endblock  %}</title>
         <meta charset="utf-8" />
         <met name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous">
+        {% load static %}<link rel="stylesheet" href="{% static 'styles.css' %}">
     </head>
 
     <body>
         <header>
-            <h1>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>
-            <nav>
+            <h1 class='text-center pt-5'>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>    
+            <p class= 'text-center pt-2 pb-3'>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
+            <nav class='nav_container'>
                 <a href="{% url 'home'%}">Home</a>
                 <a href="{% url 'thesis_list' %}">View Thesis List</a>
                 <a href= "#" >Our Group Information</a>
             </nav>
-            <p>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
         </header>
         <main>
-            {% block main_body %}{% endblock  %}
+            <div class = 'main_body'>
+                {% block main_body %}{% endblock  %}
+            </div>
         </main>
 
         <footer>
             <p>contact us: University@email.edu.au</p>
         </footer>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"></script>
     </body>
 </html>
+

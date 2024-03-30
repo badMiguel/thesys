@@ -1,0 +1,16 @@
+.nav_container{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 50px;
+}
+
+.nav_container a{
+    padding-left: 50px;
+    padding-bottom: 50px;
+}
+
+.main_body{
+    width: 50%;
+    margin: auto;
+    min-width: 800px;
+}
