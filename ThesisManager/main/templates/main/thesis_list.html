@@ -7,8 +7,9 @@
     <ul>
         {% for thesis in theses %}
         <li>
-            <p>Topic Number: {{ thesis.topic_number }} </p>
-            <p>Topic Title: {{ thesis.title }}</p> 
+            {% comment %} <p>Topic Number: {{ thesis.topic_number }} </p> {% endcomment %}
+            <p><a href= "#" >{{ thesis.title }}</a></p> 
+            <p>{{ thesis.description }}</p>
             <p>Supervisor: {{ thesis.supervisor }}</p>
             <p>Available Campus:</p>
             <ul>    
@@ -22,7 +23,6 @@
                     <li>{{course}}</li>
                 {% endfor %}
             </ul>
-            <p>{{ thesis.description }}</p>
         </li>
         {% endfor %}
 
