@@ -12,6 +12,7 @@ def thesis_details(request):
 def thesis_list(request):
     create_thesis()
     
+       
     
 
 class Thesis:

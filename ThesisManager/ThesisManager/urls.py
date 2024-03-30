@@ -21,8 +21,7 @@ from main import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home, name='home'),
-    
-    path('thesis/')
+    path('thesis/', views.thesis_list, name= 'thesis_list')
     
     # re_path(r'^/?$', views.) if re_path is needed
 ]
