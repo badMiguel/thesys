@@ -4,6 +4,12 @@
     padding-right: 50px;
 }
 
+
+.all_theses{
+    list-style-type: none;
+    padding: 0;
+}
+
 .nav_container a{
     padding-left: 50px;
     padding-bottom: 50px;
@@ -13,4 +19,30 @@
     width: 50%;
     margin: auto;
     min-width: 800px;
+}
+
+.campus, .campus_list{
+    display: flex;
+}
+
+.campus{
+    margin: 16px 0;
+}
+
+.more_info{
+    margin-bottom: 0;
+    font-weight: 500;
+    padding-right: 15px;
+}
+
+.campus_list li{
+    padding:0 10px;
+    margin-right: 15px;
+    list-style-type: none;
+    background-color: bisque;
+    border-radius: 15px;
+}
+
+.supervisor{
+    display: flex;
 }
