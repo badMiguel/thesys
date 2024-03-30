@@ -39,10 +39,28 @@
     padding:0 10px;
     margin-right: 15px;
     list-style-type: none;
-    background-color: bisque;
+    background-color: rgb(219, 219, 219);
     border-radius: 15px;
 }
 
 .supervisor{
     display: flex;
+}
+
+.courses{
+    display: flex;
+}
+
+.courses li{
+    list-style-type: none;
+    margin-right: 15px;
+    margin-bottom: 16px;
+    padding: 0 10px;
+    background-color: rgb(219, 219, 219);
+    border-radius: 15px;
+}
+
+.courses_list{
+    display: flex;
+    flex-wrap: wrap;
 }

@@ -22,12 +22,14 @@
                     {% endfor %}
                 </ul>
             </div>
-            <p class = 'more_info'>Available for these Courses:</p>
-            <ul>
-                {% for course in thesis.course %}
-                    <li>{{course}}</li>
-                {% endfor %}
-            </ul>
+            <div class='courses'>
+                <p class = 'more_info'>Courses:</p>
+                <ul class ='courses_list p-0'>
+                    {% for course in thesis.course %}
+                        <li>{{course}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </li>
         {% endfor %}
 
