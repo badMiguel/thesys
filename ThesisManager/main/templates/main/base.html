@@ -13,17 +13,20 @@
 
     <body>
         <header>
+            <h1>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>
             <nav>
-                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'home'%}">Home</a>
                 <a href="{% url 'thesis_list' %}">View Thesis List</a>
                 <a href=#>Our Group Information</a>
             </nav>
+            <p>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
         </header>
         <main>
-        
+            {% block main_body %}{% endblock  %}
         </main>
 
         <footer>
+            <p>contact us: University@email.edu.au</p>
         </footer>
     </body>
 </html>

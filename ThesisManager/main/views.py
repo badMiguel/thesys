@@ -10,7 +10,8 @@ def thesis_details(request):
     pass
 
 def thesis_list(request):
-    create_thesis()
+        
+    return render(request, 'main/thesis_list.html', {'theses': create_thesis()})
     
        
     
@@ -24,7 +25,7 @@ class Thesis:
         self.course = course
         self.category = category
         self.supervisor = supervisor
-
+        
 def create_thesis():
     topics = []
     
@@ -35,7 +36,7 @@ def create_thesis():
         'electrical' :'Electrical and Electronics Engineering',
         'mechanical' : 'Mechanical Engineering',
         'computer' : 'Computer Science',
-
+        'cyber' : 'Cyber Security',
         'data' : 'Data Science',
         'information' : 'Information Systems and Data Science',
         'software' : 'Software Engineering',
@@ -109,4 +110,4 @@ def create_thesis():
         supervisor= 'Bharanidharan Shanmugam',
     ))    
     
-    return(topics)
+    return topics

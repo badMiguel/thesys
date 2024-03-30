@@ -1,0 +1,15 @@
+{% extends "main/base.html" %}
+
+{% block page_title %}Thesis List{% endblock  %}
+
+{% block main_body %}
+    <h1>Thesis List</h1>
+    <ul>
+        {% for thesis in theses %}
+        <li>
+            <p>Topic Number: {{ thesis.topic_number }} </p>
+            <p>Topic Title: {{ thesis.title }}</p> 
+        </li>
+        {% endfor %}
+
+{% endblock  %}
