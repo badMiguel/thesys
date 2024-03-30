@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home, name='home'),
     
+    path('thesis/')
+    
     # re_path(r'^/?$', views.) if re_path is needed
 ]

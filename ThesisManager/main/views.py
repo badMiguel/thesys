@@ -10,8 +10,9 @@ def project_details(request):
     pass
 
 def project_list(request):
-    pass
-
+    thesis_list()
+    
+    
 
 class Thesis:
     def __init__(self, topic_number, title, campus, course, category, supervisor):
