@@ -3,10 +3,14 @@ from django.shortcuts import render
 def home(request):
     return render(request, 'main/home.html')
 
+def about_us(request):
+    pass
 
+def project_details(request):
+    pass
 
-
-
+def project_list(request):
+    pass
 
 
 class Thesis:
