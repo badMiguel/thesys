@@ -17,10 +17,10 @@ def thesis_list(request):
         ONLY NEED TO RUN THIS ONES UNLESS THERE ARE CHANGES IN DATABASE. 
         Running this will create the objects. 
         Rerunning it will make duplicates.
-    
     '''
     theses = Thesis.objects.all() 
 
+    # Structure the data into a dictionary nested inside a list
     thesis_data = []
     for thesis in theses:
         thesis_dict = {
@@ -34,13 +34,14 @@ def thesis_list(request):
         }
         thesis_data.append(thesis_dict)
     
+    # Adds a maximum word count displayed for the description (50 words)
     for thesis in thesis_data:
         description = thesis['description']
         word_count = description.split()
         if len(word_count) > 50:
             description = ' '.join(word_count[:50])
-            
             punctuation = ['.', ',', '/', ';', ':']
+            
             if description[-1] in punctuation:
                 description = description[:-1] + '...'
             else:

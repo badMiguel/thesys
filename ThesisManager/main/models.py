@@ -19,8 +19,6 @@ class Thesis(models.Model):
         
     def __str__(self):
         return str(self.topic_number) + ' - ' + self.title 
-
-
         
 def create_thesis():
     #campus
