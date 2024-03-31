@@ -11,7 +11,6 @@ def thesis_details(request):
     pass
 
 def thesis_list(request):
-    # create_thesis()
     ''' 
     create_thesis()
     
@@ -35,28 +34,23 @@ def thesis_list(request):
         }
         thesis_data.append(thesis_dict)
     
-    # for thesis in theses:
-    #     description = thesis.description
-    #     word_count = description.split()
-    #     if len(word_count) > 50:
-    #         description = ' '.join(word_count[:50])
+    for thesis in thesis_data:
+        description = thesis['description']
+        word_count = description.split()
+        if len(word_count) > 50:
+            description = ' '.join(word_count[:50])
             
-    #         punctuation = ['.', ',', '/', ';', ':']
-    #         if description[-1] in punctuation:
-    #             description = description[:-1] + '...'
-    #         else:
-    #             description = description + '...'
+            punctuation = ['.', ',', '/', ';', ':']
+            if description[-1] in punctuation:
+                description = description[:-1] + '...'
+            else:
+                description = description + '...'
                 
-    #         thesis.description = description
-    #         thesis.save()
+        thesis['description'] = description
+        print(thesis)
 
-    # context = {'thesis': theses}
+    context = {'theses': thesis_data}  
     
-    # return render(request, 'main/thesis_list.html', context)
-
-    context = {'theses': thesis_data}  # Pass data to template
-    print(context)
-
     return render(request, 'main/thesis_list.html', context)
     
 
