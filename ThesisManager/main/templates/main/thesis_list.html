@@ -17,7 +17,7 @@
             <div class = 'campus'>
                 <p class = 'more_info'>Campus:</p>
                 <ul class='campus_list p-0'>    
-                    {% for campus in thesis.campus %}
+                    {% for campus in thesis.campuses %}
                         <li>{{ campus }}</li>
                     {% endfor %}
                 </ul>
@@ -25,7 +25,7 @@
             <div class='courses'>
                 <p class = 'more_info'>Courses:</p>
                 <ul class ='courses_list p-0'>
-                    {% for course in thesis.course %}
+                    {% for course in thesis.courses %}
                         <li>{{course}}</li>
                     {% endfor %}
                 </ul>

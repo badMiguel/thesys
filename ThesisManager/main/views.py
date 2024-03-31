@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import create_thesis, Thesis
+from .models import Thesis, create_thesis
 
 def home(request):
     return render(request, 'main/home.html')
@@ -11,26 +11,52 @@ def thesis_details(request):
     pass
 
 def thesis_list(request):
-    theses = create_thesis()
+    # create_thesis()
+    ''' 
+    create_thesis()
     
+        ONLY NEED TO RUN THIS ONES UNLESS THERE ARE CHANGES IN DATABASE. 
+        Running this will create the objects. 
+        Rerunning it will make duplicates.
+    
+    '''
+    theses = Thesis.objects.all() 
+
+    thesis_data = []
     for thesis in theses:
-        description = thesis.description
-        word_count = description.split()
-        if len(word_count) > 50:
-            description = ' '.join(word_count[:50])
+        thesis_dict = {
+        'topic_number': thesis.topic_number,
+        'title': thesis.title,
+        'category': thesis.category,
+        'supervisor': thesis.supervisor,
+        'description': thesis.description,
+        'campuses': [campus.campus for campus in thesis.campus.all()],
+        'courses': [course.course for course in thesis.course.all()]
+        }
+        thesis_data.append(thesis_dict)
+    
+    # for thesis in theses:
+    #     description = thesis.description
+    #     word_count = description.split()
+    #     if len(word_count) > 50:
+    #         description = ' '.join(word_count[:50])
             
-            punctuation = ['.', ',', '/', ';', ':']
-            if description[-1] in punctuation:
-                description = description[:-1] + '...'
-            else:
-                description = description + '...'
+    #         punctuation = ['.', ',', '/', ';', ':']
+    #         if description[-1] in punctuation:
+    #             description = description[:-1] + '...'
+    #         else:
+    #             description = description + '...'
                 
-            thesis.description = description
-                
-    context = {'theses': theses}
+    #         thesis.description = description
+    #         thesis.save()
+
+    # context = {'thesis': theses}
     
+    # return render(request, 'main/thesis_list.html', context)
+
+    context = {'theses': thesis_data}  # Pass data to template
+    print(context)
+
     return render(request, 'main/thesis_list.html', context)
-    
-       
     
 
