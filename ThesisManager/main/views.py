@@ -48,7 +48,6 @@ def thesis_list(request):
                 description = description + '...'
                 
         thesis['description'] = description
-        print(thesis)
 
     context = {'theses': thesis_data}  
     
