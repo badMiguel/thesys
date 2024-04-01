@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Thesis, create_thesis
+from .models import Thesis, create_thesis, delete_data
 
 def home(request):
     return render(request, 'main/home.html')
@@ -11,13 +11,12 @@ def thesis_details(request):
     pass
 
 def thesis_list(request):
-    ''' 
+    # Deletes any existing data to avoid duplication. 
+    delete_data()
+
+    # Creates thesis list
     create_thesis()
     
-        ONLY NEED TO RUN THIS ONES UNLESS THERE ARE CHANGES IN DATABASE. 
-        Running this will create the objects. 
-        Rerunning it will make duplicates.
-    '''
     theses = Thesis.objects.all() 
 
     # Structure the data into a dictionary nested inside a list

@@ -4,9 +4,15 @@ from django.db import models
 
 class Campus(models.Model):
     campus = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return str(self.campus)
 
 class Course(models.Model):
     course = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.course)
     
 class Thesis(models.Model):           
     topic_number = models.IntegerField()
@@ -20,13 +26,14 @@ class Thesis(models.Model):
     def __str__(self):
         return str(self.topic_number) + ' - ' + self.title 
         
-def create_thesis():
-    #campus
+def create_campus():
     casuarina = Campus.objects.create(campus='Casuarina')
     sydney = Campus.objects.create(campus='Sydney')
-    external = Campus.objects.create(campus='External')
+    external = Campus.objects.create(campus='External')    
     
-    #courses
+    return casuarina, sydney, external
+        
+def create_course():
     chemical = Course.objects.create(course= 'Chemical Engineering')
     civil = Course.objects.create(course= 'Civil and Structural Engineering')
     electrical = Course.objects.create(course= 'Electrical and Electronics Engineering')
@@ -37,7 +44,12 @@ def create_thesis():
     information_system = Course.objects.create(course= 'Information Systems and Data Science')
     software = Course.objects.create(course= 'Software Engineering')
     
-
+    return chemical, civil, electrical, mechanical, computer_science, cyber_security, data_science, information_system, software
+        
+def create_thesis():   
+    casuarina, sydney, external = create_campus()
+    chemical, civil, electrical, mechanical, computer_science, cyber_security, data_science, information_system, software = create_course()
+    
     thesis_1= Thesis.objects.create(
         topic_number=1,       
         title= 'Machine learning approaches for Cyber Security',
@@ -115,3 +127,7 @@ def create_thesis():
     thesis_7.campus.add(casuarina, sydney, external)
     thesis_7.course.add(chemical,civil,electrical,mechanical,computer_science,cyber_security,data_science,information_system,software)
     
+def delete_data():
+    Campus.objects.all().delete()
+    Course.objects.all().delete()
+    Thesis.objects.all().delete()
