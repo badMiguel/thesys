@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+from django.views.generic import  RedirectView
 from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/home/')),
     path('home/', views.home, name='home'),
     path('thesis/', views.thesis_list, name= 'thesis_list'),
     path('aboutus/', views.about_us, name= 'about_us')
