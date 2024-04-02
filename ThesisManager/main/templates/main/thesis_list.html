@@ -3,18 +3,18 @@
 {% block page_title %}Thesis List{% endblock  %}
 
 {% block main_body %}
-    <h1 class='mb-4'>Thesis List</h1>
+    <h2>Thesis List</h2>
     <ul class ='all_theses'>
         {% for thesis in theses %}
-        <li class='mb-5'>
+        <li class='thesis_block'>
             {% comment %} <p>Topic Number: {{ thesis.topic_number }} </p> {% endcomment %}
             <h3><a href= "#" >{{ thesis.title|title }}</a></h3> 
-            <p>{{ thesis.description }}</p>
+            <p class='description'>{{ thesis.description }}</p>
             <div class = 'supervisor'>
-                <p class = 'more_info m-0'>Supervisor:</p>
-                <p class='m-0'> {{ thesis.supervisor }}</p>
+                <p class = 'more_info'>Supervisor:</p>
+                <p class='supervisor_name'> {{ thesis.supervisor }}</p>
             </div>
-            {% comment %} <div class = 'campus'>
+            <div class = 'campus'>
                 <p class = 'more_info'>Campus:</p>
                 <ul class='campus_list p-0'>    
                     {% for campus in thesis.campus %}
@@ -29,7 +29,7 @@
                         <li>{{course}}</li>
                     {% endfor %}
                 </ul>
-            </div> {% endcomment %}
+            </div>
         </li>
         {% endfor %}
 
