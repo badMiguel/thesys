@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Thesis, create_thesis, delete_data
 
+
 def home(request):
     return render(request, 'main/home.html')
 
