@@ -14,7 +14,7 @@
                 <p class = 'more_info m-0'>Supervisor:</p>
                 <p class='m-0'> {{ thesis.supervisor }}</p>
             </div>
-            <div class = 'campus'>
+            {% comment %} <div class = 'campus'>
                 <p class = 'more_info'>Campus:</p>
                 <ul class='campus_list p-0'>    
                     {% for campus in thesis.campus %}
@@ -29,7 +29,7 @@
                         <li>{{course}}</li>
                     {% endfor %}
                 </ul>
-            </div>
+            </div> {% endcomment %}
         </li>
         {% endfor %}
 
