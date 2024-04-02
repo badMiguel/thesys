@@ -5,7 +5,7 @@ def home(request):
     return render(request, 'main/home.html')
 
 def about_us(request):
-    pass
+    return render(request, 'main/about_us.html')
 
 def thesis_details(request):
     pass
