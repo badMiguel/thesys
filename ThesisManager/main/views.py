@@ -8,6 +8,12 @@ def about_us(request):
     pass
 
 def thesis_details(request):
+    
+    theses= create_thesis()
+
+    context = {'theses': theses }
+    
+    return render(request, 'main/thesis_details.html', context)
     pass
 
 def thesis_list(request):
