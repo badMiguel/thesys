@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .data import create_thesis
+from django.http import Http404
 
 def home(request):
     return render(request, 'main/home.html')
@@ -7,11 +8,21 @@ def home(request):
 def about_us(request):
     pass
 
-def thesis_details(request):
-    
-    theses= create_thesis()
+def thesis_details(request, topic_number):
+    theses = create_thesis()
 
-    context = {'theses': theses }
+    thesis = None
+    
+    for t in theses:
+        if t.topic_number == topic_number:
+            thesis = t
+            break
+
+    if thesis is None:
+        raise Http404("Thesis does not exist")
+
+    
+    context = {'thesis': thesis}
     
     return render(request, 'main/thesis_details.html', context)
     pass
@@ -19,6 +30,7 @@ def thesis_details(request):
 def thesis_list(request):
 
     theses = create_thesis()
+
     
     for thesis in theses:
         description = thesis.description
