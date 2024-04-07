@@ -1,16 +1,22 @@
 {% extends "main/base.html" %}
 
 {% block main_body %}
-        <ul class='all_theses'>
+        <ul class='thesis_desc'>
             <li class='thesis_block'>
-                <h4>{{ thesis.title|title }}</h4>
-                <p>Topic Number: {{ thesis.topic_number }}</p>
-                <div class='supervisor'>
+                <h2>{{ thesis.title|title }}</h2> <hr>
+                <p class='more_info'>Topic Number: {{ thesis.topic_number }}</p> <hr>
+                <div class='supervisor'> 
                     <p class='more_info'>Supervisor:</p>
                     <p class='supervisor_name'>{{ thesis.supervisor }}</p>
-                </div>
-                <p class='more_info'>Description</p>
-                <p class='description'>{{ thesis.description }}</p>
+                </div><hr>
+                <p class='more_info'>Description:</p>
+                <p class='description'>{{ thesis.description }}</p> <hr>
+
+                <div class='supervisor'> 
+                    <p class='more_info'>Course:</p>
+                    <p class='category'>{{ thesis.category }}</p>
+                </div><hr>
+
             </li>
         </ul>
 {% endblock %}
