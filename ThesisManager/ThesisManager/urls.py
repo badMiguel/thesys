@@ -23,7 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/home/')),
     path('home/', views.home, name='home'),
-    path('thesis/', views.thesis_list, name= 'thesis_list')
+    path('thesis/', views.thesis_list, name= 'thesis_list'),
+    path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),
+    
     
     # re_path(r'^/?$', views.) if re_path is needed
 ]
