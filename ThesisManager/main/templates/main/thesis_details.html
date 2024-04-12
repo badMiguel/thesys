@@ -30,4 +30,12 @@
         <p><em> Please input a valid thesis number and try again. </em></p>
     </div>
     {% endif %}
+    <div class="go_back">
+        <form method="post" action="{% url 'previous_page' %}">
+            {% csrf_token %}
+            <input type="hidden" name="previous_page" value="{{ request.META.HTTP_REFERER }}">
+            <button type="submit">Go Back</button>
+        </form>
+    </div>
 {% endblock %}
+
