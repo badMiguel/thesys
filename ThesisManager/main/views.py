@@ -58,7 +58,7 @@ def thesis_list(request):
                 
             thesis.description = description
 
-    items_per_page = 5
+    items_per_page = int(request.GET.get('items_per_page', 5))
     page = Paginator(theses, items_per_page)
     page_number = request.GET.get("page")
     page_obj = page.get_page(page_number)
