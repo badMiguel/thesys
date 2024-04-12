@@ -174,3 +174,41 @@ footer{
         display: flex;
     }
 }
+
+.thesis-main-body{
+    display: flex;
+    justify-content: space-between;
+
+    .left-side{
+        width: 20%;
+
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        legend{
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .supervisor-filter, .campus-filter, .course-filter, .category-filter{
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .supervisor-option, .campus-option, .course-option, .category-option{
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            font-weight: normal;
+        }
+    }
+
+    .right-side{
+        width: 70%;
+    }
+}

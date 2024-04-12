@@ -42,9 +42,18 @@ def previous_page_view(request):
 
 def thesis_list(request):
     theses = create_thesis()
-
+    supervisor_list = []
+    campus_list = []
+    course_list = []
+    category_list = []
     # truncates words longer than 75  words
     for thesis in theses:
+        supervisor_list.append(thesis.supervisor)
+        for campus in thesis.campus:
+            campus_list.append(campus)
+        for course in thesis.course:
+            course_list.append(course)
+        category_list.append(thesis.category)
         description = thesis.description
         word_count = description.split()
         if len(word_count) > 75:
@@ -58,10 +67,27 @@ def thesis_list(request):
                 
             thesis.description = description
 
-    items_per_page = int(request.GET.get('items_per_page', 2))
-    
+    selected_supervisor = request.GET.getlist('supervisor')
+    if selected_supervisor:
+        theses = [thesis for thesis in theses if thesis.supervisor in selected_supervisor]
+
+
+    selected_campus = request.GET.getlist('campus')
+    if selected_campus:
+        theses = [thesis for thesis in theses if thesis if any(campus in thesis.campus for campus in selected_campus)]
+
+    selected_course = request.GET.getlist('course')
+    if selected_course:
+        theses = [thesis for thesis in theses if thesis if any(course in thesis.course for course in selected_course)]
+
+    selected_category = request.GET.getlist('category')
+    if selected_category:
+        theses = [thesis for thesis in theses if thesis if any(category in thesis.category for category in selected_category)]
+
+    items_per_page = int(request.GET.get('items_per_page', 5))
+        
     page = Paginator(theses, items_per_page)
-    page_number = request.GET.get("page")
+    page_number = request.GET.getlist("page")
     page_obj = page.get_page(page_number)
 
     total_pages = range(1, page.num_pages + 1)
@@ -77,9 +103,17 @@ def thesis_list(request):
         'start_num': start_num,
         'end_num': end_num,
         'total_theses': total_theses,
-        'items_per_page': items_per_page
+        'items_per_page': items_per_page,
+        'supervisor_list': set(supervisor_list),
+        'campus_list': set(campus_list),
+        'course_list': set(course_list),
+        'category_list': set(category_list),
+        'selected_supervisor': selected_supervisor,
+        'selected_campus': selected_campus,
+        'selected_course': selected_course,
+        'selected_category': selected_category
         }
-    
+
     return render(request, 'main/thesis_list.html', context)
     
 
