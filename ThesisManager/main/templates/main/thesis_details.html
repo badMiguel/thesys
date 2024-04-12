@@ -21,8 +21,16 @@
             </li>
         </ul>
     {% else %}
-    <div class = "error_message">
-        <p>{{ error_message }}</p>
-    </div>
+        <div class = "error_message">
+            <p>{{ error_message }}</p>
+        </div>
     {% endif %}
+    <div class="go_back">
+        <form method="post" action="{% url 'previous_page' %}">
+            {% csrf_token %}
+            <input type="hidden" name="previous_page" value="{{ request.META.HTTP_REFERER }}">
+            <button type="submit">Go Back</button>
+        </form>
+    </div>
 {% endblock %}
+

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .data import create_thesis
-from django.http import Http404
+from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_protect
+
 
 def home(request):
     return render(request, 'main/home.html')
@@ -25,6 +27,15 @@ def thesis_details(request, topic_number):
     context = {'thesis': thesis}
     
     return render(request, 'main/thesis_details.html', context)
+    pass
+
+@csrf_protect
+def previous_page_view(request):
+    if request.method == 'POST':
+        previous_page = request.POST.get('previous_page', None)
+        if previous_page:
+            return redirect(previous_page)
+    return redirect('home')
     pass
 
 def thesis_list(request):
