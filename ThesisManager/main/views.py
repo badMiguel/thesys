@@ -31,11 +31,12 @@ def thesis_details(request, topic_number):
 def thesis_list(request):
     theses = create_thesis()
 
+    # truncates words longer than 75  words
     for thesis in theses:
         description = thesis.description
         word_count = description.split()
-        if len(word_count) > 50:
-            description = ' '.join(word_count[:50])
+        if len(word_count) > 75:
+            description = ' '.join(word_count[:75])
             
             punctuation = ['.', ',', '/', ';', ':']
             if description[-1] in punctuation:
@@ -44,8 +45,26 @@ def thesis_list(request):
                 description = description + '...'
                 
             thesis.description = description
-                
-    context = {'theses': theses}
+
+    items_per_page = 5
+    page = Paginator(theses, items_per_page)
+    page_number = request.GET.get("page")
+    page_obj = page.get_page(page_number)
+
+    total_pages = range(1, page.num_pages + 1)
+    
+    start_num = (page_obj.number - 1) * items_per_page + 1
+    end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
+
+    total_theses = len(theses)
+    
+    context = {
+        'page_obj': page_obj,
+        'total_pages': total_pages,
+        'start_num': start_num,
+        'end_num': end_num,
+        'total_theses': total_theses,
+        }
     
     return render(request, 'main/thesis_list.html', context)
     

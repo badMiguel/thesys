@@ -5,7 +5,7 @@
 {% block main_body %}
     <h2 class="thesis_title">Thesis List</h2>
     <ul class ='all_theses'>
-        {% for thesis in theses %}
+        {% for thesis in page_obj %}
         <li class='thesis_block'>
             {% comment %} <p>Topic Number: {{ thesis.topic_number }} </p> {% endcomment %}
             <h3><a href= "{% url 'thesis_details' topic_number=thesis.topic_number %}" >{{ thesis.title|title }}</a></h3>
@@ -32,4 +32,19 @@
             </div>
         </li>
         {% endfor %}
+
+        <div class="thesis-pages">
+            <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+            <form class='quick-links' action="" method="get">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                {% for total_pages in total_pages %}                    
+                    <a href="?page={{ total_pages }}">{{ total_pages }}</a>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </form>
+        </div>
 {% endblock  %}
