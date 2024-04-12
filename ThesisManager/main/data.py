@@ -9,6 +9,9 @@ class Thesis:
         self.supervisor = supervisor
         self.description = description 
         
+    def __str__(self): 
+        return str(self.topic_number) +  ' - ' + self.title 
+        
 def create_thesis():
     topics = []
     
