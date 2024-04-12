@@ -1,6 +1,7 @@
 {% extends "main/base.html" %}
 
 {% block main_body %}
+    {% if thesis %}
         <ul class='thesis_desc'>
             <li class='thesis_block'>
                 <h2>{{ thesis.title|title }}</h2> <hr>
@@ -16,7 +17,12 @@
                     <p class='more_info'>Course:</p>
                     <p class='category'>{{ thesis.category }}</p>
                 </div><hr>
-
+    
             </li>
         </ul>
+    {% else %}
+    <div class = "error_message">
+        <p>{{ error_message }}</p>
+    </div>
+    {% endif %}
 {% endblock %}

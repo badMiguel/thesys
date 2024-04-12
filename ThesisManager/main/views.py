@@ -19,8 +19,8 @@ def thesis_details(request, topic_number):
             break
 
     if thesis is None:
-        raise Http404("Thesis does not exist")
-
+        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)
+        return render(request, 'main/thesis_details.html',  {'error_message': error_message})
     
     context = {'thesis': thesis}
     
