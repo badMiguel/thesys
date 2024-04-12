@@ -130,7 +130,7 @@ a{
         line-height: 1;
     }
 
-    .items_per_page{
+    .per_page{
         display: flex;
         gap: 1rem;
     }

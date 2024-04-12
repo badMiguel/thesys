@@ -58,7 +58,8 @@ def thesis_list(request):
                 
             thesis.description = description
 
-    items_per_page = int(request.GET.get('items_per_page', 5))
+    items_per_page = int(request.GET.get('items_per_page', 2))
+    
     page = Paginator(theses, items_per_page)
     page_number = request.GET.get("page")
     page_obj = page.get_page(page_number)
@@ -76,6 +77,7 @@ def thesis_list(request):
         'start_num': start_num,
         'end_num': end_num,
         'total_theses': total_theses,
+        'items_per_page': items_per_page
         }
     
     return render(request, 'main/thesis_list.html', context)
