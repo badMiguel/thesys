@@ -3,6 +3,8 @@ from .data import create_thesis
 from django.http import Http404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
+from django.core.paginator import Paginator
+
 
 def home(request):
     return render(request, 'main/home.html')
