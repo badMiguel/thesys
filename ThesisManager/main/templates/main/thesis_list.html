@@ -8,7 +8,7 @@
         {% for thesis in theses %}
         <li class='thesis_block'>
             {% comment %} <p>Topic Number: {{ thesis.topic_number }} </p> {% endcomment %}
-            {% comment %}<h3><a href= "{% url 'thesis_details' topic_number=thesis.topic_number %}" >{{ thesis.title|title }}</a></h3> {% endcomment %}
+            <h3><a href= "{% url 'thesis_details' topic_number=thesis.topic_number %}" >{{ thesis.title|title }}</a></h3>
             <p class='description'>{{ thesis.description }}</p>
             <div class = 'supervisor'>
                 <p class = 'more_info'>Supervisor:</p>
