@@ -4,7 +4,9 @@
     {% if thesis %}
         <ul class='thesis_desc'>
             <li class='thesis_block'>
-                <h2>{{ thesis.title|title }}</h2> <hr>
+                
+                <h2 class="thesis_title">{{ thesis.title|title }}</h2> <hr>
+    
                 <p class='more_info'>Topic Number: {{ thesis.topic_number }}</p> <hr>
                 <div class='supervisor'> 
                     <p class='more_info'>Supervisor:</p>
@@ -22,7 +24,8 @@
         </ul>
     {% else %}
     <div class = "error_message">
-        <p>{{ error_message }}</p>
+        <h2>{{ error_message }}</h2>
+        <p><em> Please input a valid thesis number and try again. </em></p>
     </div>
     {% endif %}
 {% endblock %}

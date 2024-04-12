@@ -5,7 +5,7 @@
     --primary-color: #e6e6e6;
     --secondary-color: #4dbabb;
     /* --font-primary: ; */
-    --font-secondary: rgb(41, 41, 98);
+    --font-secondary: rgb(2, 76, 79);
 }
 
 * {
@@ -20,6 +20,7 @@
 
 .all_theses{
     list-style-type: none;
+    
 }
 
 .nav_container a{
@@ -78,6 +79,7 @@
     text-align: center;
     font-size: 40px;
     margin-bottom: 20px;
+    color: rgb(2, 76, 79);
 }
 
 .header_sub{
@@ -115,9 +117,12 @@ a{
     color: rgb(0, 0, 0);
 }
 
+.thesis_title{
+    margin-bottom: 0px;
+    color: rgb(2, 76, 79);
+}
 .thesis_desc{
     list-style-type: none;
-    margin: auto;
     margin-bottom: 60px;
     line-height: 3;
     margin-bottom: 20px;
@@ -129,9 +134,18 @@ a{
 .more_info{
     font-weight: 500;
     padding-right: 30px;
+    color: rgb(2, 76, 79);
+}
+
+.error_message{
+    padding: 50px;
+    font-size: 20px;
+    color: rgb(2, 76, 79);
 }
 
 
+
+
 .thesis_block{
-    margin-bottom: 50px;
+    margin-bottom: 60px;
 }
