@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from .data import create_thesis
+from django.http import Http404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
-
 
 def home(request):
     return render(request, 'main/home.html')
@@ -39,10 +39,8 @@ def previous_page_view(request):
     pass
 
 def thesis_list(request):
-
     theses = create_thesis()
 
-    
     for thesis in theses:
         description = thesis.description
         word_count = description.split()
