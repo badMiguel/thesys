@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .data import create_thesis
 from django.http import Http404
+from django.core.paginator import Paginator
 
 def home(request):
     return render(request, 'main/home.html')
@@ -28,10 +29,8 @@ def thesis_details(request, topic_number):
     pass
 
 def thesis_list(request):
-
     theses = create_thesis()
 
-    
     for thesis in theses:
         description = thesis.description
         word_count = description.split()

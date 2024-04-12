@@ -1,5 +1,7 @@
 {% extends "main/base.html" %}
 
+{% block page_title %}{{thesis.title|title}}{% endblock%}
+
 {% block main_body %}
     {% if thesis %}
         <ul class='thesis_desc'>
