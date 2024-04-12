@@ -24,7 +24,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/home/')),
     path('home/', views.home, name='home'),
     path('thesis/', views.thesis_list, name= 'thesis_list'),
-    path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),
+    path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),    
     path('previous-page/', views.previous_page_view, name='previous_page'),
     path('aboutus/', views.about_us, name= 'about_us')
     
