@@ -79,7 +79,7 @@
     text-align: center;
     font-size: 40px;
     margin-bottom: 20px;
-    color: rgb(2, 76, 79);
+    color: var(--font-primary);
 }
 
 .header_sub{
@@ -148,13 +148,13 @@ a{
 .more_info{
     font-weight: 500;
     padding-right: 30px;
-    color: var(--font-secondary);
+    color: var(--font-primary);
 }
 
 .error_message{
     padding: 50px;
     font-size: 20px;
-    color: var(--font-secondary);
+    color: var(--font-primary);
 }
 
 .thesis_block{
@@ -163,6 +163,13 @@ a{
 
 footer{
     margin: 10rem 0 5rem 0;
+}
+
+.back-button{
+    background-color: white;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
 }
 
 .thesis-pages{
