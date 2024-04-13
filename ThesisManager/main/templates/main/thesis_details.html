@@ -18,7 +18,7 @@
                 <p class='description'>{{ thesis.description }}</p> <hr>
 
                 <div class='supervisor'> 
-                    <p class='more_info'>Course:</p>
+                    <p class='more_info'>Category:</p>
                     <p class='category'>{{ thesis.category }}</p>
                 </div><hr>
     
@@ -34,8 +34,18 @@
         <form method="post" action="{% url 'previous_page' %}">
             {% csrf_token %}
             <input type="hidden" name="previous_page" value="{{ request.META.HTTP_REFERER }}">
-            <button class="back-button" type="submit">Go Back</button>
+            <button type="submit">Go Back</button>
         </form>
+    </div>
+    <div class="other_thesis">
+        <h2>See other Thesis</h2>
+        <ul class='all_theses'>
+            {% for remaining_thesis in random_theses %}
+                <li class='other_thesis_title'>
+                    <h3><a href="{% url 'thesis_details' topic_number=remaining_thesis.topic_number %}">{{ remaining_thesis.title|title }}</a></h3>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}
 
