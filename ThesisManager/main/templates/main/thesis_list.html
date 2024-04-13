@@ -75,7 +75,7 @@
                 {% endfor %}
             </ul>
             <div class="thesis-pages">
-                <p class='current'><em>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</em></p>
+                <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
                 <form class='quick-links' action="" method="get">
                     {% if page_obj.has_previous %}
                         <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}">Previous</a>

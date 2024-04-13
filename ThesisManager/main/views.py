@@ -59,8 +59,9 @@ def thesis_list(request):
             campus_list.append(campus)
         for course in thesis.course:
             course_list.append(course)
-        category_list.append(thesis.category)
-
+        for category in thesis.category:
+            category_list.append(thesis.category)
+        
         # truncates words longer than 250 characters 
         # i.e. only shows 250 character of the  thesis description
         description = thesis.description
@@ -76,39 +77,20 @@ def thesis_list(request):
                 
             thesis.description = description
 
-    # add the total number of thesis with a certain filter tag
-    sorted_supervisor_list = sorted(list(set(supervisor_list)))
-    new_supervisor_list = []
-    for supervisor in sorted_supervisor_list:
-        supervisor_data = f'{supervisor} ({supervisor_list.count(supervisor)})'
-        new_supervisor_list.append(supervisor_data)
-    sorted_campus_list = sorted(list(set(campus_list)))
-    new_campus_list = []
-    for campus in sorted_campus_list:
-        campus_data = f'{campus} ({campus_list.count(campus)})'
-        new_campus_list.append(campus_data)
-    sorted_course_list = sorted(list(set(course_list)))
-    new_course_list = []
-    for course in sorted_course_list:
-        course_data = f'{course} ({course_list.count(course)})'
-        new_course_list.append(course_data)
-    sorted_category_list = sorted(list(set(category_list)))
-    new_category_list = []
-    for category in sorted_category_list:
-        category_data = f'{category} ({category_list.count(category)})'
-        new_category_list.append(category_data)
-    
     # retrieves the value of supervisor, campus, and coure when users interacts with filter
     # updates theses shown depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
     if selected_supervisor:
         theses = [thesis for thesis in theses if thesis.supervisor in selected_supervisor]
+
     selected_campus = request.GET.getlist('campus')
     if selected_campus:
         theses = [thesis for thesis in theses if thesis if any(campus in thesis.campus for campus in selected_campus)]
+
     selected_course = request.GET.getlist('course')
     if selected_course:
         theses = [thesis for thesis in theses if thesis if any(course in thesis.course for course in selected_course)]
+
     selected_category = request.GET.getlist('category')
     if selected_category:
         theses = [thesis for thesis in theses if thesis if any(category in thesis.category for category in selected_category)]
@@ -134,14 +116,14 @@ def thesis_list(request):
         'end_num': end_num,
         'total_theses': total_theses,
         'items_per_page': items_per_page,
-        'supervisor_list': new_supervisor_list,
-        'campus_list': new_campus_list,
-        'course_list': new_course_list,
-        'category_list': new_category_list,
+        'supervisor_list': set(supervisor_list), #set() removes items in list that are repeated
+        'campus_list': set(campus_list),
+        'course_list': set(course_list),
+        'category_list': set(category_list),
         'selected_supervisor': selected_supervisor,
         'selected_campus': selected_campus,
         'selected_course': selected_course,
-        'selected_category': selected_category,
+        'selected_category': selected_category
         }
 
     return render(request, 'main/thesis_list.html', context)
