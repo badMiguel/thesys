@@ -51,8 +51,6 @@ def previous_page_view(request):
             return redirect(previous_page)
     return redirect('home')
 
-
-# prevents caching - ensure page is updated to users
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_list(request):
     theses = create_thesis()
@@ -70,8 +68,7 @@ def thesis_list(request):
             campus_list.append(campus)
         for course in thesis.course:
             course_list.append(course)
-        for category in thesis.category:
-            category_list.append(thesis.category)
+        category_list.append(thesis.category)
         
         # truncates words longer than 250 characters 
         # i.e. only shows 250 character of the  thesis description
@@ -88,6 +85,20 @@ def thesis_list(request):
                 
             thesis.description = description
 
+    # add the number of thesis with a the filter tag
+    supervisor_count = {}
+    for supervisor in sorted(list(set(supervisor_list))):
+        supervisor_count[supervisor] = supervisor_list.count(supervisor)
+    campus_count = {}    
+    for campus in sorted(list(set(campus_list))):
+        campus_count[campus] = campus_list.count(campus)
+    course_count = {}
+    for course in sorted(list(set(course_list))):
+        course_count[course] = course_list.count(course)
+    category_count = {}
+    for category in sorted(list(set(category_list))):
+        category_count[category] = category_list.count(category)
+    
     # retrieves the value of supervisor, campus, and coure when users interacts with filter
     # updates theses shown depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
@@ -127,14 +138,14 @@ def thesis_list(request):
         'end_num': end_num,
         'total_theses': total_theses,
         'items_per_page': items_per_page,
-        'supervisor_list': set(supervisor_list), #set() removes items in list that are repeated
-        'campus_list': set(campus_list),
-        'course_list': set(course_list),
-        'category_list': set(category_list),
+        'supervisor_list': supervisor_count, #set() removes items in list that are repeated
+        'campus_list': campus_count,
+        'course_list': course_count,
+        'category_list': category_count,
         'selected_supervisor': selected_supervisor,
         'selected_campus': selected_campus,
         'selected_course': selected_course,
-        'selected_category': selected_category
+        'selected_category': selected_category,
         }
 
     return render(request, 'main/thesis_list.html', context)
