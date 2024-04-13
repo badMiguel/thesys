@@ -27,9 +27,8 @@
         </header>
         <main>
             <div class = 'main_body'>
-                {% block main_body %}{% endblock  %}
-                <p>All masters students studying at CDU are required to complete a masters thesis.</p>
-                <p>You can use this website to see what options are avaliable for your thesis! Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List!</a></p>
+                {% block main_body %}<p>All masters students studying at CDU are required to complete a masters thesis.</p>
+                <p>You can use this website to see what options are avaliable for your thesis! Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List!</a></p>{% endblock  %}
             </div>
         </main>
         <footer>
