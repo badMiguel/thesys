@@ -126,7 +126,7 @@ a{
     .thesis_title{
         font-weight: bold;
         margin-bottom: 0px;
-        color: var(--font-secondary);
+        color: var(--font-primary);
         line-height: 1;
     }
 
@@ -165,8 +165,7 @@ footer{
     margin: 10rem 0 5rem 0;
 }
 
-.back-button{
-    background-color: white;
+.back-button, .filter-submit{
     padding: 0.3rem 1rem;
     font-size: 0.8rem;
     cursor: pointer;

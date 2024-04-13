@@ -84,16 +84,21 @@ def thesis_list(request):
     if selected_category:
         theses = [thesis for thesis in theses if thesis if any(category in thesis.category for category in selected_category)]
 
-    items_per_page = int(request.GET.get('items_per_page', 5))
-        
+    items_per_page = int(request.GET.get('items_per_page', 5))    
+
     page = Paginator(theses, items_per_page)
-    page_number = request.GET.getlist("page")
+    page_number = request.GET.get("page")
     page_obj = page.get_page(page_number)
 
     total_pages = range(1, page.num_pages + 1)
     
     start_num = (page_obj.number - 1) * items_per_page + 1
     end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
+
+    # next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
+    # if next_page_number != items_per_page:
+    #     items_per_page = next_page_number
+    # print(items_per_page)
 
     total_theses = len(theses)
     
