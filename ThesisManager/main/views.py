@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 
 
 def home(request):
@@ -12,6 +13,8 @@ def home(request):
 def about_us(request):
     return render(request, 'main/about_us.html')
 
+# prevents caching - ensure page is updated to users
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
     theses = create_thesis()
 
@@ -38,6 +41,8 @@ def previous_page_view(request):
             return redirect(previous_page)
     return redirect('home')
 
+# prevents caching - ensure page is updated to users
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_list(request):
     theses = create_thesis()
     
