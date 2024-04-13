@@ -57,14 +57,14 @@ def thesis_list(request):
         for category in thesis.category:
             category_list.append(thesis.category)
         
-        # truncates words longer than 50 words 
-        # i.e. only shows 50 words of the  thesis description
+        # truncates words longer than 250 characters 
+        # i.e. only shows 250 character of the  thesis description
         description = thesis.description
         word_count = description.split()
-        if len(word_count) > 50:
-            description = ' '.join(word_count[:50])
+        if len(description) > 230:
+            description = ''.join(description[:230])
             
-            punctuation = ['.', ',', '/', ';', ':']
+            punctuation = ['.', ',', '/', ';', ':', ' ']
             if description[-1] in punctuation:
                 description = description[:-1] + '...'
             else:
