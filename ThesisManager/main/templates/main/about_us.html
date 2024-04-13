@@ -25,16 +25,13 @@
         </div>
     </header>
     <main>
-        <dl>
-            <dt>Student S365934</dt>
-            <dd>Kye James Johnstone</dd>
-            <dt>Student S365958</dt>
-            <dd>Juan Miguel Badayos</dd>
-            <dt>Student S364240</dt>
-            <dd>Agnes Juliana Javier</dd>
-            <dt>Student S368036</dt>
-            <dd>Mark Joshua Tayco</dd>
-        </dl>
+        <h3>we are the students who created this page</h3>
+        <ul>
+            {% comment %} Use a dictionary in views to display group information {% endcomment %}
+            {% for student in students %} 
+            <li>{{ student.name }} - {{ student.number }}</li>
+        {% endfor %} 
+        </ul>
     </main>
     <footer>
         <p class='contact mb-5'>Contact Us: University@email.edu.au</p>

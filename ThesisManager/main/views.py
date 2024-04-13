@@ -10,7 +10,13 @@ def home(request):
     return render(request, 'main/home.html')
 
 def about_us(request):
-    return render(request, 'main/about_us.html')
+    students = [
+        {'name': 'Kye James Johnstone', 'number': 'S365934'},
+        {'name': 'Juan Miguel Badayos', 'number': 'S365958'},
+        {'name': 'Mark Joshua Tayco', 'number': 'S368036'},
+        {'name': 'Agnes Juliana Javier', 'number': 'S364240'},
+    ]
+    return render(request, "main/about_us.html", {'students':students})
 
 def thesis_details(request, topic_number):
     theses = create_thesis()
