@@ -95,11 +95,6 @@ def thesis_list(request):
     start_num = (page_obj.number - 1) * items_per_page + 1
     end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
 
-    # next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-    # if next_page_number != items_per_page:
-    #     items_per_page = next_page_number
-    # print(items_per_page)
-
     total_theses = len(theses)
     
     context = {
