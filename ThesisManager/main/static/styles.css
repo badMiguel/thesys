@@ -22,9 +22,10 @@
 .nav_container{
     display: flex;
     justify-content: flex-end;
+    gap: 4rem;
 
     a{
-        padding-left: 50px;
+        font-weight: 500;
     }
 }
 
@@ -45,7 +46,7 @@
 .campus_list li{
     padding:0 10px;
     margin-right: 15px;
-    background-color: var(wait);
+    background-color: var(--secondary-color);
     border-radius: 15px;
 }
 
@@ -57,7 +58,7 @@
     margin-right: 15px;
     margin-bottom: 16px;
     padding: 0 10px;
-    background-color: var(wait);
+    background-color: var(--secondary-color);
     border-radius: 15px;
 }
 

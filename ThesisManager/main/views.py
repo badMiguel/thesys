@@ -42,22 +42,29 @@ def previous_page_view(request):
 
 def thesis_list(request):
     theses = create_thesis()
+    
+    # created a separate list for different filter categories
     supervisor_list = []
     campus_list = []
     course_list = []
     category_list = []
-    # truncates words longer than 75  words
+    
     for thesis in theses:
+        # appends each category in the list
         supervisor_list.append(thesis.supervisor)
         for campus in thesis.campus:
             campus_list.append(campus)
         for course in thesis.course:
             course_list.append(course)
-        category_list.append(thesis.category)
+        for category in thesis.category:
+            category_list.append(thesis.category)
+        
+        # truncates words longer than 50 words 
+        # i.e. only shows 50 words of the  thesis description
         description = thesis.description
         word_count = description.split()
-        if len(word_count) > 75:
-            description = ' '.join(word_count[:75])
+        if len(word_count) > 50:
+            description = ' '.join(word_count[:50])
             
             punctuation = ['.', ',', '/', ';', ':']
             if description[-1] in punctuation:
@@ -67,10 +74,11 @@ def thesis_list(request):
                 
             thesis.description = description
 
+    # retrieves the value of supervisor, campus, and coure when users interacts with filter
+    # updates theses list depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
     if selected_supervisor:
         theses = [thesis for thesis in theses if thesis.supervisor in selected_supervisor]
-
 
     selected_campus = request.GET.getlist('campus')
     if selected_campus:
