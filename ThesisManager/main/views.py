@@ -17,11 +17,11 @@ def about_us(request):
 # prevents caching - ensure page is updated to users
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
-    all_theses = create_thesis()
+    theses = create_thesis()
 
     current_thesis = None
     
-    for thesis in all_theses:
+    for thesis in theses:
         if thesis.topic_number == topic_number:
             current_thesis = thesis
             break
@@ -30,8 +30,8 @@ def thesis_details(request, topic_number):
         error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)
         return render(request, 'main/thesis_details.html',  {'error_message': error_message})
     
-    remaining_theses = [thesis for thesis in all_theses if thesis.topic_number != topic_number]
-    
+    remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
+
     if len(remaining_theses) <= 3:
         random_theses = remaining_theses
     else:
