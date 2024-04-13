@@ -2,30 +2,30 @@
 
 :root{
     font-family: 'Roboto';
-    --primary-color: #e6e6e6;
-    --secondary-color: #4dbabb;
+    --primary-color: #4dbabb;
+    --secondary-color: #e6e6e6;
     --font-primary: black;
-    --font-secondary: rgb(2, 76, 79);
+    --font-secondary: rgb(0, 61, 63);
 }
 
 * {
     margin: 0;
     padding: 0;
+    list-style-type: none;
+    text-decoration: none;
+    
+    a{
+        color:var(--font-secondary);
+    }
 }
 
 .nav_container{
     display: flex;
     justify-content: flex-end;
-}
 
-.all_theses{
-    list-style-type: none;
-    
-}
-
-.nav_container a{
-    padding-left: 50px;
-    color: var(--font-secondary);
+    a{
+        padding-left: 50px;
+    }
 }
 
 .main_body, .heading, .contact{
@@ -42,30 +42,22 @@
     margin: 16px 0;
 }
 
-
-
 .campus_list li{
     padding:0 10px;
     margin-right: 15px;
-    list-style-type: none;
-    background-color: var(--primary-color);
+    background-color: var(wait);
     border-radius: 15px;
 }
 
-.supervisor{
-    display: flex;
-}
-
-.courses{
+.supervisor, .courses{
     display: flex;
 }
 
 .courses li{
-    list-style-type: none;
     margin-right: 15px;
     margin-bottom: 16px;
     padding: 0 10px;
-    background-color: var(--primary-color);
+    background-color: var(wait);
     border-radius: 15px;
 }
 
@@ -90,7 +82,7 @@
 header{
     padding: 50px 0 75px 0;
     margin: 0 0 25px 0;
-    background-image: linear-gradient(var(--secondary-color), white);
+    background-image: linear-gradient(var(--primary-color), white);
 }
 
 .main_body h2{
@@ -100,10 +92,6 @@ header{
     line-height: 1.5;
 }
 
-a{
-    text-decoration: none;
-    color:var(--font-secondary);
-}
 
 .main_body h3{
     font-weight: 500;
@@ -117,7 +105,7 @@ a{
     color: var(--font-primary);
 }
 
-.header{
+.main-body-header{
     display: flex;
     align-items: flex-end;
     margin-bottom: 30px;
@@ -135,14 +123,12 @@ a{
         gap: 1rem;
     }
 }
+
 .thesis_desc{
-    list-style-type: none;
     margin-bottom: 60px;
     line-height: 3;
     margin-bottom: 20px;
     color: var(--font-primary);
-
-
 }
 
 .more_info{
