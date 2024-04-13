@@ -65,28 +65,11 @@
             <ul class ='all_theses'>
                 {% for thesis in page_obj %}
                 <li class='thesis_block'>
-                    {% comment %} <p>Topic Number: {{ thesis.topic_number }} </p> {% endcomment %}
                     <h3><a href= "{% url 'thesis_details' topic_number=thesis.topic_number %}" >{{ thesis.title|title }}</a></h3>
                     <p class='description'>{{ thesis.description }}</p>
                     <div class = 'supervisor'>
                         <p class = 'more_info'>Supervisor:</p>
                         <p class='supervisor_name'> {{ thesis.supervisor }}</p>
-                    </div>
-                    <div class = 'campus'>
-                        <p class = 'more_info'>Campus:</p>
-                        <ul class='campus_list p-0'>    
-                            {% for campus in thesis.campus %}
-                                <li>{{ campus }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <div class='courses'>
-                        <p class = 'more_info'>Courses:</p>
-                        <ul class ='courses_list p-0'>
-                            {% for course in thesis.course %}
-                                <li>{{course}}</li>
-                            {% endfor %}
-                        </ul>
                     </div>
                 </li>
                 {% endfor %}
