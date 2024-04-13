@@ -198,6 +198,10 @@ footer{
             gap: 1rem;
             align-items: flex-start;
             font-weight: normal;
+
+            .filter-option{
+                transform: translateY(3px);
+            }
         }
     }
 

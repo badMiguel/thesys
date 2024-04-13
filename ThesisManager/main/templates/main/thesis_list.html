@@ -11,7 +11,7 @@
                     <p class="filter-type">Supervisor</p>
                     {% for supervisor in supervisor_list %}
                         <div class="supervisor-option">
-                            <input type="checkbox" name="supervisor" value="{{ supervisor }}" 
+                            <input class='filter-option' type="checkbox" name="supervisor" value="{{ supervisor }}" 
                                 {% if supervisor in selected_supervisor %} checked {% endif %}>
                             <label>{{ supervisor }}</label>
                         </div>
@@ -21,7 +21,7 @@
                     <p class="filter-type">Campus</p>
                     {% for campus in campus_list %}
                         <div class="campus-option">
-                            <input type="checkbox" name="campus" value="{{ campus }}"
+                            <input class='filter-option' type="checkbox" name="campus" value="{{ campus }}"
                                 {% if campus in selected_campus %} checked {% endif %}>
                             <label>{{ campus }}</label>
                         </div>
@@ -31,7 +31,7 @@
                     <p class="filter-type">Course</p>
                     {% for course in course_list %}
                         <div class="course-option">
-                            <input type="checkbox" name="course" value="{{ course }}"
+                            <input class='filter-option' type="checkbox" name="course" value="{{ course }}"
                                 {% if course in selected_course %} checked {% endif %}>
                             <label>{{ course }}</label>
                         </div>
@@ -41,7 +41,7 @@
                     <p class="filter-type">Category</p>
                     {% for category in category_list %}
                         <div class="category-option">
-                            <input type="checkbox" name="category" value="{{ category }}"
+                            <input class='filter-option' type="checkbox" name="category" value="{{ category }}"
                                 {% if category in selected_category %} checked  {% endif %}>
                             <label>{{ category }}</label>
                         </div>

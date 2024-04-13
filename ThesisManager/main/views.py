@@ -29,7 +29,6 @@ def thesis_details(request, topic_number):
     context = {'thesis': thesis}
     
     return render(request, 'main/thesis_details.html', context)
-    pass
 
 @csrf_protect
 def previous_page_view(request):
@@ -38,7 +37,6 @@ def previous_page_view(request):
         if previous_page:
             return redirect(previous_page)
     return redirect('home')
-    pass
 
 def thesis_list(request):
     theses = create_thesis()
@@ -75,7 +73,7 @@ def thesis_list(request):
             thesis.description = description
 
     # retrieves the value of supervisor, campus, and coure when users interacts with filter
-    # updates theses list depending on the value set by the user
+    # updates theses shown depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
     if selected_supervisor:
         theses = [thesis for thesis in theses if thesis.supervisor in selected_supervisor]
@@ -92,17 +90,18 @@ def thesis_list(request):
     if selected_category:
         theses = [thesis for thesis in theses if thesis if any(category in thesis.category for category in selected_category)]
 
+    # gets the thesis per page. default value = 5
     items_per_page = int(request.GET.get('items_per_page', 5))    
 
+    # use built-in tool of django for paginating the theses
     page = Paginator(theses, items_per_page)
     page_number = request.GET.get("page")
     page_obj = page.get_page(page_number)
 
+    # values used to show the number of items shown and total number of theses
     total_pages = range(1, page.num_pages + 1)
-    
     start_num = (page_obj.number - 1) * items_per_page + 1
     end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
-
     total_theses = len(theses)
     
     context = {
@@ -112,7 +111,7 @@ def thesis_list(request):
         'end_num': end_num,
         'total_theses': total_theses,
         'items_per_page': items_per_page,
-        'supervisor_list': set(supervisor_list),
+        'supervisor_list': set(supervisor_list), #set() removes items in list that are repeated
         'campus_list': set(campus_list),
         'course_list': set(course_list),
         'category_list': set(category_list),
