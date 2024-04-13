@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
+import random
 
 
 def home(request):
@@ -16,20 +17,29 @@ def about_us(request):
 # prevents caching - ensure page is updated to users
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
-    theses = create_thesis()
+    all_theses = create_thesis()
 
-    thesis = None
+    current_thesis = None
     
-    for t in theses:
-        if t.topic_number == topic_number:
-            thesis = t
+    for thesis in all_theses:
+        if thesis.topic_number == topic_number:
+            current_thesis = thesis
             break
 
-    if thesis is None:
+    if current_thesis is None:
         error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)
         return render(request, 'main/thesis_details.html',  {'error_message': error_message})
     
-    context = {'thesis': thesis}
+    remaining_theses = [thesis for thesis in all_theses if thesis.topic_number != topic_number]
+    
+    if len(remaining_theses) <= 3:
+        random_theses = remaining_theses
+    else:
+        random_theses = random.sample(remaining_theses, 3)
+    
+    context = {'thesis': current_thesis,
+               'random_theses' : random_theses,
+        }
     
     return render(request, 'main/thesis_details.html', context)
 
@@ -40,6 +50,7 @@ def previous_page_view(request):
         if previous_page:
             return redirect(previous_page)
     return redirect('home')
+
 
 # prevents caching - ensure page is updated to users
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
