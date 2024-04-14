@@ -13,23 +13,25 @@
     </head>
 
     <body>
-        <header>
-            <div class='heading'>
-                <h1>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>    
-                <p class= 'header_sub'>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
-                <nav class='nav_container'>
-                    <a href="{% url 'home'%}">Home</a>
-                    <a href="{% url 'thesis_list' %}">View Thesis List</a>
-                    <a href= "{% url 'about_us' %}" >Our Group Information</a>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class = 'main_body'>
-                {% block main_body %}<p>All masters students studying at CDU are required to complete a masters thesis.</p>
-                <p>You can use this website to see what options are avaliable for your thesis! Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List!</a></p>{% endblock  %}
-            </div>
-        </main>
+        <div class="header-main-container">
+            <header>
+                <div class='heading'>
+                    <h1>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>    
+                    <p class= 'header_sub'>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
+                    <nav class='nav_container'>
+                        <a href="{% url 'home'%}">Home</a>
+                        <a href="{% url 'thesis_list' %}">View Thesis List</a>
+                        <a href= "{% url 'about_us' %}" >Our Group Information</a>
+                    </nav>
+                </div>
+            </header>
+            <main>
+                <div class = 'main_body'>
+                    {% block main_body %}<p>All masters students studying at CDU are required to complete a masters thesis.</p>
+                    <p>You can use this website to see what options are avaliable for your thesis! Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List!</a></p>{% endblock  %}
+                </div>
+            </main>
+        </div>
         <footer>
             <div class="footer-section">
                 <div>

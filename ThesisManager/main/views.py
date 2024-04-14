@@ -18,6 +18,7 @@ def about_us(request):
         {'name': 'Mark Joshua Tayco', 'number': 'S368036'},
         {'name': 'Agnes Juliana Javier', 'number': 'S364240'},
     ]
+    
     return render(request, "main/about_us.html", {'students':students})
 
 # prevents caching - ensure page is updated to users

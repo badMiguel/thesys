@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{% block page_title %}{% endblock  %}</title>
-        <meta charset="utf-8" />
-        <met name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous">
-        {% load static %}<link rel="stylesheet" href="{% static 'styles.css' %}">
-    </head>
+{% extends "main/base.html" %}
 
-<body>
-    <header>
-        <div class='heading'>
-            <h1 class='text-center pt-5'>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>    
-            <p class= 'text-center pt-2 pb-3'>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
-            <nav class='nav_container'>
-                <a href="{% url 'home'%}">Home</a>
-                <a href="{% url 'thesis_list' %}">View Thesis List</a>
-                <a href= "{% url 'about_us' %}" >Our Group Information</a>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <h3>we are the students who created this page</h3>
-        <ul>
-            {% comment %} Use a dictionary in views to display group information {% endcomment %}
-            {% for student in students %} 
-            <li>{{ student.name }} - {{ student.number }}</li>
+{% block page_title %}About Us{% endblock  %}
+
+{% block main_body %}
+    <h3>we are the students who created this page</h3>
+    <ul>
+        {% comment %} Use a dictionary in views to display group information {% endcomment %}
+        {% for student in students %} 
+        <li>{{ student.name }} - {{ student.number }}</li>
         {% endfor %} 
-        </ul>
-    </main>
-    <footer>
-        <p class='contact mb-5'>Contact Us: University@email.edu.au</p>
-    </footer>
-</body>
+    </ul>
+{% endblock %}

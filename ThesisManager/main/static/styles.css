@@ -34,8 +34,31 @@
     margin: auto;
     min-width: 500px;
 }
-.main_body{
-    margin-bottom: 200px;
+
+body{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+footer{
+    display: flex;
+    align-items:flex-end;
+    position: relative;
+    width: 100%;
+    margin: 5rem 0 0 0;
+    padding: 5rem 0 2.5rem;
+    background-image: linear-gradient(white, var(--primary-color));    
+}
+
+.footer-section {
+    width: 50%;
+    margin: 0 auto;
+    min-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     
 }
 
@@ -146,26 +169,6 @@ header{
 
 .thesis_block{
     margin-bottom: 60px;
-}
-
-footer{
-    padding: 20px 0;
-    background-image: linear-gradient(white, var(--primary-color));
-    
-}
-
-.footer-section {
-    width: 50%;
-    margin: 0 auto;
-    min-width: 800px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-}
-
-.footer-section .copyright {
-    margin-left: 50px;
 }
 
 .go_back{
