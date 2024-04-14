@@ -4,6 +4,8 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
+import random
 
 
 def home(request):
@@ -18,22 +20,37 @@ def about_us(request):
     ]
     return render(request, "main/about_us.html", {'students':students})
 
+# prevents caching - ensure page is updated to users
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
     theses = create_thesis()
-
-    thesis = None
     
-    for t in theses:
-        if t.topic_number == topic_number:
-            thesis = t
+    # included a for loop to incorporate the topic id to the url
+    
+    current_thesis = None
+    
+    for thesis in theses:
+        if thesis.topic_number == topic_number:
+            current_thesis = thesis
             break
 
-    if thesis is None:
-        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)
-        return render(request, 'main/thesis_details.html',  {'error_message': error_message})
+    if current_thesis is None: 
+        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)   
+        random_theses = random.sample(theses, min(3, len(theses)))
+        context = {
+            'error_message': error_message,
+            'random_theses': random_theses
+        }
     
-    context = {'thesis': thesis}
+        return render(request, 'main/thesis_details.html', context)
     
+    remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
+
+    random_theses = random.sample(remaining_theses, min(3, len(remaining_theses)))
+    context = {'thesis': current_thesis,
+               'random_theses': random_theses,
+        }
+
     return render(request, 'main/thesis_details.html', context)
 
 @csrf_protect
@@ -44,6 +61,7 @@ def previous_page_view(request):
             return redirect(previous_page)
     return redirect('home')
 
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_list(request):
     theses = create_thesis()
     
@@ -60,17 +78,16 @@ def thesis_list(request):
             campus_list.append(campus)
         for course in thesis.course:
             course_list.append(course)
-        for category in thesis.category:
-            category_list.append(thesis.category)
+        category_list.append(thesis.category)
         
-        # truncates words longer than 50 words 
-        # i.e. only shows 50 words of the  thesis description
+        # truncates words longer than 250 characters 
+        # i.e. only shows 250 character of the  thesis description
         description = thesis.description
         word_count = description.split()
-        if len(word_count) > 50:
-            description = ' '.join(word_count[:50])
+        if len(description) > 230:
+            description = ''.join(description[:230])
             
-            punctuation = ['.', ',', '/', ';', ':']
+            punctuation = ['.', ',', '/', ';', ':', ' ']
             if description[-1] in punctuation:
                 description = description[:-1] + '...'
             else:
@@ -78,6 +95,20 @@ def thesis_list(request):
                 
             thesis.description = description
 
+    # add the number of thesis with a the filter tag
+    supervisor_count = {}
+    for supervisor in sorted(list(set(supervisor_list))):
+        supervisor_count[supervisor] = supervisor_list.count(supervisor)
+    campus_count = {}    
+    for campus in sorted(list(set(campus_list))):
+        campus_count[campus] = campus_list.count(campus)
+    course_count = {}
+    for course in sorted(list(set(course_list))):
+        course_count[course] = course_list.count(course)
+    category_count = {}
+    for category in sorted(list(set(category_list))):
+        category_count[category] = category_list.count(category)
+    
     # retrieves the value of supervisor, campus, and coure when users interacts with filter
     # updates theses shown depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
@@ -117,14 +148,14 @@ def thesis_list(request):
         'end_num': end_num,
         'total_theses': total_theses,
         'items_per_page': items_per_page,
-        'supervisor_list': set(supervisor_list), #set() removes items in list that are repeated
-        'campus_list': set(campus_list),
-        'course_list': set(course_list),
-        'category_list': set(category_list),
+        'supervisor_list': supervisor_count, #set() removes items in list that are repeated
+        'campus_list': campus_count,
+        'course_list': course_count,
+        'category_list': category_count,
         'selected_supervisor': selected_supervisor,
         'selected_campus': selected_campus,
         'selected_course': selected_course,
-        'selected_category': selected_category
+        'selected_category': selected_category,
         }
 
     return render(request, 'main/thesis_list.html', context)
