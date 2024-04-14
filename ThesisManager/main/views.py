@@ -18,7 +18,9 @@ def about_us(request):
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
     theses = create_thesis()
-
+    
+    # included a for loop to incorporate the topic id to the url
+    
     current_thesis = None
     
     for thesis in theses:
@@ -26,21 +28,23 @@ def thesis_details(request, topic_number):
             current_thesis = thesis
             break
 
-    if current_thesis is None:
-        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)
-        return render(request, 'main/thesis_details.html',  {'error_message': error_message})
+    if current_thesis is None: 
+        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)   
+        random_theses = random.sample(theses, min(3, len(theses)))
+        context = {
+            'error_message': error_message,
+            'random_theses': random_theses
+        }
+    
+        return render(request, 'main/thesis_details.html', context)
     
     remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
 
-    if len(remaining_theses) <= 3:
-        random_theses = remaining_theses
-    else:
-        random_theses = random.sample(remaining_theses, 3)
-    
+    random_theses = random.sample(remaining_theses, min(3, len(remaining_theses)))
     context = {'thesis': current_thesis,
-               'random_theses' : random_theses,
+               'random_theses': random_theses,
         }
-    
+
     return render(request, 'main/thesis_details.html', context)
 
 @csrf_protect

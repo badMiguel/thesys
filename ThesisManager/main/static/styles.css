@@ -29,10 +29,17 @@
     }
 }
 
-.main_body, .heading, .contact{
+.main_body, .heading{
     width: 50%;
     margin: auto;
     min-width: 800px;
+}
+.main_body{
+    width: 50%;
+    margin: auto;
+    min-width: 800px;
+    margin-bottom: 300px;
+    
 }
 
 .campus, .campus_list{
@@ -149,14 +156,25 @@ header{
 }
 
 footer{
-    margin: 10rem 0 5rem 0;
+    padding: 20px 0;
+    background-image: linear-gradient(white, var(--primary-color));
+    
 }
 
-.back-button, .filter-submit{
-    padding: 0.3rem 1rem;
-    font-size: 0.8rem;
-    cursor: pointer;
+.footer-section {
+    width: 50%;
+    margin: 0 auto;
+    min-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
 }
+
+.footer-section .copyright {
+    margin-left: 50px;
+}
+
 .go_back{
     text-align: right;
 }
@@ -238,3 +256,4 @@ footer{
         width: 70%;
     }
 }
+
