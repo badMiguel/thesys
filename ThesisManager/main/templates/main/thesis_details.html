@@ -22,6 +22,24 @@
                 <div class='supervisor'> 
                     <p class='more_info'>Category:</p>
                     <p class='category'>{{ thesis.category }}</p>
+                </div><hr>
+                
+                <div class = 'campus'>
+                    <p class = 'more_info'>Campus:</p>
+                    <ul class='campus_list p-0'>    
+                        {% for campus in thesis.campus %}
+                            <li>{{ campus }}</li>
+                        {% endfor %}
+                    </ul>
+                </div><hr>
+                <div class='courses'>
+                    <p class = 'more_info'>Courses:</p>
+                    <ul class ='courses_list p-0'>
+                        {% for course in thesis.course %}
+                            <li>{{course}}</li>
+                        {% endfor %}
+                    </ul>
+                </div><hr>
                 </div>
                 <hr>
             </li>
