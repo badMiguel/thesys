@@ -218,14 +218,17 @@ footer{
             font-weight: 500;
         }
 
-        .supervisor-option, .campus-option, .course-option, .category-option{
+        .option{
             display: flex;
             gap: 1rem;
             align-items: flex-start;
             font-weight: normal;
 
             .filter-option{
-                transform: translateY(3px);
+                transform: translateY(2px);
+            }
+            label{
+                cursor: pointer;
             }
         }
     }

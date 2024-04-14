@@ -10,40 +10,40 @@
                 <div class="supervisor-filter">
                     <p class="filter-type">Supervisor</p>
                     {% for supervisor, count in supervisor_list.items %}
-                        <div class="supervisor-option">
-                            <input class='filter-option' type="checkbox" name="supervisor" value="{{ supervisor }}" 
+                        <div class="option">
+                            <input class='filter-option' type="checkbox" name="supervisor" id="{{ supervisor }}" value="{{ supervisor }}" 
                                 {% if supervisor in selected_supervisor %} checked {% endif %}>
-                            <label>{{ supervisor }}  ({{ count }})</label>
+                            <label for="{{ supervisor }}">{{ supervisor }}  ({{ count }})</label>
                         </div>
                     {% endfor %}
                 </div>
                 <div class="campus-filter">
                     <p class="filter-type">Campus</p>
                     {% for campus, count in campus_list.items %}
-                        <div class="campus-option">
-                            <input class='filter-option' type="checkbox" name="campus" value="{{ campus }}"
+                        <div class="option">
+                            <input class='filter-option' type="checkbox" name="campus" id="{{ campus }}" value="{{ campus }}"
                                 {% if campus in selected_campus %} checked {% endif %}>
-                            <label>{{ campus }}  ({{ count }})</label>
+                            <label for="{{ campus }}">{{ campus }}  ({{ count }})</label>
                         </div>
                     {% endfor %}
                 </div>
                 <div class="course-filter">
                     <p class="filter-type">Course</p>
                     {% for course, count in course_list.items %}
-                        <div class="course-option">
-                            <input class='filter-option' type="checkbox" name="course" value="{{ course }}"
+                        <div class="option">
+                            <input class='filter-option' type="checkbox" name="course" id="{{ course }}" value="{{ course }}"
                                 {% if course in selected_course %} checked {% endif %}>
-                            <label>{{ course }}  ({{count}})</label>
+                            <label for="{{ course }}">{{ course }}  ({{count}})</label>
                         </div>
                     {% endfor %}
                 </div>
                 <div class="category-filter">
                     <p class="filter-type">Category</p>
                     {% for category, count in category_list.items %}
-                        <div class="category-option">
-                            <input class='filter-option' type="checkbox" name="category" value="{{ category }}"
+                        <div class="option">
+                            <input class='filter-option' type="checkbox" name="category" id="{{ category }}" value="{{ category }}"
                                 {% if category in selected_category %} checked  {% endif %}>
-                            <label>{{ category }}  ({{count}})</label>
+                            <label for="{{ category }}">{{ category }}  ({{count}})</label>
                         </div>
                     {% endfor %}
                 </div>
