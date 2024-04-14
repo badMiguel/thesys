@@ -32,12 +32,9 @@
 .main_body, .heading{
     width: 50%;
     margin: auto;
-    min-width: 800px;
+    min-width: 500px;
 }
 .main_body{
-    width: 50%;
-    margin: auto;
-    min-width: 800px;
     margin-bottom: 200px;
     
 }
@@ -141,7 +138,8 @@ header{
 }
 
 .error_message{
-    padding: 50px;
+    
+    padding: 50px 0;
     font-size: 20px;
     color: var(--font-primary);
 }
