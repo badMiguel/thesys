@@ -32,7 +32,7 @@
 .main_body, .heading{
     width: 50%;
     margin: auto;
-    min-width: 500px;
+    min-width: 800px;
 }
 
 body{
