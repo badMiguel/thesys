@@ -18,6 +18,11 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import  RedirectView
 from main import views
+from django.http import HttpResponse, HttpResponseNotFound
+from django.conf.urls import handler404
+from django.urls import path
+from django.http import Http404
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +33,8 @@ urlpatterns = [
     path('previous-page/', views.previous_page_view, name='previous_page'),
     path('aboutus/', views.about_us, name= 'about_us')
     
+   
     # re_path(r'^/?$', views.) if re_path is needed
 ]
+
+handler404 = 'main.views.handling_404'

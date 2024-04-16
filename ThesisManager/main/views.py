@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
 import random
-
+from main import views
+from django.conf.urls import handler404
 
 def home(request):
     theses = create_thesis()
@@ -50,20 +51,11 @@ def thesis_details(request, topic_number):
         if thesis.topic_number == topic_number:
             current_thesis = thesis
             break
-
-    if current_thesis is None: 
-        error_message = "Invalid thesis number. Topic number: {} does not exist." .format(topic_number)   
-        random_theses = random.sample(theses, min(3, len(theses)))
-        context = {
-            'error_message': error_message,
-            'random_theses': random_theses
-        }
     
-        return render(request, 'main/thesis_details.html', context)
-    
-    remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
+    if current_thesis:
+        remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
 
-    random_theses = random.sample(remaining_theses, min(3, len(remaining_theses)))
+    random_theses = random.sample(remaining_theses, min(2, len(remaining_theses)))
     context = {'thesis': current_thesis,
                'random_theses': random_theses,
         }
@@ -77,6 +69,8 @@ def previous_page_view(request):
         if previous_page:
             return redirect(previous_page)
     return redirect('home')
+
+
 
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_list(request):
@@ -177,4 +171,7 @@ def thesis_list(request):
 
     return render(request, 'main/thesis_list.html', context)
     
-
+# Page not found function
+def handling_404(request, exception):
+    print("Handling 404 error")
+    return render(request, '404.html', {})
