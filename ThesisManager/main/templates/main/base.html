@@ -17,7 +17,9 @@
             <header>
                 <div class='heading'>
                     <div class="logo-container">
-                        <img class="logo" src="{% static "CDU_logo.png" %}" alt="cdu logo">
+                        <a href="{% url 'home'%}">
+                            <img class="logo" src="{% static "CDU_logo.png" %}" alt="cdu logo">
+                        </a>
                     </div>
                     <nav class='nav_container'>
                         <a href="{% url 'home'%}">Home</a>

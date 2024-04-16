@@ -3,11 +3,27 @@
 {% block page_title %}About Us{% endblock  %}
 
 {% block main_body %}
-    <h3>we are the students who created this page</h3>
-    <ul>
-        {% comment %} Use a dictionary in views to display group information {% endcomment %}
-        {% for student in students %} 
-        <li>{{ student.name }} - {{ student.number }}</li>
-        {% endfor %} 
-    </ul>
+<div class="about-us">
+    <h1>About Us</h1>
+    <p>We are 
+        <span class="group2">Group 2</span>
+        <span>, presenting the our Thesis Management Website, in hopes of providing a seamless thesis management system for CDU students, supervisors, and unit coordinators.</span>
+        </p>
+    <p>The group used a combination of HTML and CSS for the frontend of the website, and Python's Django to handle the backend.</p>
+    <h3>Group Information</h3>
+    <div class="grp-info">
+        <div class="grp-info-name">
+            <p class="grp-info-header">Student Name</p>
+            {% for student in students %} 
+                <p>{{ student.name }}</p>
+            {% endfor %} 
+        </div>
+        <div class="grp-info-number">
+            <p class="grp-info-header">Student Number</p>
+            {% for student in students %} 
+                <p>{{ student.number }}</p>
+            {% endfor %} 
+        </div>
+    </div>
+</div>
 {% endblock %}

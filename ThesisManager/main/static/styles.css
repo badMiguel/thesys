@@ -21,7 +21,7 @@
 
 header{
     padding: 50px 0 75px 0;
-    margin: 0 0 25px 0;
+    margin: 0 0 3rem 0;
     background-image: linear-gradient(var(--primary-color), white);
 }
 
@@ -36,7 +36,7 @@ header{
         font-weight: bolder;
         text-align: center;
         font-size: 40px;
-        margin: 5rem 0 3rem 0;
+        margin: 0 0 3rem 0;
         color: var(--font-primary);
     }
     
@@ -293,6 +293,35 @@ footer{
 
     .right-side{
         width: 70%;
+    }
+}
+
+.about-us{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .group2{
+        font-weight: 600;
+    }
+
+    h3{
+        margin: 2rem 0 0 0;
+    }
+
+    .grp-info{
+        display: flex;
+        gap: 5rem;
+    }
+    
+    .grp-info-header{
+        font-weight: 500;
+    }
+
+    .grp-info-name, .grp-info-number{
+        p{
+            padding: 0 0 1rem 0;
+        }
     }
 }
 
