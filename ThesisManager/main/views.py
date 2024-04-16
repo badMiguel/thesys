@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from .data import create_thesis
-from django.http import Http404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
@@ -9,7 +8,20 @@ import random
 
 
 def home(request):
-    return render(request, 'main/home.html')
+    theses = create_thesis()
+    
+    available_thesis = len(theses)
+    available_supervisor = []
+    
+    for thesis in theses:
+        available_supervisor.append(thesis.supervisor)
+    
+    context = {
+        'available_thesis': available_thesis,
+        'available_supervisor': len(set(available_supervisor))
+    }
+    
+    return render(request, 'main/home.html', context)
 
 def about_us(request):
     students = [
@@ -19,7 +31,11 @@ def about_us(request):
         {'name': 'Agnes Juliana Javier', 'number': 'S364240'},
     ]
     
-    return render(request, "main/about_us.html", {'students':students})
+    context = {
+        'students':students
+    }
+    
+    return render(request, "main/about_us.html", context)
 
 # prevents caching - ensure page is updated to users
 @cache_control(no_cache=True, must_revalidate=True, max_age=0)

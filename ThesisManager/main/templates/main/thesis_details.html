@@ -8,16 +8,20 @@
             <li class='thesis_block'>
                 <h2 class="thesis_title">{{ thesis.title|title }}</h2>
                 <hr>
-    
-                <p class='more_info'>Topic Number: {{ thesis.topic_number }}</p>
+                <div class="topic_number">
+                    <p class='more_info'>Topic Number:</p>
+                    <p>{{ thesis.topic_number }}</p>
+                </div>
                 <hr>
                 <div class='supervisor'> 
                     <p class='more_info'>Supervisor:</p>
                     <p class='supervisor_name'>{{ thesis.supervisor }}</p>
                 </div>
                 <hr>
-                <p class='more_info'>Description:</p>
-                <p class='description'>{{ thesis.description }}</p>
+                <div class="description_container">
+                    <p class='more_info'>Description:</p>
+                    <p class='description'>{{ thesis.description }}</p>
+                </div>
                 <hr>
                 <div class='supervisor'> 
                     <p class='more_info'>Category:</p>
@@ -26,17 +30,17 @@
                 
                 <div class = 'campus'>
                     <p class = 'more_info'>Campus:</p>
-                    <ul class='campus_list p-0'>    
+                    <ul class='campus_list'>    
                         {% for campus in thesis.campus %}
-                            <li>{{ campus }}</li>
+                            <li class="campus-name">{{ campus }}</li>
                         {% endfor %}
                     </ul>
                 </div><hr>
                 <div class='courses'>
                     <p class = 'more_info'>Courses:</p>
-                    <ul class ='courses_list p-0'>
+                    <ul class ='courses_list'>
                         {% for course in thesis.course %}
-                            <li>{{course}}</li>
+                            <li class="course-name">{{course}}</li>
                         {% endfor %}
                     </ul>
                 </div><hr>
@@ -57,11 +61,11 @@
         </form>
     </div>
     <div class="other_thesis">
-        <h2>See other Thesis</h2>
+        <h3>See other Thesis</h3>
         <ul class='all_theses'>
             {% for thesis in random_theses %}
                 <li class='other_thesis_title'>
-                    <h3><a href="{% url 'thesis_details' topic_number=thesis.topic_number %}">{{ thesis.title|title }}</a></h3>
+                    <p class="recommendations"><a href="{% url 'thesis_details' topic_number=thesis.topic_number %}">{{ thesis.title|title }}</a></p>
                 </li>
             {% endfor %}
         </ul>

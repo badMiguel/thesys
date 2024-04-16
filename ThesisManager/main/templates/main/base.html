@@ -16,8 +16,9 @@
         <div class="header-main-container">
             <header>
                 <div class='heading'>
-                    <h1>{% block header_title %}Welcome to the Thesis Project List{% endblock  %}</h1>    
-                    <p class= 'header_sub'>All students enrolled in a Master Of Information Technology Course at CDU must complete a thesis project</p>
+                    <div class="logo-container">
+                        <img class="logo" src="{% static "CDU_logo.png" %}" alt="cdu logo">
+                    </div>
                     <nav class='nav_container'>
                         <a href="{% url 'home'%}">Home</a>
                         <a href="{% url 'thesis_list' %}">View Thesis List</a>
@@ -27,23 +28,23 @@
             </header>
             <main>
                 <div class = 'main_body'>
-                    {% block main_body %}<p>All masters students studying at CDU are required to complete a masters thesis.</p>
-                    <p>You can use this website to see what options are avaliable for your thesis! Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List!</a></p>{% endblock  %}
+                    {% block main_body %}{% endblock  %}
                 </div>
             </main>
         </div>
         <footer>
             <div class="footer-section">
                 <div>
-                    <h4 class="footer-title">GROUP 2</h4>
-                    <p class="unit">HIT237</p>
+                    <h4>Contact Us:</h4>
+                    <p class="contact">University@email.edu.au</p>
                 </div>
+            
                 <div>
                     <p class="copyright">All Rights Reserved</p>
                 </div>
                 <div>
-                    <h4>Contact Us:</h4>
-                    <p class="contact">University@email.edu.au</p>
+                    <h4 class="footer-title">GROUP 2</h4>
+                    <p class="unit">HIT237</p>
                 </div>
             </div>
         </footer>        

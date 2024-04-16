@@ -1,1 +1,18 @@
 {% extends "main/base.html" %}
+
+{% block main_body %}
+<div class="home-content">
+    <h1>Welcome to CDU Thesis Manager System</h1>    
+    <p>All masters students studying at CDU are required to complete a masters thesis. You can use this website to see what options are avaliable for your thesis! The website offers several infromation relavant to each thesis, including but not limited to supervisors, recommended courses, and campus it is available to. Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List</a> to get started!</p>
+    <div class="thesis-stats-container">
+        <div class="thesis-stats">
+            <p>Available Thesis:</p>
+            <p class="number">{{ available_thesis }}</p>
+        </div>
+        <div class="thesis-stats">
+            <p>Available Supervisors:</p>
+            <p class="number">{{ available_supervisor }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
