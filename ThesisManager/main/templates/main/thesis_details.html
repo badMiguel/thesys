@@ -46,6 +46,11 @@
                 </div><hr>
             </li>
         </ul>
+    {% else %}
+        <div class="error_message">
+            <h2>{{ error_message }}</h2>
+            <p><em>Please input a valid thesis number and try again.</em></p>
+        </div>
     {% endif %}
 
     <div class="go_back">
