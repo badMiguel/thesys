@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
 import random
 
-
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def home(request):
     theses = create_thesis()
     
@@ -23,6 +23,7 @@ def home(request):
     
     return render(request, 'main/home.html', context)
 
+@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def about_us(request):
     students = [
         {'name': 'Kye James Johnstone', 'number': 'S365934'},

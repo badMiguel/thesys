@@ -2,8 +2,10 @@
 
 {% block main_body %}
 <div class="home-content">
-    <h1>Welcome to CDU Thesis Manager System</h1>    
-    <p>All masters students studying at CDU are required to complete a masters thesis. You can use this website to see what options are avaliable for your thesis! The website offers several infromation relavant to each thesis, including but not limited to supervisors, recommended courses, and campus it is available to. Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List</a> to get started!</p>
+    <h1>Welcome to CDU Thesis Management System</h1>
+    <p>All masters students studying at CDU are required to complete a masters thesis. This website offers a new system for thesis managements. The primary goal for this website is to create a one-stop solution for CDU students, supervisors, and unit coordinators for any actions regarding thesis. The website offers several infromation relavant to each thesis, including but not limited to supervisors, recommended courses, and campus it is available.</p> 
+    <br>
+    <p>Here, you can <a href="{% url 'thesis_list' %}">View the Thesis List</a> to get started!</p>
     <div class="thesis-stats-container">
         <div class="thesis-stats">
             <p>Available Thesis:</p>
