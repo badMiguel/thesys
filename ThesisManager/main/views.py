@@ -74,10 +74,7 @@ def thesis_details(request, topic_number):
 @csrf_protect
 def previous_page_view(request):
     if request.method == 'POST':
-        previous_page = request.POST.get('previous_page', None)
-        if previous_page:
-            return redirect(previous_page)
-    return redirect('home')
+        return redirect('thesis_list')
 
 
 
