@@ -5,8 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
 import random
-from main import views
-from django.conf.urls import handler404
+
 
 def home(request):
     theses = create_thesis()

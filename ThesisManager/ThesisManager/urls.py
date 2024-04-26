@@ -18,10 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import  RedirectView
 from main import views
-from django.http import HttpResponse, HttpResponseNotFound
-from django.conf.urls import handler404
 from django.urls import path
-from django.http import Http404
 
 
 urlpatterns = [
