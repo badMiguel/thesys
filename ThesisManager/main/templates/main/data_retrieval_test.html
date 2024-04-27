@@ -1,0 +1,46 @@
+<!-- for troubleshooting purposes -->
+
+{% extends "main/base.html" %}
+
+{% block main_body %}
+    <h1>Topic Number</h1>
+    {% for thesis in thesis_list %}
+        <p>- {{ thesis.topic_number }}</p>
+    {% endfor %}
+
+    <h1>Thesis Title</h1>
+    {% for thesis in thesis_list %}
+        <p>- {{ thesis.title }}</p>
+    {% endfor %}
+
+    <h1>Description</h1>
+    {% for thesis in thesis_list %}
+        <p>- {{ thesis.description }}</p>
+    {% endfor %}
+    
+    <h1>Category</h1>
+    {% for thesis in thesis_list %}
+        <p>- {{ thesis.category }}</p>
+    {% endfor %}
+
+    <h1>Supervisor</h1>
+    {% for thesis in thesis_list %}
+        <p>- {{ thesis.supervisor }}</p>
+    {% endfor %}
+
+    <h1>Course</h1>
+    {% for thesis in thesis_list %}
+        <h3>Course for thesis title: {{thesis.title}}</h3>          
+        {% for course in thesis.course.all %}
+            <p>- {{ course }}</p>
+        {% endfor %}
+    {% endfor %}
+
+    <h1>Campus</h1>
+    {% for thesis in thesis_list %}
+        <h3>Campus for thesis title: {{thesis.title}}</h3>
+        {% for campus in thesis.campus.all %}
+        <p>- {{campus}}</p>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
