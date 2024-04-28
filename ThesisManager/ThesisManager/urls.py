@@ -29,8 +29,8 @@ urlpatterns = [
     path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),    
     path('aboutus/', views.about_us, name= 'about_us'),
     
+    path('test/', views.data_retrieval_test) # for troubleshooting purposes
     # path('previous_data/', views.previous_data)
-    # path('test/', views.data_retrieval_test) # for troubleshooting purposes
     # path('add_prev_data/', views.add_previous_data), # add previous given data
     # re_path(r'^/?$', views.) if re_path is needed
 ]

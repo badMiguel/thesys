@@ -327,7 +327,7 @@ def add_previous_data(request):
 '''
 FOR TROUBLESHOOTING PURPOSES
 ----------------------------
-
+'''
 def data_retrieval_test(request):
     
     thesis_list = Thesis.objects.all()
@@ -337,4 +337,3 @@ def data_retrieval_test(request):
     }
     
     return render(request, 'main/data_retrieval_test.html', context)
-'''
