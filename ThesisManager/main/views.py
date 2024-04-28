@@ -154,7 +154,7 @@ def thesis_list(request):
             in the paginator, causing the filter to reset when user
             goes to the next/previous page 
         '''
-        filter_supervisor = "&".join([f'&supervisor={supervisor}'.replace(" ", "+") for supervisor in selected_supervisor])
+        filter_supervisor = "&".join([f'&supervisor={supervisor}' for supervisor in selected_supervisor])
     if selected_campus:
         theses = Thesis.objects.filter(campus__in = selected_campus)
         filter_campus = '&'.join([f'&campus={campus}' for campus in selected_campus])
