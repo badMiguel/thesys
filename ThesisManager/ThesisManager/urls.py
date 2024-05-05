@@ -28,6 +28,7 @@ urlpatterns = [
     path('thesis/', views.thesis_list, name= 'thesis_list'),
     path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),    
     path('aboutus/', views.about_us, name= 'about_us'),
+    path('create/', views.create_data_campus, name='create_data'),
     
     path('test/', views.data_retrieval_test) # for troubleshooting purposes
     # path('previous_data/', views.previous_data)

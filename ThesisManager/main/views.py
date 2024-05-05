@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
 import random
 from .models import Campus, Course, Category, Supervisor, Thesis 
-
+from .forms import CampusForm
 
 def home(request):
     theses = create_thesis()
@@ -211,6 +211,18 @@ def handling_404(request, exception):
     print("Handling 404 error")
     return render(request, '404.html', {})
 
+# functions for creating new data
+def create_data_campus(request):
+    if request.method == 'POST':
+        form = CampusForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('main/base.html')
+        else:
+            return render(request, 'main/create.html', {'form' : form})
+    else:
+        form = CampusForm()
+        return render(request, 'main/create.html', {'form' : form})
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
