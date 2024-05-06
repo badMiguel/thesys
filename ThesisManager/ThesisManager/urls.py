@@ -17,8 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import  RedirectView
-from main import views
 from django.urls import path
+from main import views
+from users import views as user_views
 
 
 urlpatterns = [
@@ -29,11 +30,14 @@ urlpatterns = [
     path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),    
     path('aboutus/', views.about_us, name= 'about_us'),
     path('create/', views.create_data_campus, name='create_data'),
+    path('login/', user_views.login_user, name='login'),
+    path('logout/', user_views.logout_user, name='logout'),
     
-    path('test/', views.data_retrieval_test) # for troubleshooting purposes
-    # path('previous_data/', views.previous_data)
+    path('test/', views.data_retrieval_test), # for troubleshooting purposes
+    # path('previous_data/', views.previous_data),
     # path('add_prev_data/', views.add_previous_data), # add previous given data
-    # re_path(r'^/?$', views.) if re_path is needed
+    # path('create_user/', user_views.create_new_user), # create users for testing
+    # path('create_user/add_permission/', user_views.add_permissions)
 ]
 
 handler404 = 'main.views.handling_404'

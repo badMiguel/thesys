@@ -3,10 +3,10 @@ from .data import create_thesis
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
-from django.views.decorators.cache import cache_control
 import random
 from .models import Campus, Course, Category, Supervisor, Thesis 
 from .forms import CampusForm
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     theses = create_thesis()
@@ -39,7 +39,6 @@ def about_us(request):
     return render(request, "main/about_us.html", context)
 
 # prevents caching - ensure page is updated to users
-@cache_control(no_cache=True, must_revalidate=True, max_age=0)
 def thesis_details(request, topic_number):
     theses = create_thesis()
 
@@ -77,9 +76,7 @@ def previous_page_view(request):
         return redirect('thesis_list')
 
 
-
-@cache_control(no_cache=True, must_revalidate=True, max_age=0)
-def thesis_list(request):
+def thesis_list(request):    
     theses = Thesis.objects.order_by('topic_number')
     
     # created a separate list for different filter categories
