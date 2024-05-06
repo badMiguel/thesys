@@ -83,31 +83,12 @@ class Thesis(models.Model):
         verbose_name='Thesis Number',
         primary_key=True,
     )
-    title = models.CharField(
-        max_length=100,
-        verbose_name='Thesis Title',
-    )
-    description = models.TextField(
-        verbose_name='Thesis Description'
-    )
-    category = models.ForeignKey(
-        Category, 
-        on_delete=models.PROTECT,
-        verbose_name='Category Name'
-    )
-    supervisor = models.ForeignKey(
-        Supervisor,
-        on_delete= models.PROTECT,
-        verbose_name='Supervisor Name'    
-    )
-    course = models.ManyToManyField(
-        Course,
-        verbose_name='Course Name'    
-    )
-    campus = models.ManyToManyField(
-        Campus,
-        verbose_name='Campus Name',
-    )
+    title = models.CharField(max_length=100, verbose_name='Thesis Title',)
+    description = models.TextField(verbose_name='Thesis Description')
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, verbose_name='Category Name')
+    supervisor = models.ForeignKey(Supervisor, on_delete= models.PROTECT, verbose_name='Supervisor Name')
+    course = models.ManyToManyField(Course, verbose_name='Course Name')
+    campus = models.ManyToManyField(Campus, verbose_name='Campus Name',)
       
     def __str__(self):
         return str(self.topic_number) + ' - ' + self.title 
