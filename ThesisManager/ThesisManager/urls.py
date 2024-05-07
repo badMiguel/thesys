@@ -33,7 +33,7 @@ urlpatterns = [
     path('success/', views.success, name='success'),
     path('login/', user_views.login_user, name='login'),
     path('logout/', user_views.logout_user, name='logout'),
-    path('modify/', views.modify, name='CRUD'),
+    path('modify/<int:topic_number>/', views.modify, name='CRUD'),
     
     path('test/', views.data_retrieval_test), # for troubleshooting purposes
     # path('previous_data/', views.previous_data),

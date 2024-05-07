@@ -1,6 +1,5 @@
 {% comment %} 
-    THIS CONTAINS THE NAVBAR AND OTHER STUFF THAT WE WILL BE CONSTANTLY
-    PRESENT ON OTHER WEBPAGES
+    THIS CONTAINS THE NAVBAR AND OTHER STUFF THAT WILL BE CONSTANT ON OTHER WEBPAGES
 {% endcomment %}
 
 <!doctype html>
@@ -35,7 +34,7 @@
             </header>
             <main>
                 <div class = 'main_body'>
-                    <h1>Your Addition Was A Success</h1>
+                    <h1>{% block success_message %}{% endblock %}</h1>
                 </div>
             </main>
         </div>

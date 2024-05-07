@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 import random
+from django.contrib import messages
 from .models import Thesis 
 from .forms import ThesisForm
 from django.contrib.auth.decorators import login_required
@@ -224,8 +225,21 @@ def success(request):
     return render(request, "main/success.html")
 
 
-def modify(request):
-    return render(request, 'main/CRUD_thesis.html')
+def modify(request, topic_number):
+    thesis = Thesis.objects.get(topic_number=topic_number)
+
+    if request.method == 'POST':
+        form = ThesisForm(request.POST, instance=thesis)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thesis updated successfully!')
+            return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
+    else:
+        form = ThesisForm(instance=thesis)
+
+    # Pass the success message to the success html
+    success_message = messages.get_messages(request)
+    return render(request, 'main/modify.html', {'form': form, 'success_message': success_message})
 
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
