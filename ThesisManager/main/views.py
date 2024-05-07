@@ -42,7 +42,7 @@ def about_us(request):
 
 # prevents caching - ensure page is updated to users
 def thesis_details(request, topic_number):
-    theses = create_thesis()
+    theses = Thesis.objects.all()
 
     current_thesis = None
     

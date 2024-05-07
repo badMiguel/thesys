@@ -3,7 +3,7 @@
 {% block page_title %}{{ thesis.title|title }}{% endblock %}
 
 {% block main_body %}
-    {% if thesis %}
+    {% if thesis %} 
         <ul class='thesis_desc'>
             <li class='thesis_block'>
                 <h2 class="thesis_title">{{ thesis.title|title }}</h2>
@@ -31,7 +31,7 @@
                 <div class = 'campus'>
                     <p class = 'more_info'>Campus:</p>
                     <ul class='campus_list'>    
-                        {% for campus in thesis.campus %}
+                        {% for campus in thesis.campus.all %}
                             <li class="campus-name">{{ campus }}</li>
                         {% endfor %}
                     </ul>
@@ -39,7 +39,7 @@
                 <div class='courses'>
                     <p class = 'more_info'>Courses:</p>
                     <ul class ='courses_list'>
-                        {% for course in thesis.course %}
+                        {% for course in thesis.course.all %}
                             <li class="course-name">{{course}}</li>
                         {% endfor %}
                     </ul>
