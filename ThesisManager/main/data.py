@@ -105,3 +105,7 @@ def create_thesis():
     ))    
     
     return topics
+
+def save_new_thesis(data):
+    with open('data.py', 'a') as file:
+        file.write(f"save_new_thesis({data})\n")
