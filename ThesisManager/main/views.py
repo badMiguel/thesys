@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import get_object_or_404
 from .data import create_thesis, save_new_thesis
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
@@ -240,6 +241,21 @@ def modify(request, topic_number):
     # Pass the success message to the success html
     success_message = messages.get_messages(request)
     return render(request, 'main/modify.html', {'form': form, 'success_message': success_message})
+
+#Delete data
+def delete_data(request, topic_number):
+    # Fetch the thesis object to delete based on topic_number
+    thesis = get_object_or_404(Thesis, topic_number=topic_number)
+    
+    # This will check if the request method is POST
+    if request.method == 'POST':
+        
+        thesis.delete()
+        return HttpResponseRedirect(reverse('success'))
+    
+    # Render a template to confirm the deletion if the request method is not POST
+    return render(request, "main/delete.html", {'thesis': thesis})
+
 
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
