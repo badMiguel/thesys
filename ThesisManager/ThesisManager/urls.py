@@ -30,6 +30,7 @@ urlpatterns = [
     path('thesis/<int:topic_number>/', views.thesis_details, name= 'thesis_details'),    
     path('aboutus/', views.about_us, name= 'about_us'),
     path('create/', views.create_data, name='create_data'),
+    path('success/', views.success, name='success'),
     path('login/', user_views.login_user, name='login'),
     path('logout/', user_views.logout_user, name='logout'),
     

@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .data import create_thesis
+from django.shortcuts import render, HttpResponseRedirect, reverse
+from .data import create_thesis, save_new_thesis
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
@@ -213,14 +213,16 @@ def create_data(request):
     if request.method == 'POST':
         form = ThesisForm(request.POST)
         if form.is_valid():
-            campus = form.cleaned_data['campus']
-            course = form.cleaned_data['course']
-            category = form.cleaned_data['category']
-            supervisor = form.cleaned_data['supervisor']
-            thesis = form.cleaned_data['thesis']
+            data = form.cleaned_data
+            save_new_thesis(data)
+            return HttpResponseRedirect(reverse('success'))
     else:
         form = ThesisForm()
     return render(request, 'main/create.html', {'form':form})
+
+def success(request):
+    return render(request, "main/success.html")
+
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
