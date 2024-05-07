@@ -4,8 +4,8 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 import random
-from .models import Campus, Course, Category, Supervisor, Thesis 
-from .forms import CampusForm
+from .models import Thesis 
+from .forms import ThesisForm
 from django.contrib.auth.decorators import login_required
 
 def home(request):
@@ -209,17 +209,18 @@ def handling_404(request, exception):
     return render(request, '404.html', {})
 
 # functions for creating new data
-def create_data_campus(request):
+def create_data(request):
     if request.method == 'POST':
-        form = CampusForm(request.POST)
+        form = ThesisForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect ('main/base.html')
-        else:
-            return render(request, 'main/create.html', {'form' : form})
+            campus = form.cleaned_data['campus']
+            course = form.cleaned_data['course']
+            category = form.cleaned_data['category']
+            supervisor = form.cleaned_data['supervisor']
+            thesis = form.cleaned_data['thesis']
     else:
-        form = CampusForm()
-        return render(request, 'main/create.html', {'form' : form})
+        form = ThesisForm()
+    return render(request, 'main/create.html', {'form':form})
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
