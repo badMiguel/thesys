@@ -25,8 +25,12 @@
                         <a href="{% url 'home'%}">Home</a>
                         <a href="{% url 'thesis_list' %}">Thesis List</a>
                         <a href= "{% url 'about_us' %}" >About Us</a>
-                        {% if user.is_authenticated and user.username == 'UnitCoordinator' %}
-                            <a href="{% url 'CRUD' %}">Create</a>
+                        {% if user.is_authenticated %}
+                            {% if user.account_type == 'unit coordinator' %}
+                                <a href="{% url 'CRUD' account_type='coordinator' %}">Admin Settings</a>
+                            {% elif user.account_type == 'supervisor' %}
+                                <a href="{% url 'CRUD' account_type='supervisor' %}">Admin Settings</a>
+                            {% endif %} 
                         {% endif %}
                         {% if user.is_authenticated %}
                             <a href="{% url 'logout' %}">Logout</a>

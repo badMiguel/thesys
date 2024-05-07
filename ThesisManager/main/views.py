@@ -256,6 +256,9 @@ def delete_data(request, topic_number):
     # Render a template to confirm the deletion if the request method is not POST
     return render(request, "main/delete.html", {'thesis': thesis})
 
+def admin_settings(request, account_type):
+    
+    return render(request, 'main/CRUD_thesis.html')
 
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
