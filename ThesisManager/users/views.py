@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 
@@ -27,13 +27,15 @@ def logout_user(request):
 FOR CREATING USERS WITH ELEVATED ACCESS FOR ALLOWING CHANGES
 ------------------------------------------------------------
 
-
 def create_new_user(request):
-    UnitCoordinator = User.objects.create_user("UnitCoordinator", "", "unitcoordinator")
-    Supervisor = User.objects.create_user("Supervisor", "", "supervisor")
-    Student = User.objects.create_user("Student", "", "student")
+    user = get_user_model()
+    
+    UnitCoordinator = user.objects.create_user("unitcoordinator", "unitcoordinator", 'unit coordinator')
+    Supervisor = user.objects.create_user("supervisor", "supervisor", 'supervisor')
+    Student = user.objects.create_user("student", "student", 'student')
     return render(request, 'users/login.html')
 '''
+
 
 '''
 FOR ADDING PERMISSIONS FOR USERS

@@ -220,6 +220,11 @@ def create_data_campus(request):
     else:
         form = CampusForm()
         return render(request, 'main/create.html', {'form' : form})
+
+
+def modify(request):
+    return render(request, 'main/CRUD_thesis.html')
+
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
