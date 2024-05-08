@@ -3,17 +3,38 @@
 {% block page_title%}Admin Thesis Management{% endblock %}
 
 {% block main_body %}
-    <h1>Hello {{ user.username|title }}!</h1>
+    <h1 class="admin-setting-introduction">Hello {{ user.username|title }}!</h1>
     {% if user.account_type == 'unit coordinator' %}
-        <p>Welcome to the admin settings. </p>
-        <a href="#">Add Thesis</a>
-        <a href="#">Edit Thesis</a>
-        <a href="#">Delete Thesis</a>
-        <a href="#">Review Requests</a>
+        <p class="welcome-description">Welcome to the admin settings. </p>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Add thesis</strong></a>
+            <p class="setting-description">-  Create a new thesis in the database.</p>
+        </div>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Edit thesis</strong></a>
+            <p class="setting-description">-  Edit existing thesis details.</p>
+        </div>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Delete thesis</strong></a>
+            <p class="setting-description">-  Delete existing thesis in the database.</p>
+        </div>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Review Requests</strong></a>
+            <p class="setting-description">-  Review creation, modification, or deletion of thesis requests made by supervisors.</p>
+        </div>
     {% elif user.account_type == 'supervisor' %}
-        <p>Welcome to the admin settings. Click the which change request are you about to make.</p>
-        <a href="#">Add Thesis</a>
-        <a href="#">Edit Thesis</a>
-        <a href="#">Delete Thesis</a>
+        <p class="welcome-description">Welcome to the admin settings. Click the which request are you about to make, to be reviewed by the unit coordinator.</p>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Add Thesis</strong></a>
+            <p class="setting-description">-  Request to add new thesis on the database.</p>
+        </div>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Edit Thesis</strong></a>
+            <p class="setting-description">-  Request to modify details of existing thesis on the database.</p>
+        </div>
+        <div class="setting-container">
+            <a class="setting-link" href="#"><strong>Delete Thesis</strong></a>
+            <p class="setting-description">-  Request to delete existing thesis on the database.</p>
+        </div>
     {% endif %}
 {% endblock %}

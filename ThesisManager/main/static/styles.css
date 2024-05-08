@@ -374,3 +374,19 @@ footer{
 .login-failed {
     color: red;
 }
+
+.admin-setting-introduction, .setting-description{
+    margin: 0 0 1rem 0;
+}
+
+.welcome-description{
+    margin: 0 0 2rem 0;
+}
+
+.setting-container{
+    display: flex;
+}
+
+.setting-link{
+    width: 10rem;
+}
