@@ -4,4 +4,16 @@
 
 {% block main_body %}
     <h1>Hello {{ user.username|title }}!</h1>
+    {% if user.account_type == 'unit coordinator' %}
+        <p>Welcome to the admin settings. </p>
+        <a href="#">Add Thesis</a>
+        <a href="#">Edit Thesis</a>
+        <a href="#">Delete Thesis</a>
+        <a href="#">Review Requests</a>
+    {% elif user.account_type == 'supervisor' %}
+        <p>Welcome to the admin settings. Click the which change request are you about to make.</p>
+        <a href="#">Add Thesis</a>
+        <a href="#">Edit Thesis</a>
+        <a href="#">Delete Thesis</a>
+    {% endif %}
 {% endblock %}
