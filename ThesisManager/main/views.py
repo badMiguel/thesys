@@ -1,17 +1,16 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse
 from django.shortcuts import get_object_or_404
-from .data import create_thesis, save_new_thesis
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 import random
 from django.contrib import messages
-from .models import Thesis 
+from .models import Thesis, Course, Campus, Category, Supervisor
 from .forms import ThesisForm
 from django.contrib.auth.decorators import login_required
 
 def home(request):
-    theses = create_thesis()
+    theses = Thesis.objects.all()
     
     available_thesis = len(theses)
     available_supervisor = []
@@ -264,6 +263,7 @@ def admin_settings(request, account_type):
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
 
+'''
 def add_previous_data(request):
     campuses = ['Casuarina', 'Sydney', 'External']
     area = {
@@ -372,7 +372,6 @@ def add_previous_data(request):
     thesis_.course.add(*Course.objects.filter(course__in =[area['chemical'], area['civil'], area['computer'], area['cyber'], area['data'], area['electrical'], area['information'], area['mechanical'], area['software']]))
 
     return render(request, 'main/home.html')
-'''
 '''
 FOR TROUBLESHOOTING PURPOSES
 ----------------------------

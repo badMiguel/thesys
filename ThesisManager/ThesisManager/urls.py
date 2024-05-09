@@ -38,7 +38,6 @@ urlpatterns = [
     path('settings/<str:account_type>/', views.admin_settings, name='CRUD'),
     
     path('test/', views.data_retrieval_test), # for troubleshooting purposes
-    # path('previous_data/', views.previous_data),
     # path('add_prev_data/', views.add_previous_data), # add previous given data
     # path('create_user/', user_views.create_new_user), # create users for testing
     # path('create_user/add_permission/', user_views.add_permissions)
