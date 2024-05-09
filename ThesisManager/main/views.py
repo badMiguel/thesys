@@ -263,7 +263,6 @@ def admin_settings(request, account_type):
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
 -----------------------------------------------
 
-'''
 def add_previous_data(request):
     campuses = ['Casuarina', 'Sydney', 'External']
     area = {
@@ -372,6 +371,7 @@ def add_previous_data(request):
     thesis_.course.add(*Course.objects.filter(course__in =[area['chemical'], area['civil'], area['computer'], area['cyber'], area['data'], area['electrical'], area['information'], area['mechanical'], area['software']]))
 
     return render(request, 'main/home.html')
+'''
 '''
 FOR TROUBLESHOOTING PURPOSES
 ----------------------------
