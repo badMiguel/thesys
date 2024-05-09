@@ -89,7 +89,12 @@ class Thesis(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete= models.PROTECT, verbose_name='Supervisor Name')
     course = models.ManyToManyField(Course, verbose_name='Course Name')
     campus = models.ManyToManyField(Campus, verbose_name='Campus Name',)
+    # date_created = models.DateTimeField(auto_now_add=True)
+    # last_edited = models.DateTimeField(auto_now=True)
       
     def __str__(self):
         return str(self.topic_number) + ' - ' + self.title 
         
+
+# class  ThesisRequest(models.Model):
+    
