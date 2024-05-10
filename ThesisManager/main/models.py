@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from users.models import CustomUser
 
 # Create your models here.
 
@@ -70,6 +71,14 @@ class Supervisor(models.Model):
         verbose_name='Supervisor Name',
         primary_key=True,
     )
+    # thesis_held_limit = models.IntegerField(
+    #     validators=[
+    #         MinValueValidator(0),
+    #         MaxValueValidator(20),
+    #     ], 
+    #     verbose_name='Supervisor Thesis Held Limit', 
+    # )
+    # supervisor_username = models.ForeignKey(CustomUser.objects.get())
     
     def __str__(self):
         return self.supervisor
@@ -89,12 +98,25 @@ class Thesis(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete= models.PROTECT, verbose_name='Supervisor Name')
     course = models.ManyToManyField(Course, verbose_name='Course Name')
     campus = models.ManyToManyField(Campus, verbose_name='Campus Name',)
-    # date_created = models.DateTimeField(auto_now_add=True)
-    # last_edited = models.DateTimeField(auto_now=True)
+    # date_created = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Created')
+    # last_edited = models.DateTimeField(auto_now=True, verbose_name = 'Date Edited')
       
     def __str__(self):
         return str(self.topic_number) + ' - ' + self.title 
         
 
 # class  ThesisRequest(models.Model):
+#     thesis_request_number = models.IntegerField(
+#         max_length=100, 
+#         validators=[
+#             MinValueValidator(0),
+#             MaxValueValidator(1000),
+#         ], 
+#         verbose_name= 'Thesis Request',
+#         primary_key=True,
+#     )
+#     thesis_request = models.ForeignKey(Thesis, on_delete = models.CASCADE, verbose_name='Thesis Request' )
     
+    
+# class Group(models.Model):
+#     group
