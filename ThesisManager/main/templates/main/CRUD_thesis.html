@@ -5,7 +5,7 @@
 {% block main_body %}
     <div class="admin-settings-container">
         <h1 class="admin-setting-introduction">Hello {{ user.username|title }}!</h1>
-        {% if user.account_type == 'unit coordinator' %}
+        {% if user.account_type == 'unit coordinator'  or user.account_type == 'admin' %}
             <p class="welcome-description">Welcome to the admin settings. </p>
             <section>
                 <div class="setting-container">

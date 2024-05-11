@@ -145,7 +145,7 @@ def thesis_list(request):
     filter_course= ''
     filter_category=''
     if selected_supervisor:
-        theses = Thesis.objects.filter(supervisor__in = selected_supervisor)
+        theses = Thesis.objects.filter(supervisor__in = selected_supervisor).order_by('topic_number')
         '''
             changes the url of the page to filter the list
             this fixes the issue where the the filter thesis is not stored
@@ -154,13 +154,13 @@ def thesis_list(request):
         '''
         filter_supervisor = "&".join([f'&supervisor={supervisor}' for supervisor in selected_supervisor])
     if selected_campus:
-        theses = Thesis.objects.filter(campus__in = selected_campus)
+        theses = Thesis.objects.filter(campus__in = selected_campus).order_by('topic_number')
         filter_campus = '&'.join([f'&campus={campus}' for campus in selected_campus])
     if selected_course:
-        theses = Thesis.objects.filter(course__in = selected_course)
+        theses = Thesis.objects.filter(course__in = selected_course).order_by('topic_number')
         filter_course = '&'.join([f'&course={course}' for course in selected_course])
     if selected_category:
-        theses = Thesis.objects.filter(category__in = selected_category)
+        theses = Thesis.objects.filter(category__in = selected_category).order_by('topic_number')
         filter_category = '&'.join([f'&category={category}' for category in selected_category])
 
     # gets the thesis per page. default value = 5

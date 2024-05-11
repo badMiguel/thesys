@@ -44,6 +44,16 @@
                         {% endfor %}
                     </ul>
                 </div><hr>
+                <div class="date">
+                    <div class='date-created-container'>
+                        <p class="more_info_date">Date Created:</p>
+                        <p class="date_created">{{ thesis.date_created }}</p>
+                    </div>
+                    <div class="date-edited-container">
+                        <p class="more_info_date">Last Edited:</p>
+                        <p class="date_edited">{{ thesis.last_edited }}</p>
+                    </div>
+                </div><hr>
             </li>
         </ul>
     {% else %}

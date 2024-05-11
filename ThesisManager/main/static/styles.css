@@ -125,7 +125,7 @@ footer{
     transform: translateX(-50%);
 }
 
-.supervisor, .courses, .campus, .topic_number, .description_container{
+.supervisor, .courses, .campus, .topic_number, .description_container, .date{
     display: flex;
     margin: 1.5rem 0;
 }
@@ -189,6 +189,21 @@ footer{
     margin-bottom: 60px;
     margin-bottom: 20px;
     color: var(--font-primary);
+}
+
+.date{
+    display: flex;
+    justify-content: space-between;
+
+    .more_info_date{
+        font-weight: 500;
+        color: var(--font-primary);
+        width: 10rem;
+    }
+
+    .date-created-container, .date-edited-container{
+        display: flex;
+    }
 }
 
 .more_info{
