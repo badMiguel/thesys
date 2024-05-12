@@ -18,4 +18,4 @@ class ThesisForm(forms.ModelForm):
 
         fields = ['topic_number', 'title', 'category', 'supervisor', 'course', 'campus']
 
-        labels = { 'topic_number': 'Thesis Number', 'title': 'Thesis Title', 'category': 'Category Name', 'supervisor': 'Supervisor Name', 'course': 'Course Name', 'campus': 'Campus Name' }
+        labels = { 'topic_number': 'Thesis Number', 'title': 'Thesis Title', 'category': 'Category', 'supervisor': 'Supervisor', 'course': 'Course', 'campus': 'Campus' }
