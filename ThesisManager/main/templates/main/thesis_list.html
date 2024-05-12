@@ -72,7 +72,11 @@
                 {% for thesis in page_obj %}
                 <li class='thesis_block'>
                     <h3><a href= "{% url 'thesis_details' topic_number=thesis.topic_number %}" >{{ thesis.title|title }}</a></h3>
-                    <p class='description'>{{ thesis.description }}</p>
+                    {% for number, description in new_description.items %}
+                        {% if thesis.topic_number == number %}
+                            <p class='description'>{{ description }}</p>
+                        {% endif %}
+                    {% endfor %}
                     <div class = 'supervisor'>
                         <p class = 'more_info'>Supervisor:</p>
                         <p class='supervisor_name'> {{ thesis.supervisor }}</p>

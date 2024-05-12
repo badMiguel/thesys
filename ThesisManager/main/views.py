@@ -86,6 +86,8 @@ def thesis_list(request):
     course_list = []
     category_list = []
     
+    new_description = {}
+    
     for thesis in theses:
         # appends each category in the list
         campus_list_specific = []
@@ -112,7 +114,7 @@ def thesis_list(request):
             else:
                 description = description + '...'
                 
-            Thesis.objects.filter(topic_number = thesis.topic_number).update(description = description)
+            new_description[thesis.topic_number] = description
 
     # extraccts the specific names e.g. <Campus: External> will extract External
     supervisor_names = [supervisor.supervisor for supervisor in supervisor_list]
@@ -199,7 +201,9 @@ def thesis_list(request):
         'filter_campus': filter_campus,
         'filter_course': filter_course,
         'filter_category': filter_category,
-        }
+        # new shortened thesis description    
+        'new_description': new_description,   
+    }
 
     return render(request, 'main/thesis_list.html', context)
        
@@ -244,21 +248,31 @@ def modify(request, topic_number):
 
 #Delete data
 #Delete data
-def delete_data(request, topic_number):
-    # Fetch the thesis object to delete based on topic_number
-    thesis = Thesis.objects.get(topic_number=topic_number)
-    
-    if request.method == 'POST':
-        thesis.delete()
-        return HttpResponseRedirect(reverse('success'))
-    else:
-        form = ThesisForm(instance = thesis)
-        page_data = {
-            'form': form,
-            'thesis': thesis
+def delete_data(request, topic_number=None):
+    if topic_number is None:
+        thesis = Thesis.objects.all()
+        context = {
+            'thesis': thesis,
+            'delete_menu': True,
         }
         
-    return render(request, "main/delete.html", page_data)
+        return render(request, "main/delete.html", context)
+    else:
+        # Fetch the thesis object to delete based on topic_number
+        thesis = Thesis.objects.get(topic_number=topic_number)
+        
+        if request.method == 'POST':
+            thesis.delete()
+            return HttpResponseRedirect(reverse('success'))
+        else:
+            form = ThesisForm(instance = thesis)
+            context = {
+                'form': form,
+                'thesis': thesis,
+                'delete_menu': False
+            }
+            
+        return render(request, "main/delete.html", context)
 
 
 def admin_settings(request, account_type):
