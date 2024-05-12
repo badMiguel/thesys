@@ -7,7 +7,16 @@
         <ul class='thesis_desc'>
             <li class='thesis_block'>
                 <h2 class="thesis_title">{{ thesis.title|title }}</h2>
-                <hr>
+                <div class="date">
+                    <div class='date-created-container'>
+                        <p class="more_info_date">Date Created:</p>
+                        <p class="date_created">{{ thesis.date_created }}</p>
+                    </div>
+                    <div class="date-edited-container">
+                        <p class="more_info_date">Last Edited:</p>
+                        <p class="date_edited">{{ thesis.last_edited }}</p>
+                    </div>
+                </div><hr>
                 <div class="topic_number">
                     <p class='more_info'>Topic Number:</p>
                     <p>{{ thesis.topic_number }}</p>
@@ -44,16 +53,6 @@
                         {% endfor %}
                     </ul>
                 </div><hr>
-                <div class="date">
-                    <div class='date-created-container'>
-                        <p class="more_info_date">Date Created:</p>
-                        <p class="date_created">{{ thesis.date_created }}</p>
-                    </div>
-                    <div class="date-edited-container">
-                        <p class="more_info_date">Last Edited:</p>
-                        <p class="date_edited">{{ thesis.last_edited }}</p>
-                    </div>
-                </div><hr>
             </li>
         </ul>
     {% else %}
@@ -63,7 +62,17 @@
         </div>
     {% endif %}
 
-    <div class="go_back">
+    <div class="bottom-options">
+        <div class="crud-bottom-options">
+            {% if user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
+                <a href="{% url 'modify' %}">Edit</a>
+                <a href="{% url 'delete_data' %}">Delete</a>
+            {% elif user.account_type == 'supervisor' %}
+                <a href="{% url 'modify' %}">Edit</a>
+                <a href="{% url 'delete_data' %}">Delete</a>
+            {% endif %}
+        </div>
+
         <form method="post" action="{% url 'thesis_list' %}">
             {% csrf_token %}
             <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">

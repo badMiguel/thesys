@@ -125,7 +125,7 @@ footer{
     transform: translateX(-50%);
 }
 
-.supervisor, .courses, .campus, .topic_number, .description_container, .date{
+.supervisor, .courses, .campus, .topic_number, .description_container{
     display: flex;
     margin: 1.5rem 0;
 }
@@ -150,7 +150,6 @@ footer{
 .main_body h2{
     font-weight: bold;
     font-size: 30px;
-    margin-bottom: 30px;
     line-height: 1.5;
 }
 
@@ -193,16 +192,19 @@ footer{
 
 .date{
     display: flex;
-    justify-content: space-between;
+    font-size: 15px;
+    gap: 4rem;
+    margin: 0.5rem 0 2rem 0;
+    font-style: italic;
 
     .more_info_date{
         font-weight: 500;
         color: var(--font-primary);
-        width: 10rem;
     }
 
     .date-created-container, .date-edited-container{
         display: flex;
+        gap: 2rem;
     }
 }
 
@@ -220,15 +222,19 @@ footer{
     color: var(--font-primary);
 }
 
-.thesis_block{
-    margin-bottom: 60px;
+.bottom-options{
+    display: flex;    
+    justify-content: space-between;
+    margin: 0 0 2rem 0;
+    font-weight: 500;
+    
+    .crud-bottom-options{
+        display: flex;
+        gap: 1.5rem;
+    }
 }
 
-.go_back{
-    text-align: right;
-}
-
-.go_back button{ 
+.bottom-options button{ 
     background-color: transparent;
     color: var(--font-secondary);
     border: none;
@@ -239,7 +245,7 @@ footer{
     font-size: 15px
     
 }
-.go_back button::after{
+.bottom-options button::after{
     content:'';
     position:absolute;
     left: 0;
@@ -250,7 +256,7 @@ footer{
     transition: all 0.3s ease; 
     opacity: 0;
 }
-.go_back button:hover::after{
+.bottom-options button:hover::after{
     opacity: 1; 
 }
 
@@ -443,7 +449,7 @@ footer{
     .delete-link, .modify-link{
         position: relative;
         right: 0;
-        padding: 0.5rem 2rem;
+        padding: 0.3rem 1.5rem;
         border-radius: 3rem;
         background-color: var(--secondary-color);
         font-weight: 500;

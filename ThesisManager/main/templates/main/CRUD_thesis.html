@@ -33,14 +33,15 @@
                     <p class="setting-description">-  Request to add new thesis on the database.</p>
                 </div>
                 <div class="setting-container">
-                    <a class="setting-link" href="#"><strong>Edit Thesis</strong></a>
+                    <a class="setting-link" href="{% url 'modify' %}"><strong>Edit Thesis</strong></a>
                     <p class="setting-description">-  Request to modify details of existing thesis on the database.</p>
                 </div>
                 <div class="setting-container">
-                    <a class="setting-link" href="#"><strong>Delete Thesis</strong></a>
+                    <a class="setting-link" href="{% url 'delete_data' %}"><strong>Delete Thesis</strong></a>
                     <p class="setting-description">-  Request to delete existing thesis on the database.</p>
                 </div>
             </section>
+            <p class="welcome-description"><em>Note: Unit coordinators will review each request before accepting your change request.</em></p>
         {% endif %}
     </div>
 {% endblock %}
