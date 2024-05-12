@@ -411,3 +411,40 @@ footer{
         width: 10rem;
     }
 }
+
+
+.thesis-delete-container{
+    margin: 2rem 0 2rem 0;
+    
+    .thesis-title-container {
+        display:flex;
+        align-items:flex-start;
+        margin: 0 0 1rem 0;
+        
+        h3{
+            margin:0;
+        }
+        
+        .topic_number {
+            width: 5rem;
+            flex-shrink: 0;
+        }
+    }
+    
+    .thesis-description {
+        line-height: 2;
+    }
+    
+    .delete-link-alignment{
+        display: flex;
+        justify-content: end;
+    }
+
+    .delete-link{
+        position: relative;
+        right: 0;
+        padding: 0.5rem 2rem;
+        border-radius: 3rem;
+        background-color: var(--secondary-color);
+    }
+}

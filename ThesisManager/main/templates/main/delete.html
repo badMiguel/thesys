@@ -3,14 +3,31 @@
 {% block page_title %}Delete Thesis{% endblock  %}
 
 {% block main_body %}
-<h1>Delete Data</h1>
+    {% if delete_menu == True %}
+        <h2>Select Thesis to Delete</h2>
+        {% for thesis in thesis %}
+            <section class=thesis-delete-container>
+                <div class='thesis-title-container'>
+                    <h3 class="topic_number">{{ thesis.topic_number }}</h3>
+                    <h3>- {{ thesis.title }}</h3>
+                </div>
+                <p class="thesis-description">{{ thesis.description }}</p>
+                <div class="delete-link-alignment">
+                    <a class="delete-link" href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                </div>
+            </section>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <h2>Delete Data</h2>
 
-    <form  action="#" method="post" novalidate>
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <p>Clicking the "Delete button" will delete the data</p>
-        <button type="submit">Delete</button>
-    </form>
+        <form  action="#" method="post" novalidate>
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <p>Clicking the "Delete button" will delete the data</p>
+            <button type="submit">Delete</button>
+        </form>
+    {% endif %}
 {% endblock %}
