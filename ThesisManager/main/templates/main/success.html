@@ -3,8 +3,10 @@
 {% block page_title %}Success!{% endblock %}
 
 {% block main_body %}
-    <div class = 'main_body'>
-        <h1>{% block success_message %}{% endblock %}</h1>
-    </div>
+<div class="main_body">
+    <h1>Success!</h1>
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</div>
 {% endblock %}
-

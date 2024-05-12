@@ -225,6 +225,7 @@ def success(request):
     return render(request, "main/success.html")
 
 
+# Update the Data
 def modify(request, topic_number):
     thesis = Thesis.objects.get(topic_number=topic_number)
 
@@ -239,7 +240,7 @@ def modify(request, topic_number):
 
     # Pass the success message to the success html
     success_message = messages.get_messages(request)
-    return render(request, 'main/modify.html', {'form': form, 'success_message': success_message})
+    return render(request, 'main/modify.html', {'form': form})
 
 #Delete data
 def delete_data(request, topic_number):
@@ -250,9 +251,11 @@ def delete_data(request, topic_number):
     if request.method == 'POST':
         
         thesis.delete()
+        messages.success(request, 'Thesis deleted successfully!')
         return HttpResponseRedirect(reverse('success'))
     
     # Render a template to confirm the deletion if the request method is not POST
+    success_message = messages.get_messages(request)
     return render(request, "main/delete.html", {'thesis': thesis})
 
 def admin_settings(request, account_type):
