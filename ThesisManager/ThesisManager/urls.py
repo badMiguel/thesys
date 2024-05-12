@@ -31,10 +31,10 @@ urlpatterns = [
     path('aboutus/', views.about_us, name= 'about_us'),
     path('create/', views.create_data, name='create_data'),
     path('success/', views.success, name='success'),
-    path('login/', user_views.login_user, name='login'),
-    path('logout/', user_views.logout_user, name='logout'),
     path('modify/<int:topic_number>/', views.modify, name='modify'),
     path('delete/<int:topic_number>', views.delete_data, name='delete_data'),
+    path('login/', user_views.login_user, name='login'),
+    path('logout/', user_views.logout_user, name='logout'),
     path('settings/<str:account_type>/', views.admin_settings, name='CRUD'),
     
     path('test/', views.data_retrieval_test), # for troubleshooting purposes
