@@ -230,23 +230,37 @@ def success(request):
 
 
 # Update the Data
-def modify(request, topic_number):
-    thesis = Thesis.objects.get(topic_number=topic_number)
-
-    if request.method == 'POST':
-        form = ThesisForm(request.POST, instance=thesis)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Thesis updated successfully!')
-            return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
+def modify(request, topic_number=None):
+    if topic_number is None:
+        thesis = Thesis.objects.all()
+        context = {
+            'thesis': thesis,
+            'edit_menu': True,
+        }
+        
+        return render(request, "main/modify.html", context)
     else:
-        form = ThesisForm(instance=thesis)
+        thesis = Thesis.objects.get(topic_number=topic_number)
 
-    # Pass the success message to the success html
-    success_message = messages.get_messages(request)
-    return render(request, 'main/modify.html', {'form': form})
+        if request.method == 'POST':
+            form = ThesisForm(request.POST, instance=thesis)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Thesis updated successfully!')
+                return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
+        else:
+            form = ThesisForm(instance=thesis)
 
-#Delete data
+        # Pass the success message to the success html
+        success_message = messages.get_messages(request)
+        
+        context = {
+            'form': form,
+            'edit_menu': False,
+        }
+        
+        return render(request, 'main/modify.html', context)
+
 #Delete data
 def delete_data(request, topic_number=None):
     if topic_number is None:

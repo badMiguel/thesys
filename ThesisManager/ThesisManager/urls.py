@@ -32,6 +32,7 @@ urlpatterns = [
     path('create/', views.create_data, name='create_data'),
     path('success/', views.success, name='success'),
     path('modify/<int:topic_number>/', views.modify, name='modify'),
+    path('modify/', views.modify, name='modify'),
     path('delete/<int:topic_number>', views.delete_data, name='delete_data'),
     path('delete/', views.delete_data, name='delete_data'),
     path('login/', user_views.login_user, name='login'),
