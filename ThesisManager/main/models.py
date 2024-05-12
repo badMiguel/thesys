@@ -90,7 +90,7 @@ class Thesis(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete= models.PROTECT, verbose_name='Supervisor Name')
     course = models.ManyToManyField(Course, verbose_name='Course Name')
     campus = models.ManyToManyField(Campus, verbose_name='Campus Name',)
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Created')
+    #date_created = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Created')
     last_edited = models.DateTimeField(auto_now=True, verbose_name = 'Date Edited')
     # group_taker_limit = models.IntegerField(
     #     validators=[

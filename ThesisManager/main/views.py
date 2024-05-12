@@ -243,20 +243,23 @@ def modify(request, topic_number):
     return render(request, 'main/modify.html', {'form': form})
 
 #Delete data
+#Delete data
 def delete_data(request, topic_number):
     # Fetch the thesis object to delete based on topic_number
-    thesis = get_object_or_404(Thesis, topic_number=topic_number)
+    thesis = Thesis.objects.get(topic_number=topic_number)
     
-    # This will check if the request method is POST
     if request.method == 'POST':
-        
         thesis.delete()
-        messages.success(request, 'Thesis deleted successfully!')
         return HttpResponseRedirect(reverse('success'))
-    
-    # Render a template to confirm the deletion if the request method is not POST
-    success_message = messages.get_messages(request)
-    return render(request, "main/delete.html", {'thesis': thesis})
+    else:
+        form = ThesisForm(instance = thesis)
+        page_data = {
+            'form': form,
+            'thesis': thesis
+        }
+        
+    return render(request, "main/delete.html", page_data)
+
 
 def admin_settings(request, account_type):
     

@@ -1,11 +1,16 @@
 {% extends "main/base.html" %}
 
+{% block page_title %}Delete Thesis{% endblock  %}
+
 {% block main_body %}
 <h1>Delete Data</h1>
-<p>Clicking the "Delete button" will delete the data</p>
-    <form method="post">
+
+    <form  action="#" method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <p>Clicking the "Delete button" will delete the data</p>
         <button type="submit">Delete</button>
     </form>
 {% endblock %}
