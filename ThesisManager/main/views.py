@@ -218,12 +218,16 @@ def create_data(request):
     if request.method == 'POST':
         form = ThesisForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            save_new_thesis(data)
-            return HttpResponseRedirect(reverse('success'))
+            form.save()
+            messages.success(request, 'Thesis updated successfully!')
+            return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
     else:
         form = ThesisForm()
-    return render(request, 'main/create.html', {'form':form})
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'main/create.html', context)
 
 def success(request):
     return render(request, "main/success.html")

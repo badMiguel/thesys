@@ -65,11 +65,11 @@
     <div class="bottom-options">
         <div class="crud-bottom-options">
             {% if user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
-                <a href="{% url 'modify' %}">Edit</a>
-                <a href="{% url 'delete_data' %}">Delete</a>
+                <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
+                <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
             {% elif user.account_type == 'supervisor' %}
-                <a href="{% url 'modify' %}">Edit</a>
-                <a href="{% url 'delete_data' %}">Delete</a>
+                <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
+                <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
             {% endif %}
         </div>
 

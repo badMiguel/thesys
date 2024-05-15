@@ -4,7 +4,7 @@
 
 {% block main_body %}
     <h1>Create Data</h1>
-    <form method="post">
+    <form method="post" novalidate>
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
