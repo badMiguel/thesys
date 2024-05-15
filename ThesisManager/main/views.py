@@ -1,5 +1,4 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
@@ -7,7 +6,7 @@ import random
 from django.contrib import messages
 from .models import Thesis, Course, Campus, Category, Supervisor
 from .forms import ThesisForm
-from django.contrib.auth.decorators import login_required
+import copy
 
 def home(request):
     theses = Thesis.objects.all()
@@ -218,9 +217,15 @@ def create_data(request):
     if request.method == 'POST':
         form = ThesisForm(request.POST)
         if form.is_valid():
+            form_data = form.cleaned_data
             form.save()
-            messages.success(request, 'Thesis updated successfully!')
-            return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
+            thesis = Thesis.objects.get(topic_number = form_data['topic_number'])
+            context = {
+                'type': 'created',
+                'thesis': thesis,
+                'page_title': 'Successfully Added ' + form_data['title']
+            }
+            return render(request, 'main/success.html', context)
     else:
         form = ThesisForm()
     
@@ -231,7 +236,6 @@ def create_data(request):
 
 def success(request):
     return render(request, "main/success.html")
-
 
 # Update the Data
 def modify(request, topic_number=None):
@@ -245,13 +249,25 @@ def modify(request, topic_number=None):
         return render(request, "main/modify.html", context)
     else:
         thesis = Thesis.objects.get(topic_number=topic_number)
-
         if request.method == 'POST':
             form = ThesisForm(request.POST, instance=thesis)
             if form.is_valid():
-                form.save()
-                messages.success(request, 'Thesis updated successfully!')
-                return HttpResponseRedirect(reverse('success'))  # Redirect to the success page
+                # old_thesis_data = copy.copy(thesis)
+                               
+                # print(thesis.__dict__)
+                # print(old_thesis_data.__dict__)
+                
+                # for key, value in vars(old_thesis_data).items():
+                #     print(thesis['topic_number'])
+
+                form.save()                
+                context = {
+                    'type': 'modified',
+                    'thesis': thesis,
+                    # 'old_thesis_data': old_thesis_data,
+                    'page_title': 'Successfully Edited ' + form.cleaned_data['title']
+                }
+                return render(request, 'main/success.html', context)
         else:
             form = ThesisForm(instance=thesis)
 

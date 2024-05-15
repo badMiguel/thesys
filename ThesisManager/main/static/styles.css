@@ -234,7 +234,7 @@ footer{
     }
 }
 
-.bottom-options button{ 
+.bottom-options .back{ 
     background-color: transparent;
     color: var(--font-secondary);
     border: none;
@@ -245,7 +245,7 @@ footer{
     font-size: 15px
     
 }
-.bottom-options button::after{
+.bottom-options .back::after{
     content:'';
     position:absolute;
     left: 0;
@@ -256,7 +256,7 @@ footer{
     transition: all 0.3s ease; 
     opacity: 0;
 }
-.bottom-options button:hover::after{
+.bottom-options .back:hover::after{
     opacity: 1; 
 }
 
