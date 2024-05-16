@@ -34,9 +34,12 @@ urlpatterns = [
     path('thesis/modify/', views.modify_or_delete, name='modify'),
     path('thesis/delete/<int:topic_number>/', views.modify_or_delete, name='delete_data'),
     path('thesis/delete/', views.modify_or_delete, name='delete_data'),
+    path('settings/<str:account_type>/', views.admin_settings, name='CRUD'),
     path('login/', user_views.login_user, name='login'),
     path('logout/', user_views.logout_user, name='logout'),
-    path('settings/<str:account_type>/', views.admin_settings, name='CRUD'),
+    path("thesis/create/request/", views.request_crud, name="request_create"),
+    path("thesis/edit/modify/", views.request_crud, name="request_modify"),
+    path("thesis/delete/request/", views.request_crud, name="request_delete"),
     
     path('test/', views.data_retrieval_test), # for troubleshooting purposes
     # path('add_prev_data/', views.add_previous_data), # add previous given data

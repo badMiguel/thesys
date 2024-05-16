@@ -4,8 +4,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 import random
 from django.contrib import messages
-from .models import Thesis, Course, Campus, Category, Supervisor
-from .forms import ThesisForm
+from .models import Thesis, ThesisRequest, Course, Campus, Category, Supervisor
+from .forms import ThesisForm, RequestChange
 import copy
 
 def home(request):
@@ -382,10 +382,15 @@ def modify_or_delete(request, topic_number=None):
             
         return render(request, "main/modify_or_delete.html", context)
 
-
+def request_crud(request):
+    form = RequestChange()
+    context = {
+        'form': form
+    } 
+    return render(request, 'main/request_crud.html', context)
 
 def admin_settings(request, account_type):
-    
+   
     return render(request, 'main/CRUD_thesis.html')
 
 '''       
