@@ -125,9 +125,9 @@ footer{
     transform: translateX(-50%);
 }
 
-.supervisor, .courses, .campus, .topic_number, .description_container{
+.supervisor, .category, .courses, .campus, .topic_number, .description_container{
     display: flex;
-    margin: 1.5rem 0;
+    padding: 1.5rem 0;
 }
 
 .campus_list, .courses_list{
@@ -144,7 +144,7 @@ footer{
 }
 
 .list-line{
-    margin-bottom: 60px;
+    margin: 3rem 0;
 }
 
 .main_body h2{
@@ -168,7 +168,7 @@ footer{
 .main-body-header{
     display: flex;
     align-items: flex-end;
-    margin-bottom: 30px;
+    margin: 0 0 3rem 0;
     justify-content: space-between;
 
     .thesis_title{
@@ -234,7 +234,7 @@ footer{
     }
 }
 
-.bottom-options .back{ 
+.back{ 
     background-color: transparent;
     color: var(--font-secondary);
     border: none;
@@ -245,7 +245,7 @@ footer{
     font-size: 15px
     
 }
-.bottom-options .back::after{
+.back::after{
     content:'';
     position:absolute;
     left: 0;
@@ -256,13 +256,14 @@ footer{
     transition: all 0.3s ease; 
     opacity: 0;
 }
-.bottom-options .back:hover::after{
+.back:hover::after{
     opacity: 1; 
 }
 
 .thesis-pages{
     display: flex;
     justify-content: space-between;
+    margin: 0 0 2rem 0;
 
     .quick-links{
         gap: 2rem;
@@ -420,9 +421,7 @@ footer{
 }
 
 
-.thesis-delete-container, .thesis-modify-container{
-    margin: 2rem 0 2rem 0;
-    
+.thesis-modify-container{    
     .thesis-title-container {
         display:flex;
         align-items:flex-start;
@@ -432,7 +431,7 @@ footer{
             margin:0;
         }
         
-        .topic_number {
+        .topic_number-edit {
             width: 5rem;
             flex-shrink: 0;
         }
@@ -441,18 +440,98 @@ footer{
     .thesis-description {
         line-height: 2;
     }
-    
-    .delete-link-alignment, .modify-link-alignment{
-        display: flex;
-        justify-content: end;
+}
+
+.changed-highlight{
+    background-color: #edf9ed;
+}
+
+.modify-or-delete-header-container{
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin: 0 0 3rem 0;
+
+    .modify-or-delete-header{
+        line-height: 1;
     }
 
-    .delete-link, .modify-link{
-        position: relative;
-        right: 0;
-        padding: 0.3rem 1.5rem;
-        border-radius: 3rem;
-        background-color: var(--secondary-color);
-        font-weight: 500;
+    .per_page{
+        display: flex;
+        gap: 1rem;
     }
 }
+
+.bottom-link{
+    display: flex;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.crud-heading{
+    margin: 0 0 3rem 0;
+}
+
+.crud-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    
+    .field-container{
+        display: flex;
+        flex-wrap: wrap;
+        
+        .field-label{
+            width: 15rem;
+            flex-shrink: 0;
+        }
+    }
+
+    .field-input, .field{
+        width: 100%;
+    }
+
+    .field-input-checkbox{
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .field-container-no-error{
+        display: flex;
+        width: 100%;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .error{
+        margin: 0 0 0 15rem;
+        color: red;
+    }
+
+    .field-input-uneditable{
+        display: none;
+    }
+}
+
+.submit-container{
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+    gap: 0.5rem;
+    .submit{
+        width: 10rem;
+    }
+}
+
+.success-heading{
+    margin: 0 0 1rem 0;
+}
+
+.success-data{
+    margin: 3rem 0;
+}
+
+.previous-thesis-data{
+    margin: 3rem 0 1rem;
+}
+

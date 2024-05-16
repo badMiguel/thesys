@@ -114,6 +114,9 @@ def thesis_list(request):
                 description = description + '...'
                 
             new_description[thesis.topic_number] = description
+            
+        else:
+            new_description[thesis.topic_number] = description
 
     # extraccts the specific names e.g. <Campus: External> will extract External
     supervisor_names = [supervisor.supervisor for supervisor in supervisor_list]
@@ -216,6 +219,7 @@ def handling_404(request, exception):
 def create_data(request):
     if request.method == 'POST':
         form = ThesisForm(request.POST)
+        print(form)
         if form.is_valid():
             form_data = form.cleaned_data
             form.save()
@@ -260,6 +264,9 @@ def modify_or_delete(request, topic_number=None):
                 else:
                     description = description + '...'
                     
+                new_description[item.topic_number] = description
+            
+            else:
                 new_description[item.topic_number] = description
             
         items_per_page = int(request.GET.get('items_per_page', 5))    
@@ -335,7 +342,7 @@ def modify_or_delete(request, topic_number=None):
                     new_course_list= [course for course in thesis.course.all()]
                     if new_course_list != old_course_list:
                         changed_data['course'] = True
-                        
+                                                                                                        
                     context = {
                         'type': 'modified',
                         'page_title': 'Successfully Edited ' + form.cleaned_data['title'],

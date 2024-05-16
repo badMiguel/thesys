@@ -8,33 +8,35 @@
             <h1>Sorry.</h1>
             <p>Thesis does not exist on our database.</p>
         {% else %}
-            <h1>Success!</h1>
-            <p>You have successfully {{ type }} the following thesis.</p>
-            {% if type == 'modified' %}
-                {% with thesis.campus.all as campus_list %}
-                {% with thesis.course.all as course_list %}
-                {% include "main/thesis_details_template.html" %}
-                {% endwith %}
-                {% endwith %}
-                <p>Old Thesis:</p>
-                {% with old_thesis_data as thesis %}
-                {% with old_campus_list as campus_list %}
-                {% with old_course_list as course_list %}
+            <h1 class="succes-heading">Success!</h1>
+            <p class="success-caption">You have successfully {{ type }} the following thesis.</p>
+            <div class="success-data">
+                {% if type == 'modified' %}
+                    {% with thesis.campus.all as campus_list %}
+                    {% with thesis.course.all as course_list %}
+                        {% include "main/thesis_details_template.html" %}
+                    {% endwith %}
+                    {% endwith %}
+                    <p class="previous-thesis-data"><strong>Old Thesis Data:</strong></p>
+                    {% with old_thesis_data as thesis %}
+                    {% with old_campus_list as campus_list %}
+                    {% with old_course_list as course_list %}
+                        {% include "main/thesis_details_template.html" %}
+                    {% endwith %}
+                    {% endwith %}
+                    {% endwith %}
+                {% elif type == 'deleted' %}
+                    {% with old_thesis_data as thesis %}
+                    {% with old_campus_list as campus_list %}
+                    {% with old_course_list as course_list %}
+                        {% include "main/thesis_details_template.html" %}
+                    {% endwith %}
+                    {% endwith %}
+                    {% endwith %}
+                {% else %}
                     {% include "main/thesis_details_template.html" %}
-                {% endwith %}
-                {% endwith %}
-                {% endwith %}
-            {% elif type == 'deleted' %}
-                {% with old_thesis_data as thesis %}
-                {% with old_campus_list as campus_list %}
-                {% with old_course_list as course_list %}
-                    {% include "main/thesis_details_template.html" %}
-                {% endwith %}
-                {% endwith %}
-                {% endwith %}
-            {% else %}
-                {% include "main/thesis_details_template.html" %}
-            {% endif %}
+                {% endif %}
+            </div>
         {% endif %}
         {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
             <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>

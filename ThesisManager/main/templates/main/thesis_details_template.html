@@ -1,4 +1,5 @@
-<h2 class="thesis_title">{{ thesis.title|title }}</h2>
+<h2 {% if changed_data.title %}class="thesis_title changed-highlight"
+    {% else %}class="thesis_title"{% endif %}>{{ thesis.title|title }}</h2>
 <div class="date">
     <div class='date-created-container'>
         <p class="more_info_date">Date Created:</p>
@@ -14,22 +15,26 @@
     <p>{{ thesis.topic_number }}</p>
 </div>
 <hr>
-<div class='supervisor'> 
+<div {% if changed_data.supervisor_id %}class="supervisor changed-highlight"
+    {% else %}class="supervisor"{% endif %}> 
     <p class='more_info'>Supervisor:</p>
     <p class='supervisor_name'>{{ thesis.supervisor }}</p>
 </div>
 <hr>
-<div class="description_container">
+<div {% if changed_data.description %}class="description_container changed-highlight"
+    {% else %}class="description_container"{% endif %}>
     <p class='more_info'>Description:</p>
     <p class='description'>{{ thesis.description }}</p>
 </div>
 <hr>
-<div class='supervisor'> 
+<div {% if changed_data.category_id %}class="category changed-highlight"
+    {% else %}class="category"{% endif %}> 
     <p class='more_info'>Category:</p>
     <p class='category'>{{ thesis.category }}</p>
 </div><hr>
 
-<div class = 'campus'>
+<div {% if changed_data.campus %}class="campus changed-highlight"
+    {% else %}class="campus"{% endif %}>
     <p class = 'more_info'>Campus:</p>
     <ul class='campus_list'>    
         {% if type == 'modified' or type == 'deleted' %}
@@ -43,7 +48,8 @@
         {% endif %}
     </ul> 
 </div><hr>
-<div class='courses'>
+<div {% if changed_data.course %}class="courses changed-highlight"
+    {% else %}class="courses"{% endif %}>
     <p class = 'more_info'>Courses:</p>
     <ul class ='courses_list'>
         {% if type == 'modified' or type == 'deleted' %}
