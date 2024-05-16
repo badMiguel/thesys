@@ -234,110 +234,147 @@ def create_data(request):
     }
     return render(request, 'main/create.html', context)
 
-def success(request):
-    return render(request, "main/success.html")
-
-# Update the Data
-def modify(request, topic_number=None):
+#Delete data
+def modify_or_delete(request, topic_number=None):
     if topic_number is None:
+        if request.path == '/thesis/modify/':
+            modify_or_delete = 'Modify'
+        elif request.path == '/thesis/delete/':
+            modify_or_delete = 'Delete'
+
         thesis = Thesis.objects.all()
+        
+        new_description = {}
+            
+        for item in thesis:        
+            # truncates words longer than 250 characters 
+            # i.e. only shows 250 character of the  thesis description
+            description = item.description
+            word_count = description.split()
+            if len(description) > 230:
+                description = ''.join(description[:230])
+                
+                punctuation = ['.', ',', '/', ';', ':', ' ']
+                if description[-1] in punctuation:
+                    description = description[:-1] + '...'
+                else:
+                    description = description + '...'
+                    
+                new_description[item.topic_number] = description
+            
+        items_per_page = int(request.GET.get('items_per_page', 5))    
+        
+        page = Paginator(thesis, items_per_page)
+        page_number = request.GET.get("page")
+        page_obj = page.get_page(page_number)
+
+        # values used to show the number of items shown and total number of theses
+        total_pages = range(1, page.num_pages + 1)
+        start_num = (page_obj.number - 1) * items_per_page + 1
+        end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
+        total_theses = len(thesis)
+        
         context = {
+            'modify_or_delete': modify_or_delete,
             'thesis': thesis,
-            'edit_menu': True,
+            'modify_or_delete_menu': True,
+            'new_description': new_description,
+            # for the paginator feature
+            'page_obj': page_obj, # contains various data about the current page
+            'total_pages': total_pages, 
+            'start_num': start_num, # starting number of the thesis in the page
+            'end_num': end_num,
+            'total_theses': total_theses, 
+            'items_per_page': items_per_page, 
         }
         
-        return render(request, "main/modify.html", context)
+        return render(request, "main/modify_or_delete.html", context)
     else:
-        thesis = Thesis.objects.get(topic_number=topic_number)
-        old_thesis_data = copy.copy(thesis)
-        old_thesis_campus = copy.copy(thesis.campus.all())
-        old_thesis_course = copy.copy(thesis.course.all())
+        if request.path[:15] == '/thesis/modify/':
+            modify_or_delete = 'Modify'
+        elif request.path[:15] == '/thesis/delete/':
+            modify_or_delete = 'Delete'
+
+        try:
+            # Fetch the thesis object to delete based on topic_number
+            thesis = Thesis.objects.get(topic_number=topic_number)
+            old_thesis_data = copy.copy(thesis)
+            old_thesis_campus = copy.copy(thesis.campus.all())
+            old_thesis_course = copy.copy(thesis.course.all())
+            old_campus_list= [campus for campus in old_thesis_campus]
+            old_course_list= [course for course in old_thesis_course]
+               
+        except Thesis.DoesNotExist:
+            return render(request, 'main/success.html', {'fail': True})
+               
         if request.method == 'POST':
-            form = ThesisForm(request.POST, instance=thesis)
-            if form.is_valid():
-                entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
-                thesis_dict = {}
-                for key, value in vars(thesis).items():
-                    if key in entries:
-                        thesis_dict[key] = value 
+            if modify_or_delete == 'Modify':
+                form = ThesisForm(request.POST, instance=thesis)
+                if form.is_valid():
+                    entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
+                    thesis_dict = {}
+                    for key, value in vars(thesis).items():
+                        if key in entries:
+                            thesis_dict[key] = value 
 
-                old_thesis_dict = {}
-                for key, value in vars(old_thesis_data).items():
-                    if key in entries:
-                        old_thesis_dict[key] = value 
+                    old_thesis_dict = {}
+                    for key, value in vars(old_thesis_data).items():
+                        if key in entries:
+                            old_thesis_dict[key] = value 
 
-                changed_data = {}
-                for key, value in thesis_dict.items():
-                    if thesis_dict[key] != old_thesis_dict[key]: 
-                        changed_data[key] = True
-                
-                form.save()                
-                new_campus_list= [campus for campus in thesis.campus.all()]
-                old_campus_list= [campus for campus in old_thesis_campus]
-                               
-                if new_campus_list != old_campus_list:
-                    changed_data['campus'] = True
+                    changed_data = {}
+                    for key, value in thesis_dict.items():
+                        if thesis_dict[key] != old_thesis_dict[key]: 
+                            changed_data[key] = True
                     
-                new_course_list= [course for course in thesis.course.all()]
-                old_course_list= [course for course in old_thesis_course]
-                               
-                if new_course_list != old_course_list:
-                    changed_data['course'] = True
+                    form.save()                
+                    new_campus_list= [campus for campus in thesis.campus.all()]
+                    if new_campus_list != old_campus_list:
+                        changed_data['campus'] = True
+                        
+                    new_course_list= [course for course in thesis.course.all()]
+                    if new_course_list != old_course_list:
+                        changed_data['course'] = True
+                        
+                    context = {
+                        'type': 'modified',
+                        'page_title': 'Successfully Edited ' + form.cleaned_data['title'],
+                        # updated thesis data
+                        'thesis': thesis,
+                        # old thesis data
+                        'old_thesis_data': old_thesis_data,
+                        'old_campus_list': old_campus_list,
+                        'old_course_list': old_course_list,
+                        # entries that changed data
+                        'changed_data': changed_data,
+                    }
+                    return render(request, 'main/success.html', context)
                     
+            elif modify_or_delete == 'Delete':
+                thesis.delete()
+                print(old_campus_list)
+                print(old_course_list)
                 context = {
-                    'type': 'modified',
-                    'page_title': 'Successfully Edited ' + form.cleaned_data['title'],
-                    # updated thesis data
                     'thesis': thesis,
-                    # old thesis data
                     'old_thesis_data': old_thesis_data,
                     'old_campus_list': old_campus_list,
                     'old_course_list': old_course_list,
-                    # entries that changed data
-                    'changed_data': changed_data,
+                    'type': 'deleted',
                 }
                 return render(request, 'main/success.html', context)
-        else:
-            form = ThesisForm(instance=thesis)
-                   
-        context = {
-            'form': form,
-            'edit_menu': False,
-        }
-        
-        return render(request, 'main/modify.html', context)
 
-#Delete data
-def delete_data(request, topic_number=None):
-    if topic_number is None:
-        thesis = Thesis.objects.all()
-        context = {
-            'thesis': thesis,
-            'delete_menu': True,
-        }
-        
-        return render(request, "main/delete.html", context)
-    else:
-        # Fetch the thesis object to delete based on topic_number
-        thesis = Thesis.objects.get(topic_number=topic_number)
-        deleted_thesis = copy.copy(thesis)
-        if request.method == 'POST':
-            thesis.delete()
-            context = {
-                'thesis': thesis,
-                'deleted_thesis': deleted_thesis,
-                'type': 'deleted',
-            }
-            return render(request, 'main/success.html', context)
         else:
             form = ThesisForm(instance = thesis)
             
         context = {
+            'thesis': thesis,
             'form': form,
-            'delete_menu': False
+            'modify_or_delete_menu': False,
+            'modify_or_delete': modify_or_delete,
         }
             
-        return render(request, "main/delete.html", context)
+        return render(request, "main/modify_or_delete.html", context)
+
 
 
 def admin_settings(request, account_type):

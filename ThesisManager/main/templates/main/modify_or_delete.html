@@ -1,0 +1,73 @@
+{% extends "main/base.html" %}
+
+{% block page_title %}{{ modify_or_delete }} Thesis{% endblock  %}
+
+{% block main_body %}
+    {% if modify_or_delete_menu is True %}
+        <h2>Select Thesis Title to {{ modify_or_delete }}</h2>
+        <div class='per_page'>
+            <p>Show by:</p>
+            <a href="?items_per_page=5" {% if items_per_page == 5 %}class="active"{% endif %}>5</a>
+            <a href="?items_per_page=10" {% if items_per_page == 10 %}class="active"{% endif %}>10</a>
+            <a href="?items_per_page=20" {% if items_per_page == 20 %}class="active"{% endif %}>20</a>
+            <a href="?items_per_page=50" {% if items_per_page == 50 %}class="active"{% endif %}>50</a>
+        </div>
+        {% for thesis in page_obj %}
+            <section class=thesis-modify-container>
+                {% if modify_or_delete == 'Modify' %}
+                    <a href="{% url 'modify' thesis.topic_number %}">
+                        <div class='thesis-title-container'>
+                            <h3 class="topic_number">{{ thesis.topic_number }}</h3>
+                            <h3>{{ thesis.title }}</h3>
+                        </div>
+                    </a>
+                {% elif modify_or_delete == 'Delete' %}
+                    <a href="{% url 'delete_data' thesis.topic_number %}">
+                        <div class='thesis-title-container'>
+                            <h3 class="topic_number">{{ thesis.topic_number }}</h3>
+                            <h3>{{ thesis.title }}</h3>
+                        </div>
+                    </a>
+                {% endif %}
+                    {% for number, description in new_description.items %}
+                        {% if thesis.topic_number == number %}
+                            <p class='description'>{{ description }}</p>
+                        {% endif %}
+                    {% endfor %}
+            </section>
+            <hr>
+        {% endfor %}
+        <div class="thesis-pages">
+            <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+            <form class='quick-links' action="" method="get">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
+                {% endif %}
+                {% for total_pages in total_pages %}                    
+                    <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
+                {% endif %}
+            </form>
+        </div>
+    {% else %}
+        <h1>{{ modify_or_delete }} Thesis</h1>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">{{ modify_or_delete }}</button>
+        </form>
+        {% if modify_or_delete == 'Modify' %}
+            <a href="{% url 'modify' %}" class="back">Return to List</a>
+        {% elif modify_or_delete == 'Delete' %}
+            <a href="{% url 'delete_data' %}" class="back">Return to List</a>
+        {% endif %}
+        <a href="{% url 'thesis_details' topic_number=thesis.topic_number %}" class="back">Return to Thesis Details</a>
+    {% endif %}
+    {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+    {% elif user.account_type == 'supervisor' %}
+        <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
+    {% endif %}
+{% endblock %}

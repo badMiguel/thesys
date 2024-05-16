@@ -415,6 +415,7 @@ footer{
     
     .setting-link{
         width: 10rem;
+        height: fit-content;
     }
 }
 

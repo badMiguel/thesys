@@ -32,7 +32,7 @@
 <div class = 'campus'>
     <p class = 'more_info'>Campus:</p>
     <ul class='campus_list'>    
-        {% if type == 'modified' %}
+        {% if type == 'modified' or type == 'deleted' %}
             {% for campus in campus_list %}
                 <li class="campus-name">{{ campus }}</li>
             {% endfor %}
@@ -46,7 +46,7 @@
 <div class='courses'>
     <p class = 'more_info'>Courses:</p>
     <ul class ='courses_list'>
-        {% if type == 'modified' %}
+        {% if type == 'modified' or type == 'deleted' %}
             {% for course in course_list %}
                 <li class="course-name">{{course}}</li>
             {% endfor %}  
