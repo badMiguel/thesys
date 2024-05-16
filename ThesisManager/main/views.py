@@ -249,31 +249,57 @@ def modify(request, topic_number=None):
         return render(request, "main/modify.html", context)
     else:
         thesis = Thesis.objects.get(topic_number=topic_number)
+        old_thesis_data = copy.copy(thesis)
+        old_thesis_campus = copy.copy(thesis.campus.all())
+        old_thesis_course = copy.copy(thesis.course.all())
         if request.method == 'POST':
             form = ThesisForm(request.POST, instance=thesis)
             if form.is_valid():
-                # old_thesis_data = copy.copy(thesis)
-                               
-                # print(thesis.__dict__)
-                # print(old_thesis_data.__dict__)
-                
-                # for key, value in vars(old_thesis_data).items():
-                #     print(thesis['topic_number'])
+                entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
+                thesis_dict = {}
+                for key, value in vars(thesis).items():
+                    if key in entries:
+                        thesis_dict[key] = value 
 
+                old_thesis_dict = {}
+                for key, value in vars(old_thesis_data).items():
+                    if key in entries:
+                        old_thesis_dict[key] = value 
+
+                changed_data = {}
+                for key, value in thesis_dict.items():
+                    if thesis_dict[key] != old_thesis_dict[key]: 
+                        changed_data[key] = True
+                
                 form.save()                
+                new_campus_list= [campus for campus in thesis.campus.all()]
+                old_campus_list= [campus for campus in old_thesis_campus]
+                               
+                if new_campus_list != old_campus_list:
+                    changed_data['campus'] = True
+                    
+                new_course_list= [course for course in thesis.course.all()]
+                old_course_list= [course for course in old_thesis_course]
+                               
+                if new_course_list != old_course_list:
+                    changed_data['course'] = True
+                    
                 context = {
                     'type': 'modified',
+                    'page_title': 'Successfully Edited ' + form.cleaned_data['title'],
+                    # updated thesis data
                     'thesis': thesis,
-                    # 'old_thesis_data': old_thesis_data,
-                    'page_title': 'Successfully Edited ' + form.cleaned_data['title']
+                    # old thesis data
+                    'old_thesis_data': old_thesis_data,
+                    'old_campus_list': old_campus_list,
+                    'old_course_list': old_course_list,
+                    # entries that changed data
+                    'changed_data': changed_data,
                 }
                 return render(request, 'main/success.html', context)
         else:
             form = ThesisForm(instance=thesis)
-
-        # Pass the success message to the success html
-        success_message = messages.get_messages(request)
-        
+                   
         context = {
             'form': form,
             'edit_menu': False,
@@ -294,17 +320,22 @@ def delete_data(request, topic_number=None):
     else:
         # Fetch the thesis object to delete based on topic_number
         thesis = Thesis.objects.get(topic_number=topic_number)
-        
+        deleted_thesis = copy.copy(thesis)
         if request.method == 'POST':
             thesis.delete()
-            return HttpResponseRedirect(reverse('success'))
+            context = {
+                'thesis': thesis,
+                'deleted_thesis': deleted_thesis,
+                'type': 'deleted',
+            }
+            return render(request, 'main/success.html', context)
         else:
             form = ThesisForm(instance = thesis)
-            context = {
-                'form': form,
-                'thesis': thesis,
-                'delete_menu': False
-            }
+            
+        context = {
+            'form': form,
+            'delete_menu': False
+        }
             
         return render(request, "main/delete.html", context)
 
