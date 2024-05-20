@@ -9,6 +9,23 @@
                 {% include "main/thesis_details_template.html" %}
             </li>
         </ul>
+        <div class="bottom-options">
+            <div class="crud-bottom-options">
+                {% if user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
+                    <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
+                    <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                {% elif user.account_type == 'supervisor' %}
+                    <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
+                    <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                {% endif %}
+            </div>
+    
+            <form method="post" action="{% url 'thesis_list' %}">
+                {% csrf_token %}
+                <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">
+                <button class='back' type="submit">Back to Thesis List</button>
+            </form>
+        </div>
     {% else %}
         <div class="error_message">
             <h2>{{ error_message }}</h2>
@@ -17,16 +34,6 @@
     {% endif %}
 
     <div class="bottom-options">
-        <div class="crud-bottom-options">
-            {% if user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
-                <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
-                <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
-            {% elif user.account_type == 'supervisor' %}
-                <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
-                <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
-            {% endif %}
-        </div>
-
         <form method="post" action="{% url 'thesis_list' %}">
             {% csrf_token %}
             <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">

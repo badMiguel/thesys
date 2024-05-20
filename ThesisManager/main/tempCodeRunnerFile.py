@@ -4,4 +4,4 @@ from django.test import TestCase
 
 word = '/thesis/review/request/modify/'
 
-print(word[:30])
+print(word[:29])

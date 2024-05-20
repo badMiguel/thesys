@@ -9,14 +9,28 @@
             <p>Thesis does not exist on our database.</p>
         {% else %}
             <h1 class="succes-heading">Success!</h1>
-            <p class="success-caption">You have successfully {{ type }} the following thesis.</p>
+            <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis.</p>
             <div class="success-data">
-                {% if type == 'modified' %}
+                {% if type == 'modified' or type == 'modify' or modify is True %}
                     {% with thesis.campus.all as campus_list %}
                     {% with thesis.course.all as course_list %}
                         {% include "main/thesis_details_template.html" %}
                     {% endwith %}
                     {% endwith %}
+                    {% if request is True %}
+                        <div {% if type == "rejected" %}class="request-details-rejected" 
+                            {% elif type == "accepted" %}class='request-details-accepeted'
+                            {% else %}class='request-details'{% endif %}>
+                            <div class="requested-by-container">
+                                <p class="more_info_request">Requested By:</p>
+                                <p class="request-by">{{ requested_by }}</p>
+                            </div>
+                            <div class="request-date-container">
+                                <p class="more_info_request">Request Date:</p>
+                                <p class="request-date">{{ request_date }}</p>
+                            </div>
+                        </div><hr>                      
+                    {% endif %}
                     <p class="previous-thesis-data"><strong>Old Thesis Data:</strong></p>
                     {% with old_thesis_data as thesis %}
                     {% with old_campus_list as campus_list %}
@@ -25,7 +39,7 @@
                     {% endwith %}
                     {% endwith %}
                     {% endwith %}
-                {% elif type == 'deleted' %}
+                {% elif type == 'deleted' or delete is True %}
                     {% with old_thesis_data as thesis %}
                     {% with old_campus_list as campus_list %}
                     {% with old_course_list as course_list %}
@@ -33,6 +47,7 @@
                     {% endwith %}
                     {% endwith %}
                     {% endwith %}
+                {% elif delete is True %}
                 {% else %}
                     {% include "main/thesis_details_template.html" %}
                 {% endif %}

@@ -21,7 +21,7 @@
                     <p class="setting-description">-  Delete existing thesis in the database.</p>
                 </div>
                 <div class="setting-container">
-                    <a class="setting-link" href="#"><strong>Review Requests</strong></a>
+                    <a class="setting-link" href="{% url 'review_request' %}"><strong>Review Requests</strong></a>
                     <p class="setting-description">-  Review creation, modification, or deletion of thesis requests made by supervisors.</p>
                 </div>
             </section>
@@ -29,15 +29,15 @@
             <p class="welcome-description">Welcome to the admin settings. Click the which request are you about to make, to be reviewed by the unit coordinator.</p>
             <section>
                 <div class="setting-container">
-                    <a class="setting-link" href="{% url 'request_create' %}"><strong>Add Thesis</strong></a>
+                    <a class="setting-link" href="{% url 'create_request' crud_action='create' %}"><strong>Add Thesis</strong></a>
                     <p class="setting-description">-  Request to add new thesis on the database.</p>
                 </div>
                 <div class="setting-container">
-                    <a class="setting-link" href="{% url 'request_modify' %}"><strong>Edit Thesis</strong></a>
+                    <a class="setting-link" href="{% url 'create_request' crud_action='modify' %}"><strong>Edit Thesis</strong></a>
                     <p class="setting-description">-  Request to modify details of existing thesis on the database.</p>
                 </div>
                 <div class="setting-container">
-                    <a class="setting-link" href="{% url 'request_delete' %}"><strong>Delete Thesis</strong></a>
+                    <a class="setting-link" href="{% url 'create_request' crud_action='delete' %}"><strong>Delete Thesis</strong></a>
                     <p class="setting-description">-  Request to delete existing thesis on the database.</p>
                 </div>
             </section>

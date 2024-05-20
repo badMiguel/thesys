@@ -74,11 +74,11 @@ class Supervisor(models.Model):
     
     def __str__(self):
         return self.supervisor
-
-class Thesis(models.Model):       
+# ABSTRACT BASE CLASSES - FOR MODEL INHERITANCE
+class ThesisBase(models.Model):       
     topic_number = models.IntegerField(
         validators=[
-            MinValueValidator(0),
+            MinValueValidator(1),
             MaxValueValidator(1000),
         ],
         verbose_name='Thesis Number',
@@ -90,32 +90,86 @@ class Thesis(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete= models.PROTECT, verbose_name='Supervisor Name')
     course = models.ManyToManyField(Course, verbose_name='Course Name')
     campus = models.ManyToManyField(Campus, verbose_name='Campus Name',)
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Created')
-    last_edited = models.DateTimeField(auto_now=True, verbose_name = 'Date Edited')
+
     group_taker_limit = models.IntegerField(
         validators=[
-            MinValueValidator(0),
+            MinValueValidator(1),
             MaxValueValidator(20),
         ], 
         verbose_name='Number Limit of group takers', 
-        null = True
+        null = True,
+        blank=True
     )
-    
-    def __str__(self):
-        return str(self.topic_number) + ' - ' + self.title 
+
+    class Meta:
+        abstract = True
+        ordering = ['topic_number']       
         
-class  ThesisRequest(models.Model):
-    thesis_request_number = models.AutoField( 
-        verbose_name= 'Thesis Request',
-        primary_key=True,
+class ThesisRequestBase(models.Model):    
+    STATUS_CHOICES = [
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')        
+    ]    
+    REQUEST_CHOICES = [
+        ('add', 'add'),
+        ('modify', 'modify'),
+        ('delete', 'delete'),
+    ]    
+
+    request_date = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Requested')
+    requested_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Requested by', )
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        verbose_name='Status',
+        default='pending'
     )
-    requested_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Requested by', default='')
-    request_date = models.DateTimeField(auto_now_add=True, verbose_name='Request Date')
-    thesis_request = models.ForeignKey(Thesis, on_delete = models.CASCADE, verbose_name='Thesis Request', default='')
+    
+    class Meta:
+        abstract = True
+
+class Thesis(ThesisBase):
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name = 'Date Created')
+    last_edited = models.DateTimeField(auto_now=True, verbose_name = 'Date Edited')
+
+    def __str__(self):
+        return f'{str(self.topic_number)} - {self.title}' 
+
+class ThesisRequestAdd(ThesisBase, ThesisRequestBase):
+    request_type = models.CharField(
+        max_length=10,
+        choices=ThesisRequestBase.REQUEST_CHOICES,
+        verbose_name='Request Type',
+        default='add'
+    )
     
     def __str__(self):
-        return f'{self.requested_by} - {self.thesis_request}'
-       
+        return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
+    
+class ThesisRequestModify(ThesisBase, ThesisRequestBase):
+    request_type = models.CharField(
+        max_length=10,
+        choices=ThesisRequestBase.REQUEST_CHOICES,
+        verbose_name='Request Type',
+        default='modify'
+    )
+    
+    def __str__(self):
+        return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
+    
+class ThesisRequestDelete(ThesisBase, ThesisRequestBase):
+    request_type = models.CharField(
+        max_length=10,
+        choices=ThesisRequestBase.REQUEST_CHOICES,
+        verbose_name='Request Type',
+        default='delete'
+    )
+    
+    def __str__(self):
+        return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
+           
 class GroupApplication(models.Model):
     group_application_number = models.AutoField(
         verbose_name='Group Application Number', 

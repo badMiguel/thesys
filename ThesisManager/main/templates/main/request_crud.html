@@ -3,7 +3,181 @@
 {% block page_title%}Thesis{% endblock %}
 
 {% block main_body %}
-    <form action="" method="post">
-        {{ form.as_div }}
-    </form>
+    {% if request_type == 'create' %}
+        <h1 class="crud-heading">Request to Create New Thesis</h1>
+        <form method="post" class="crud-form" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field-container">
+                    {% if field == form.course or field == form.campus %}
+                        <div class="field-container-no-error">
+                            <div class="field-label">
+                                {{ field.label }}
+                            </div>
+                            <div class="field-input-checkbox">
+                                {% for checkbox in field %}
+                                    <div>{{ checkbox }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="error">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% else %}
+                        <div class="field-container-no-error">
+                            <div class="field-label">
+                                {{ field.label }}
+                            </div>
+                            <div class="field-input">
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="error">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="submit-container"><button class="submit" type="submit">Create</button></div>
+            <div class="bottom-options">
+                {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
+                    <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+                {% elif user.account_type == 'supervisor' %}
+                    <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
+                {% endif %}
+            </div>
+        </form>    
+    {% elif request_type == 'modify' or request_type == 'delete' %}
+        {% if menu is True %}
+            <div class="modify-or-delete-header-container">
+                <h2 class="modify-or-delete-header">Request to {{ request_type|title }} Thesis</h2>
+                <div class='per_page'>
+                    <p>Show by:</p>
+                    <a href="?items_per_page=5" {% if items_per_page == 5 %}class="active"{% endif %}>5</a>
+                    <a href="?items_per_page=10" {% if items_per_page == 10 %}class="active"{% endif %}>10</a>
+                    <a href="?items_per_page=20" {% if items_per_page == 20 %}class="active"{% endif %}>20</a>
+                    <a href="?items_per_page=50" {% if items_per_page == 50 %}class="active"{% endif %}>50</a>
+                </div>
+            </div>
+            {% for thesis in page_obj %}
+                <section {% if thesis.status %}class="thesis-modify-container-pending"
+                    {% else %}class="thesis-modify-container"{% endif %}>
+                    {% if request_type == 'modify' %}
+                        <a href="{% url 'create_request' crud_action='modify' topic_number=thesis.topic_number %}">
+                    {% elif request_type == 'delete' %}
+                        <a href="{% url 'create_request' crud_action='delete' topic_number=thesis.topic_number %}">
+                    {% endif %}
+                        <div class='thesis-title-container'>
+                            <h3 class="topic_number-edit">{{ thesis.topic_number }}</h3>
+                            <h3>{{ thesis.title }}</h3>
+                        </div>
+                    </a>
+                    {% for number, description in new_description.items %}
+                        {% if thesis.topic_number == number %}
+                            <p class='description'>{{ description }}</p>
+                        {% endif %}
+                    {% endfor %}
+                    {% if thesis.status %}
+                        <p class="status-pending"><strong>Status:</strong> Pending</p>
+                    {% endif %}
+                </section>
+                <hr class="list-line">
+            {% endfor %}
+            <div class="thesis-pages">
+                <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+                <form class='quick-links' action="" method="get">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
+                    {% endif %}
+                    {% for total_pages in total_pages %}                    
+                        <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
+                    {% endif %}
+                </form>
+            </div>
+            {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
+                <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+            {% elif user.account_type == 'supervisor' %}
+                <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
+            {% endif %}
+        {% else %}
+            <h1 class="crud-heading">Request to {{ request_type|title }} Thesis</h1>
+            {% if request_exists == 'modify'  or request_exists == 'delete' %}
+                <p class="warning"><strong>Warning!</strong> You currently have a {{ request_exists }} request. 
+                    {% if request_type == 'modify' %}Modifying this thesis now will overwrite that request.
+                    {% else %}Delete option will be disabled.{% endif %} </p>
+            {% endif %}
+            {% if no_change %}
+                <p class="error">You did not make any changes to the thesis.</p>
+            {% endif %}
+            <form method="POST" class="crud-form" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="field-container">
+                        {% if field == form.course or field == form.campus %}
+                            <div class="field-container-no-error">
+                                <div class="field-label">
+                                    {{ field.label }}
+                                </div>
+                                <div class="field-input-checkbox">
+                                    {% for checkbox in field %}
+                                        <div>{{ checkbox }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <p class="error">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% elif field == form.topic_number %}
+                            <div class="field-container-no-error">
+                                <div class="field-label">
+                                    {{ field.label }}
+                                </div>
+                                <div class="field-input">
+                                    {{ selected_thesis.topic_number}}
+                                </div>
+                                <div class="field-input-uneditable">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="field-container-no-error">
+                                <div class="field-label">
+                                    {{ field.label }}
+                                </div>
+                                <div class="field-input">
+                                    {{ field }}
+                                </div>
+                            </div>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <p class="error">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="submit-container">
+                    {% if request_exists == 'delete' and request_type == 'delete' %}
+                        <button class="submit" type="submit" disabled>{{ request_type|title }}</button>
+                    {% else %}
+                        <button class="submit" type="submit">{{ request_type|title }}</button>
+                    {% endif %}
+                </div>
+            </form>
+        {% endif %}
+    {% endif %}
+    {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+    {% elif user.account_type == 'supervisor' %}
+        <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
+    {% endif %}
 {% endblock %}

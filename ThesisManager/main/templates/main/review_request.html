@@ -1,0 +1,76 @@
+{% extends "main/base.html" %}
+
+{% block page_title %}{{ modify_or_delete }} Thesis{% endblock  %}
+
+{% block main_body %}
+    {% if review_menu is True %}
+        <div class="modify-or-delete-header-container">
+            <h2 class="modify-or-delete-header">Review Change Request</h2>
+            <div class='per_page'>
+                <p>Show by:</p>
+                <a href="?items_per_page=5" {% if items_per_page == 5 %}class="active"{% endif %}>5</a>
+                <a href="?items_per_page=10" {% if items_per_page == 10 %}class="active"{% endif %}>10</a>
+                <a href="?items_per_page=20" {% if items_per_page == 20 %}class="active"{% endif %}>20</a>
+                <a href="?items_per_page=50" {% if items_per_page == 50 %}class="active"{% endif %}>50</a>
+            </div>
+        </div>
+        {% for thesis in page_obj %}
+            <section class=thesis-modify-container>
+                <a href="{% url 'review_request' request_type=thesis.request_type topic_number=thesis.topic_number %}">
+                    <div class='thesis-title-container'>
+                        <h3 class="topic_number-edit">{{ thesis.topic_number }}</h3>
+                        <h3>{{ thesis.title }}</h3>
+                    </div>
+                </a>
+                {% for number, description in new_description.items %}
+                    {% if thesis.topic_number == number %}
+                        <p class='description'>{{ description }}</p>
+                    {% endif %}
+                {% endfor %}
+                <div class="request_information">
+                    <p class="requested_by"><strong>Requested By:</strong> {{ thesis.requested_by }}</p>
+                    <p class="request_date"><strong>Request Date:</strong> {{ thesis.request_date }}</p>
+                    <p class="request_type"><strong>Request Type:</strong> {{ thesis.request_type|title }}</p>
+                </div>
+            </section>
+            <hr class="list-line">
+        {% endfor %}
+        <div class="thesis-pages">
+            <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+            <form class='quick-links' action="" method="get">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
+                {% endif %}
+                {% for total_pages in total_pages %}                    
+                    <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
+                {% endif %}
+            </form>
+        </div>
+    {% elif no_requests is True %}
+        <h2 class="modify-or-delete-header">Review Change Request</h2>
+        <p>There are currently no thesis requests to review.</p>
+    {% else %}
+        <h2 class="modify-or-delete-header">Review Change Request</h2>
+        <div class="request-information">
+            <p class="requested_by"><strong>Requested By:</strong> {{ thesis.requested_by }}</p>
+            <p class="request_date"><strong>Request Date:</strong> {{ thesis.request_date }}</p>
+            <p class="request_type"><strong>Request Type:</strong> {{ thesis.request_type|title }}</p>
+        </div>
+        {% include "main/thesis_details_template.html" %}
+        {% if modify_review is True %}
+            <p class="previous-thesis-data"><strong>Old Thesis Data:</strong></p>
+            {% with old_thesis_data as thesis %}
+                {% include "main/thesis_details_template.html" %}
+            {% endwith %}
+        {% endif %}
+        <form class="accept-or-reject" action="" method="post">
+            {% csrf_token %}
+            <button class='accept-or-reject-button' type="submit" name="action" value="accept">Accept</button>
+            <button class='accept-or-reject-button' type="submit" name="action" value="reject">Reject</button>
+        </form>
+    {% endif %}
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+{% endblock %}
