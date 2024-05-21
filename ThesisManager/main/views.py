@@ -1,6 +1,6 @@
 import random
 import copy
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
@@ -52,6 +52,7 @@ def paginator(request, thesis):
     return page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses
 
 def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list):
+    # Checks the changes made on the values of thesis
     entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
     thesis_dict = {}
     for key, value in vars(thesis).items():
@@ -77,7 +78,6 @@ def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list
         changed_data['course'] = True
         
     return changed_data
-
 
 def home(request):
     theses = Thesis.objects.all()
@@ -109,7 +109,6 @@ def about_us(request):
     
     return render(request, "main/about_us.html", context)
 
-# prevents caching - ensure page is updated to users
 def thesis_details(request, topic_number):
     theses = Thesis.objects.all()
 
@@ -157,8 +156,6 @@ def thesis_list(request):
     course_list = []
     category_list = []
     
-    new_description = truncate_description(theses)
-    
     for thesis in theses:
         # appends each category in the list
         campus_list_specific = []
@@ -171,6 +168,8 @@ def thesis_list(request):
             course_list_specific.append(course)
         course_list.append(course_list_specific)
         category_list.append(thesis.category)
+        
+    new_description = truncate_description(theses)
 
     # extraccts the specific names e.g. <Campus: External> will extract External
     supervisor_names = [supervisor.supervisor for supervisor in supervisor_list]
@@ -776,6 +775,14 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 'selected_thesis': thesis,
             }
             return render(request, 'main/request_crud.html', context)
+
+@login_required
+@account_type_required('admin', 'supervisor')
+def group_application(request, topic_number=None):
+    context = {
+        
+    }
+    return render(request, 'main/group_application.html', context)
 
 @login_required
 @account_type_required('admin', 'unit coordinator', 'supervisor')

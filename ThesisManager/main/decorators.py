@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from functools import wraps
 
+# checks account type of user. redirects if they dont have account previlleges
 def account_type_required(*account_type):
     def decorator(view_func):
         @wraps(view_func)

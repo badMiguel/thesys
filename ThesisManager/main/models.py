@@ -171,13 +171,15 @@ class ThesisRequestDelete(ThesisBase, ThesisRequestBase):
         return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
            
 class GroupApplication(models.Model):
-    group_application_number = models.AutoField(
-        verbose_name='Group Application Number', 
-        primary_key=True
-    )
+    STATUS_CHOICES = [
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')        
+    ]    
+    thesis = models.OneToOneField(Thesis, on_delete=models.PROTECT, verbose_name='Thesis', default='', primary_key=True)
     group = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Group', default='')
-    thesis = models.ForeignKey(Thesis, on_delete=models.PROTECT, verbose_name='Thesis', default='')
     application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, verbose_name='Status', default='pending')
     
     def __str__(self):
         return f'{self.group} - {self.thesis}'
