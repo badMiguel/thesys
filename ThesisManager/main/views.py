@@ -498,6 +498,12 @@ def review_request(request, request_type=None, topic_number=None):
                 'group_taker_limit': thesis_to_review.group_taker_limit,
             }
             
+            old_thesis_data = None
+            changed_data = None
+            delete = None
+            old_campus_list = None
+            old_course_list = None
+            
             try:
                 old_thesis = Thesis.objects.get(topic_number=topic_number)
                 old_thesis_data = copy.copy(old_thesis)
@@ -631,9 +637,6 @@ def review_request(request, request_type=None, topic_number=None):
             'old_thesis_exists':old_thesis_exists,
             'old_thesis_data': old_thesis_data,
             'changed_data': changed_data,
-            
-            # 'requested_by': requested_thesis.requested_by,
-            # 'request_date': requested_thesis.request_date,
         }
         return render(request, 'main/review_request.html', context)
         
