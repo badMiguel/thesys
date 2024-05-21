@@ -15,8 +15,8 @@
                     <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
                     <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
                 {% elif user.account_type == 'supervisor' %}
-                    <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
-                    <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                    <a href="{% url 'create_request' crud_action='modify' topic_number=thesis.topic_number %}">Edit</a>
+                    <a href="{% url 'create_request' crud_action='delete' topic_number=thesis.topic_number %}">Delete</a>
                 {% elif user.account_type == 'student' %}
                     <a href="#">Apply</a>
                 {% endif %}

@@ -661,7 +661,7 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 request_delete_exists = ThesisRequestDelete.objects.get(topic_number=topic_number)
                 request_exists_delete = True
             except ThesisRequestDelete.DoesNotExist:
-                request_exists_delete = False
+                request_exists_delete = False 
                 
             initial_form_data = {
                 'topic_number': thesis.topic_number,
@@ -676,11 +676,11 @@ def request_crud(request, crud_action, status=None, topic_number=None):
 
             if request.method == 'POST':
                 if modify_or_delete == 'modify':  
-                    try:                        
+                    if request_exists_modify:
                         request_modify_exists.delete()
-                        request_exists_modify = True
-                    except UnboundLocalError:
-                        request_exists_modify = False
+                        
+                    if request_exists_delete:
+                        request_delete_exists.delete()
                         
                     form = ThesisRequestFormModify(request.POST, initial=initial_form_data)
                     if form.is_valid() and form.has_changed():
