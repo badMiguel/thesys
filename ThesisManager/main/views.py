@@ -51,6 +51,34 @@ def paginator(request, thesis):
     
     return page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses
 
+def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list):
+    entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
+    thesis_dict = {}
+    for key, value in vars(thesis).items():
+        if key in entries:
+            thesis_dict[key] = value 
+
+    old_thesis_dict = {}
+    for key, value in vars(old_thesis_data).items():
+        if key in entries:
+            old_thesis_dict[key] = value 
+
+    changed_data = {}
+    for key, value in thesis_dict.items():
+        if thesis_dict[key] != old_thesis_dict[key]: 
+            changed_data[key] = True
+    
+    new_campus_list= [campus for campus in thesis.campus.all()]
+    if new_campus_list != old_campus_list:
+        changed_data['campus'] = True
+        
+    new_course_list= [course for course in thesis.course.all()]
+    if new_course_list != old_course_list:
+        changed_data['course'] = True
+        
+    return changed_data
+
+
 def home(request):
     theses = Thesis.objects.all()
     
@@ -305,30 +333,9 @@ def modify_or_delete(request, topic_number=None):
             if modify_or_delete == 'Modify':
                 form = ThesisForm(request.POST, instance=thesis)
                 if form.is_valid() and form.has_changed():
-                    entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
-                    thesis_dict = {}
-                    for key, value in vars(thesis).items():
-                        if key in entries:
-                            thesis_dict[key] = value 
-
-                    old_thesis_dict = {}
-                    for key, value in vars(old_thesis_data).items():
-                        if key in entries:
-                            old_thesis_dict[key] = value 
-
-                    changed_data = {}
-                    for key, value in thesis_dict.items():
-                        if thesis_dict[key] != old_thesis_dict[key]: 
-                            changed_data[key] = True
-                    
                     form.save()                
-                    new_campus_list= [campus for campus in thesis.campus.all()]
-                    if new_campus_list != old_campus_list:
-                        changed_data['campus'] = True
-                        
-                    new_course_list= [course for course in thesis.course.all()]
-                    if new_course_list != old_course_list:
-                        changed_data['course'] = True
+                    
+                    changed_data = changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list)
                                                                                                         
                     context = {
                         'type': 'modified',
@@ -470,29 +477,7 @@ def review_request(request, request_type=None, topic_number=None):
                 old_course_list= [course for course in old_thesis_course]
                 old_thesis_exists = True
                                
-                entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
-                thesis_dict = {}
-                for key, value in vars(thesis_to_review).items():
-                    if key in entries:
-                        thesis_dict[key] = value 
-
-                old_thesis_dict = {}
-                for key, value in vars(old_thesis_data).items():
-                    if key in entries:
-                        old_thesis_dict[key] = value 
-
-                changed_data = {}
-                for key, value in thesis_dict.items():
-                    if thesis_dict[key] != old_thesis_dict[key]: 
-                        changed_data[key] = True
-
-                new_campus_list= [campus for campus in thesis_to_review.campus.all()]
-                if new_campus_list != old_campus_list:
-                    changed_data['campus'] = True
-                    
-                new_course_list= [course for course in thesis_to_review.course.all()]
-                if new_course_list != old_course_list:
-                    changed_data['course'] = True
+                changed_data = changed_data_check(thesis_to_review, old_thesis_data, old_campus_list, old_course_list)
                 
             except Thesis.DoesNotExist:
                 old_thesis_exists = False
@@ -717,29 +702,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                                            
                         requested_thesis = ThesisRequestModify.objects.get(topic_number =form.cleaned_data['topic_number'])
                 
-                        entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
-                        thesis_dict = {}
-                        for key, value in vars(requested_thesis).items():
-                            if key in entries:
-                                thesis_dict[key] = value 
+                        changed_data = changed_data_check(requested_thesis, old_thesis_data, old_campus_list, old_course_list)
 
-                        old_thesis_dict = {}
-                        for key, value in vars(old_thesis_data).items():
-                            if key in entries:
-                                old_thesis_dict[key] = value 
-
-                        changed_data = {}
-                        for key, value in thesis_dict.items():
-                            if thesis_dict[key] != old_thesis_dict[key]: 
-                                changed_data[key] = True
-
-                        new_campus_list= [campus for campus in requested_thesis.campus.all()]
-                        if new_campus_list != old_campus_list:
-                            changed_data['campus'] = True
-                            
-                        new_course_list= [course for course in requested_thesis.course.all()]
-                        if new_course_list != old_course_list:
-                            changed_data['course'] = True
                             
                         context = {
                             'request': True,
