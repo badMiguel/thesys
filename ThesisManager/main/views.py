@@ -10,6 +10,47 @@ from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, Th
 from .decorators import account_type_required
 from users.models import CustomUser
 
+def truncate_description(thesis):
+    new_description = {}
+            
+    for item in thesis:     
+        # truncates words longer than 250 characters 
+        # i.e. only shows 250 character of the  thesis description
+        description = item.description
+        word_count = description.split()
+        if len(description) > 230:
+            description = ''.join(description[:230])
+            
+            punctuation = ['.', ',', '/', ';', ':', ' ']
+            if description[-1] in punctuation:
+                description = description[:-1] + '...'
+            else:
+                description = description + '...'
+                
+            new_description[item.topic_number] = description
+        
+        else:
+            new_description[item.topic_number] = description
+            
+    return new_description
+
+def paginator(request, thesis):
+    # gets the thesis per page. default value = 5
+    items_per_page = int(request.GET.get('items_per_page', 5))    
+
+    # use built-in tool of django for paginating the theses
+    page = Paginator(thesis, items_per_page)
+    page_number = request.GET.get("page")
+    page_obj = page.get_page(page_number)
+
+    # values used to show the number of items shown and total number of theses
+    total_pages = range(1, page.num_pages + 1)
+    start_num = (page_obj.number - 1) * items_per_page + 1
+    end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
+    total_theses = len(thesis)
+    
+    return page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses
+
 def home(request):
     theses = Thesis.objects.all()
     
@@ -88,7 +129,7 @@ def thesis_list(request):
     course_list = []
     category_list = []
     
-    new_description = {}
+    new_description = truncate_description(theses)
     
     for thesis in theses:
         # appends each category in the list
@@ -102,24 +143,6 @@ def thesis_list(request):
             course_list_specific.append(course)
         course_list.append(course_list_specific)
         category_list.append(thesis.category)
-        
-        # truncates words longer than 250 characters 
-        # i.e. only shows 250 character of the  thesis description
-        description = thesis.description
-        word_count = description.split()
-        if len(description) > 230:
-            description = ''.join(description[:230])
-            
-            punctuation = ['.', ',', '/', ';', ':', ' ']
-            if description[-1] in punctuation:
-                description = description[:-1] + '...'
-            else:
-                description = description + '...'
-                
-            new_description[thesis.topic_number] = description
-            
-        else:
-            new_description[thesis.topic_number] = description
 
     # extraccts the specific names e.g. <Campus: External> will extract External
     supervisor_names = [supervisor.supervisor for supervisor in supervisor_list]
@@ -152,7 +175,7 @@ def thesis_list(request):
     filter_course= ''
     filter_category=''
     if selected_supervisor:
-        theses = Thesis.objects.filter(supervisor__in = selected_supervisor, status = True)
+        theses = Thesis.objects.filter(supervisor__in = selected_supervisor)
         '''
             changes the url of the page to filter the list
             this fixes the issue where the the filter thesis is not stored
@@ -161,28 +184,16 @@ def thesis_list(request):
         '''
         filter_supervisor = "&".join([f'&supervisor={supervisor}' for supervisor in selected_supervisor])
     if selected_campus:
-        theses = Thesis.objects.filter(campus__in = selected_campus, status = True)
+        theses = Thesis.objects.filter(campus__in = selected_campus)
         filter_campus = '&'.join([f'&campus={campus}' for campus in selected_campus])
     if selected_course:
-        theses = Thesis.objects.filter(course__in = selected_course, status = True)
+        theses = Thesis.objects.filter(course__in = selected_course)
         filter_course = '&'.join([f'&course={course}' for course in selected_course])
     if selected_category:
-        theses = Thesis.objects.filter(category__in = selected_category, status = True)
+        theses = Thesis.objects.filter(category__in = selected_category)
         filter_category = '&'.join([f'&category={category}' for category in selected_category])
 
-    # gets the thesis per page. default value = 5
-    items_per_page = int(request.GET.get('items_per_page', 5))    
-
-    # use built-in tool of django for paginating the theses
-    page = Paginator(theses, items_per_page)
-    page_number = request.GET.get("page")
-    page_obj = page.get_page(page_number)
-
-    # values used to show the number of items shown and total number of theses
-    total_pages = range(1, page.num_pages + 1)
-    start_num = (page_obj.number - 1) * items_per_page + 1
-    end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
-    total_theses = len(theses)
+    page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, theses)
     
     context = {
         # for the paginator feature
@@ -253,39 +264,10 @@ def modify_or_delete(request, topic_number=None):
 
         thesis = Thesis.objects.all()
         
-        new_description = {}
+        new_description = truncate_description(thesis)
             
-        for item in thesis:        
-            # truncates words longer than 250 characters 
-            # i.e. only shows 250 character of the  thesis description
-            description = item.description
-            word_count = description.split()
-            if len(description) > 230:
-                description = ''.join(description[:230])
-                
-                punctuation = ['.', ',', '/', ';', ':', ' ']
-                if description[-1] in punctuation:
-                    description = description[:-1] + '...'
-                else:
-                    description = description + '...'
-                    
-                new_description[item.topic_number] = description
-            
-            else:
-                new_description[item.topic_number] = description
-            
-        items_per_page = int(request.GET.get('items_per_page', 5))    
-        
-        page = Paginator(thesis, items_per_page)
-        page_number = request.GET.get("page")
-        page_obj = page.get_page(page_number)
+        page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
 
-        # values used to show the number of items shown and total number of theses
-        total_pages = range(1, page.num_pages + 1)
-        start_num = (page_obj.number - 1) * items_per_page + 1
-        end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
-        total_theses = len(thesis)
-        
         context = {
             'modify_or_delete': modify_or_delete,
             'thesis': thesis,
@@ -430,38 +412,9 @@ def review_request(request, request_type=None, topic_number=None):
             }
             return render(request, 'main/review_request.html', context)
 
-        new_description = {}
+        new_description = truncate_description(thesis)
             
-        for item in thesis:     
-            # truncates words longer than 250 characters 
-            # i.e. only shows 250 character of the  thesis description
-            description = item.description
-            word_count = description.split()
-            if len(description) > 230:
-                description = ''.join(description[:230])
-                
-                punctuation = ['.', ',', '/', ';', ':', ' ']
-                if description[-1] in punctuation:
-                    description = description[:-1] + '...'
-                else:
-                    description = description + '...'
-                    
-                new_description[item.topic_number] = description
-            
-            else:
-                new_description[item.topic_number] = description
-            
-        items_per_page = int(request.GET.get('items_per_page', 5))    
-        
-        page = Paginator(thesis, items_per_page)
-        page_number = request.GET.get("page")
-        page_obj = page.get_page(page_number)
-
-        # values used to show the number of items shown and total number of theses
-        total_pages = range(1, page.num_pages + 1)
-        start_num = (page_obj.number - 1) * items_per_page + 1
-        end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
-        total_theses = len(thesis)
+        page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
 
         context = {
             'review_menu': True,
@@ -662,37 +615,9 @@ def request_crud(request, crud_action, status=None, topic_number=None):
             if status is None:
                 thesis = Thesis.objects.all()
 
-                new_description = {}
-                for item in thesis:        
-                    # truncates words longer than 250 characters 
-                    # i.e. only shows 250 character of the  thesis description
-                    description = item.description
-                    word_count = description.split()
-                    if len(description) > 230:
-                        description = ''.join(description[:230])
-                        
-                        punctuation = ['.', ',', '/', ';', ':', ' ']
-                        if description[-1] in punctuation:
-                            description = description[:-1] + '...'
-                        else:
-                            description = description + '...'
-                            
-                        new_description[item.topic_number] = description
-                    
-                    else:
-                        new_description[item.topic_number] = description
+                new_description = truncate_description(thesis)
                                 
-                items_per_page = int(request.GET.get('items_per_page', 5))    
-                
-                page = Paginator(thesis, items_per_page)
-                page_number = request.GET.get("page")
-                page_obj = page.get_page(page_number)
-
-                # values used to show the number of items shown and total number of theses
-                total_pages = range(1, page.num_pages + 1)
-                start_num = (page_obj.number - 1) * items_per_page + 1
-                end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
-                total_theses = len(thesis)
+                page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
                 
                 context = {
                     'request_type': crud_action,
