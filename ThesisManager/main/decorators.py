@@ -15,7 +15,7 @@ def account_type_required(*account_type):
                         'error': 'access',
                         'error_message': 'You do not have access to this page'
                     }
-                    return render(request, 'main/404.html', context)
+                    return render(request, 'main/account_error.html', context)
 
             else: 
                 return redirect('login')

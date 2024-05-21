@@ -67,4 +67,3 @@ urlpatterns = [
     # path('create_user/add_permission/', user_views.add_permissions) #not sure if needed
 ]
 
-handler404 = 'main.views.handling_404'

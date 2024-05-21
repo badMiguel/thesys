@@ -17,9 +17,10 @@
                 {% elif user.account_type == 'supervisor' %}
                     <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
                     <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                {% elif user.account_type == 'student' %}
+                    <a href="#">Apply</a>
                 {% endif %}
             </div>
-    
             <form method="post" action="{% url 'thesis_list' %}">
                 {% csrf_token %}
                 <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">
@@ -31,15 +32,15 @@
             <h2>{{ error_message }}</h2>
             <p><em>Please input a valid thesis number and try again.</em></p>
         </div>
+        <div class="bottom-options">
+            <form method="post" action="{% url 'thesis_list' %}">
+                {% csrf_token %}
+                <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">
+                <button class='back' type="submit">Back to Thesis List</button>
+            </form>
+        </div>
     {% endif %}
 
-    <div class="bottom-options">
-        <form method="post" action="{% url 'thesis_list' %}">
-            {% csrf_token %}
-            <input type="hidden" name="thesis-list" value="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}/{% endif %}">
-            <button class='back' type="submit">Back to Thesis List</button>
-        </form>
-    </div>
     <div class="other_thesis">
         <h3>See other Thesis</h3>
         <ul class='all_theses'>

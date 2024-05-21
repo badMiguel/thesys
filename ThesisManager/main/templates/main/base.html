@@ -29,10 +29,10 @@
                             {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
                                 <a href="{% url 'CRUD' account_type='coordinator' %}">Admin Settings</a>
                             {% elif user.account_type == 'supervisor' or user.account_type == 'admin' %}
-                                <a href="{% url 'group_application' %}">Applications</a>
+                                <a href="{% url 'group_application' action='review' %}">Applications</a>
                                 <a href="{% url 'CRUD' account_type='supervisor' %}">Admin Settings</a>
                             {% elif user.account_type == 'student' or user.account_type == 'admin' %}
-                                <a href="{% url  %}"></a>
+                                <a href="{% url 'group_application' action='view' %}">View Applications</a>
                             {% endif %} 
                         {% endif %}
                         {% if user.is_authenticated %}

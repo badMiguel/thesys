@@ -250,11 +250,6 @@ def thesis_list(request):
 
     return render(request, 'main/thesis_list.html', context)
        
-# Page not found function
-def handling_404(request, exception):
-    print("Handling 404 error")
-    return render(request, '404.html', {})
-
 @login_required
 @account_type_required('admin', 'unit coordinator')
 # functions for creating new data
@@ -545,7 +540,7 @@ def review_request(request, request_type=None, topic_number=None):
                 'back_to_settings': True,
                 'error_message': e
             }
-            return render(request, 'main/404.html', context)
+            return render(request, 'main/account_error.html', context)
                 
         context = {
             'request': True,
@@ -777,8 +772,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
             return render(request, 'main/request_crud.html', context)
 
 @login_required
-@account_type_required('admin', 'supervisor')
-def group_application(request, topic_number=None):
+@account_type_required('admin', 'supervisor', 'student')
+def group_application(request, action,topic_number=None):
     context = {
         
     }

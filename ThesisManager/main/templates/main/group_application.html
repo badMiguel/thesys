@@ -3,5 +3,9 @@
 {% block page_title%}Thesis Application{% endblock %}
 
 {% block main_body %}
-
+    {% if user.account_type == 'supervisor' %}
+        <h1>View Thesis Applications</h1>
+    {% elif user.account_type == 'student' %}
+        <h1>View Your Applications</h1>
+    {% endif %}
 {% endblock %}
