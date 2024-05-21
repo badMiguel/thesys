@@ -41,7 +41,7 @@
     {% else %}class="campus"{% endif %}>
     <p class = 'more_info'>Campus:</p>
     <ul class='campus_list'>    
-        {% if type == 'modified' or type == 'deleted' or modify is True or delete is True %}
+        {% if type == 'modified' or type == 'deleted' or modify is True or delete is True or rejected_thesis_request is True %}
             {% for campus in campus_list %}
                 <li class="campus-name">{{ campus }}</li>
             {% endfor %}
@@ -56,7 +56,7 @@
     {% else %}class="courses"{% endif %}>
     <p class = 'more_info'>Courses:</p>
     <ul class ='courses_list'>
-        {% if type == 'modified' or type == 'deleted' or modify is True  or delete is True%}
+        {% if type == 'modified' or type == 'deleted' or modify is True  or delete is True or rejected_thesis_request is True %}
             {% for course in course_list %}
                 <li class="course-name">{{course}}</li>
             {% endfor %}  

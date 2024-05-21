@@ -9,7 +9,7 @@
             <p>Thesis does not exist on our database.</p>
         {% else %}
             <h1 class="succes-heading">Success!</h1>
-            <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis.</p>
+            <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis {% if rejected_thesis_request is True %}request{% endif %}.</p>
             <div class="success-data">
                 {% if type == 'modified' or type == 'modify' or modify is True %}
                     {% with thesis.campus.all as campus_list %}
@@ -39,7 +39,7 @@
                     {% endwith %}
                     {% endwith %}
                     {% endwith %}
-                {% elif type == 'deleted' or delete is True %}
+                {% elif type == 'deleted' or delete is True or rejected_thesis_request is True %}
                     {% with old_thesis_data as thesis %}
                     {% with old_campus_list as campus_list %}
                     {% with old_course_list as course_list %}

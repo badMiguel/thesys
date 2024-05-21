@@ -498,6 +498,10 @@ def review_request(request, request_type=None, topic_number=None):
                 'group_taker_limit': thesis_to_review.group_taker_limit,
             }
             
+            thesis_to_review_data_copy = copy.copy(thesis_to_review_data)
+            thesis_to_review_data_campus = copy.copy(thesis_to_review.campus.all())
+            thesis_to_review_data_course = copy.copy(thesis_to_review.course.all())
+            
             old_thesis_data = None
             changed_data = None
             delete = None
@@ -543,8 +547,8 @@ def review_request(request, request_type=None, topic_number=None):
             if selected_action == 'accept':
                 if request_type == 'create':
                     thesis_to_create = Thesis.objects.create(**thesis_to_review_data)    
-                    thesis_to_create.campus.add(*Campus.objects.filter(campus__in = thesis_to_review.campus.all())),
-                    thesis_to_create.course.add(*Course.objects.filter(course__in = thesis_to_review.course.all())),
+                    thesis_to_create.campus.add(*Campus.objects.filter(campus__in = thesis_to_review_data_campus)),
+                    thesis_to_create.course.add(*Course.objects.filter(course__in = thesis_to_review_data_course)),
 
                     thesis_to_review.delete()                    
                     type = 'accepted'
@@ -553,8 +557,8 @@ def review_request(request, request_type=None, topic_number=None):
                 elif request_type == 'modify':
                     old_thesis.delete()
                     thesis_to_modify = Thesis.objects.create(**thesis_to_review_data)
-                    thesis_to_modify.campus.add(*Campus.objects.filter(campus__in = thesis_to_review.campus.all())),
-                    thesis_to_modify.course.add(*Course.objects.filter(course__in = thesis_to_review.course.all())),
+                    thesis_to_modify.campus.add(*Campus.objects.filter(campus__in = thesis_to_review_data_campus)),
+                    thesis_to_modify.course.add(*Course.objects.filter(course__in = thesis_to_review_data_course)),
                                      
                     thesis_to_review.delete()                    
 
@@ -586,8 +590,18 @@ def review_request(request, request_type=None, topic_number=None):
                 return render(request, 'main/success.html', context)
             
             elif selected_action == 'reject':
-                pass
-
+                thesis_to_review.delete()
+                
+                context = {
+                    'rejected_thesis_request': True,
+                    'type': 'rejected',
+                    'old_thesis_data': thesis_to_review_data_copy,
+                    'old_course_list': thesis_to_review_data_course,                    
+                    'old_campus_list': thesis_to_review_data_campus,
+                }
+                
+                return render(request, 'main/success.html', context)
+            
         except Exception as e:
             context = {
                 'error': True,
@@ -596,39 +610,6 @@ def review_request(request, request_type=None, topic_number=None):
             }
             return render(request, 'main/404.html', context)
                 
-        # elif selected_action == 'reject':
-            
-
-        # if selected_action == 'accept':
-        #     thesis_to_review.status = True
-        #     thesis_to_review.save()
-        #     requested_thesis.status = 'accepted'
-        #     requested_thesis.save()
-
-        #     context = {
-        #         'thesis': thesis_to_review,
-        #         'request': True,
-        #         'requested_by': requested_thesis.requested_by,
-        #         'request_date': requested_thesis.request_date,
-        #         'type': 'accepted'
-        #     }
-        #     return render(request, 'main/success.html', context)
-    
-        # elif selected_action == 'reject':
-        #     thesis_to_review.status = False
-        #     thesis_to_review.save()
-        #     requested_thesis.status = 'rejected'
-        #     requested_thesis.save()
-            
-        #     context = {
-        #         'thesis': thesis_to_review,
-        #         'request': True,
-        #         'requested_by': requested_thesis.requested_by,
-        #         'request_date': requested_thesis.request_date,
-        #         'type': 'rejected'
-        #     }
-        #     return render(request, 'main/success.html', context)
-
         context = {
             'request': True,
             'review_menu': False,
@@ -730,6 +711,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 return render(request, 'main/request_crud.html', context)
             
             else:
+                pass
+                '''
                 if request.path[:31] == '/thesis/request/modify/pending/':
                     modify_or_delete = 'modify'
                 elif request.path[:31] == '/thesis/request/delete/pending/':
@@ -744,6 +727,7 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 }
                 
                 return render(request, 'main/request_crud.html', context)
+                '''
         
         else:
             if request.path[:23] == '/thesis/request/modify/':
@@ -765,15 +749,15 @@ def request_crud(request, crud_action, status=None, topic_number=None):
             
             try:
                 request_modify_exists = ThesisRequestModify.objects.get(topic_number=topic_number)
-                request_exists = 'modify'
+                request_exists_modify = True
             except ThesisRequestModify.DoesNotExist:
-                request_exists = False
+                request_exists_modify = False
 
             try:
                 request_delete_exists = ThesisRequestDelete.objects.get(topic_number=topic_number)
-                request_exists = 'delete'
+                request_exists_delete = True
             except ThesisRequestDelete.DoesNotExist:
-                request_exists = False
+                request_exists_delete = False
                 
             initial_form_data = {
                 'topic_number': thesis.topic_number,
@@ -790,9 +774,9 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 if modify_or_delete == 'modify':  
                     try:                        
                         request_modify_exists.delete()
-                        request_exists = 'modify'
+                        request_exists_modify = True
                     except UnboundLocalError:
-                        request_exists = False
+                        request_exists_modify = False
                         
                     form = ThesisRequestFormModify(request.POST, initial=initial_form_data)
                     if form.is_valid() and form.has_changed():
@@ -850,7 +834,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                         form = ThesisRequestFormModify(initial=initial_form_data)
                         
                         context = {
-                            'request_exists': request_exists,
+                            'request_exists_modify': request_exists_modify,
+                            'request_exists_delete': request_exists_delete,
                             'form': form,
                             'request_type': 'modify',
                             'selected_thesis': thesis,
@@ -894,7 +879,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                         field.widget.attrs['disabled'] = True
 
             context = {
-                'request_exists': request_exists,
+                'request_exists_modify': request_exists_modify,
+                'request_exists_delete': request_exists_delete,
                 'form': form,
                 'request_type': modify_or_delete,
                 'menu': False,

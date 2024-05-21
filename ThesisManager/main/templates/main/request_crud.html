@@ -108,10 +108,13 @@
             {% endif %}
         {% else %}
             <h1 class="crud-heading">Request to {{ request_type|title }} Thesis</h1>
-            {% if request_exists == 'modify'  or request_exists == 'delete' %}
-                <p class="warning"><strong>Warning!</strong> You currently have a {{ request_exists }} request. 
-                    {% if request_type == 'modify' %}Modifying this thesis now will overwrite that request.
-                    {% else %}Delete option will be disabled.{% endif %} </p>
+            {% if request_type == 'modify' %}
+                <p class="warning"><strong>Warning!</strong> You currently have a 
+                    {% if request_exists_delete %}delete
+                    {% else %}modify{% endif %} request. 
+                    Modifying this thesis now will overwrite that request.</p>       
+            {% elif request_type == 'delete' %}
+                <p class="warning"><strong>Warning!</strong> You currently have a delete request. Delete option will be disabled.</p>
             {% endif %}
             {% if no_change %}
                 <p class="error">You did not make any changes to the thesis.</p>
@@ -166,7 +169,7 @@
                     </div>
                 {% endfor %}
                 <div class="submit-container">
-                    {% if request_exists == 'delete' and request_type == 'delete' %}
+                    {% if request_exists_delete is True %}
                         <button class="submit" type="submit" disabled>{{ request_type|title }}</button>
                     {% else %}
                         <button class="submit" type="submit">{{ request_type|title }}</button>
