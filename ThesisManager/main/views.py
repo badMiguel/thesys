@@ -860,7 +860,7 @@ def crud_entity(request, crud_action_entity, entity, name=None):
             if crud_action_entity == 'modify':
                 if request.method == 'POST':
                         
-                    form = form_entity(request.POST, instance=entity_object)
+                    form = form_entity(request.POST)
                     if form.is_valid() and form.has_changed():
                         old_object = copy.copy(name)
                         form.save()          
@@ -868,12 +868,16 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                                             
                         if entity == 'campus':
                             modified_entity_object = model.objects.get(campus = cleaned_data['campus'])
+                            model.objects.get(campus = name).delete()
                         elif entity == 'category':
                             modified_entity_object = model.objects.get(category = cleaned_data['category'])
+                            model.objects.get(category = name).delete()
                         elif entity == 'course':
                             modified_entity_object = model.objects.get(course = cleaned_data['course'])
+                            model.objects.get(course = name).delete()
                         elif entity == 'supervisor':
                             modified_entity_object = model.objects.get(supervisor = cleaned_data['supervisor'])
+                            model.objects.get(supervisor = name).delete()
                                       
                         context = {
                             'old_object': old_object,
