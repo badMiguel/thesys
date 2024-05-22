@@ -53,11 +53,7 @@
                 {% endif %}
             </form>
         </div>
-        {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
-            <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
-        {% elif user.account_type == 'supervisor' %}
-            <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
-        {% endif %}
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
     {% else %}
         <h1 class="crud-heading">{{ modify_or_delete }} Thesis</h1>
         {% if error %}
@@ -123,11 +119,7 @@
                 <a href="{% url 'delete_data' %}" class="back">Return to List</a>
             {% endif %}
             <a href="{% url 'thesis_details' topic_number=thesis.topic_number %}" class="back">Return to Thesis Details</a>
-            {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
-                <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
-            {% elif user.account_type == 'supervisor' %}
-                <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
-            {% endif %}
+            <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
         </div>
     {% endif %}
 {% endblock %}

@@ -3,27 +3,45 @@
 {% block page_title%}{{ crud_action_entity|title }} {{ entity|title }}{% endblock %}
 
 {% block main_body %}
-    <form action="" method="post" class="crud-form" novalidate>
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="field-container">
-                <div class="field-container-no-error">
-                    <div class="field-label">
-                        {{ field.label }}
+    <h1>{{ crud_action_entity|title }} {{ entity|title }}</h1>
+    {% if no_change %}
+        <p class="error">You did not make any changes to the thesis.</p>
+    {% endif %}
+    {% if menu is True  %}
+        <p class="menu-header">Choose {{ entity }} to {{ crud_action_entity }}.</p>
+        <ul class="object_container">
+            {% for object in entity_model %}
+                <li class="object">
+                    <p class="object-count">{{ forloop.counter }}.</p>
+                    <a class='object-link' href="{% url 'crud_entity' crud_action_entity=crud_action_entity entity=entity name=object %}">{{ object }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <form action="" method="post" class="crud-form" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field-container">
+                    <div class="field-container-no-error">
+                        <div class="field-label">
+                            {{ field.label }}
+                        </div>
+                        <div class="field-input">
+                            {{ field }}
+                        </div>
                     </div>
-                    <div class="field-input">
-                        {{ field }}
-                    </div>
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p class="error">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {% if field.errors %}
-                    {% for error in field.errors %}
-                        <p class="error">{{ error }}</p>
-                    {% endfor %}
-                {% endif %}
+            {% endfor %}
+            <div class="submit-container">
+                <button class='submit' type="submit">{{ crud_action_entity|title }}</button>
             </div>
-        {% endfor %}
-        <div class="submit-container">
-            <button class='submit' type="submit">Submit</button>
-        </div>
-    </form>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
 {% endblock %}

@@ -827,23 +827,107 @@ def crud_entity(request, crud_action_entity, entity, name=None):
         
         return render(request, 'main/CRUD_entity.html', context)
     
-    if not name:
-        if entity == 'campus':
-            entity_to_crud = Campus.objects.all()
-        
-        context = {
-            'crud_action_entity': crud_action_entity,
-            'entity': entity,
+    elif crud_action_entity == 'modify' or crud_action_entity == 'delete':
+        if not name:
+            entity_model = model.objects.all()
             
-        }
-        return render(request, 'main/CRUD_entity.html', context)
-    
-    
-    context = {
-        'crud_action_entity': crud_action_entity,
-        'entity': entity,
-    }
-    return render(request, 'main/CRUD_entity.html', context)
+            context = {
+                'crud_action_entity': crud_action_entity,
+                'entity': entity,
+                'entity_model': entity_model,
+                'menu': True,
+            }
+            return render(request, 'main/CRUD_entity.html', context)
+        
+        else:
+            try:
+                if entity == 'campus':
+                    entity_object = model.objects.get(campus = name)
+                elif entity == 'category':
+                    entity_object = model.objects.get(category = name)
+                elif entity == 'course':
+                    entity_object = model.objects.get(course = name)
+                elif entity == 'supervisor':
+                    entity_object = model.objects.get(supervisor = name)
+            except model.DoesNotExist:
+                context = {
+                    'entity_error': True,
+                    'fail': True,
+                    'entity': entity
+                }
+                return render(request, 'main/success.html', context)
+
+            if crud_action_entity == 'modify':
+                if request.method == 'POST':
+                        
+                    form = form_entity(request.POST, instance=entity_object)
+                    if form.is_valid() and form.has_changed():
+                        old_object = copy.copy(name)
+                        form.save()          
+                        cleaned_data = form.cleaned_data
+                                            
+                        if entity == 'campus':
+                            modified_entity_object = model.objects.get(campus = cleaned_data['campus'])
+                        elif entity == 'category':
+                            modified_entity_object = model.objects.get(category = cleaned_data['category'])
+                        elif entity == 'course':
+                            modified_entity_object = model.objects.get(course = cleaned_data['course'])
+                        elif entity == 'supervisor':
+                            modified_entity_object = model.objects.get(supervisor = cleaned_data['supervisor'])
+                                      
+                        context = {
+                            'old_object': old_object,
+                            'crud_action_entity': crud_action_entity,
+                            'modified_entity_object': modified_entity_object,
+                            'crud_entity': True,
+                            'entity': entity,
+                            'page_title': f'{crud_action_entity} {entity}'
+                        }
+                        return render(request, 'main/success.html', context)
+                    elif not form.has_changed():
+                        form = form_entity(instance=entity_object)
+                        
+                        context = {
+                            'no_change': True,
+                            'form': form,
+                            'crud_action_entity': crud_action_entity,
+                            'entity': entity,
+                        }                      
+                        
+                        return render(request, 'main/CRUD_entity.html', context)
+                
+                else:                        
+                    form = form_entity(instance=entity_object)
+                        
+                context = {
+                    'crud_action_entity': crud_action_entity,
+                    'entity': entity,
+                    'form': form,
+                }
+                return render(request, 'main/CRUD_entity.html', context)
+            elif crud_action_entity == 'delete':
+                if request.method == 'POST':
+                    old_object = copy.copy(entity_object)
+                    entity_object.delete()
+                    
+                    context = {
+                        'crud_action_entity': crud_action_entity,
+                        'entity': entity,
+                        'old_object': old_object,
+                        'crud_entity': True
+                    }
+                    return render(request, 'main/success.html', context)
+                
+                form = form_entity(instance=entity_object)
+                for field in form.fields.values():
+                    field.widget.attrs['readonly'] = True
+                    field.widget.attrs['disabled'] = True
+                context = {
+                    'crud_action_entity': crud_action_entity,
+                    'entity': entity,
+                    'form': form,
+                }
+                return render(request, 'main/CRUD_entity.html', context)
 
 @login_required
 @account_type_required('admin', 'unit coordinator', 'supervisor')

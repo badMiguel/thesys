@@ -43,11 +43,7 @@
         {% endfor %}
         <div class="submit-container"><button class="submit" type="submit">Create</button></div>
         <div class="bottom-options">
-            {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
-                <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
-            {% elif user.account_type == 'supervisor' %}
-                <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
-            {% endif %}
+            <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
         </div>
     </form>
 {% endblock %}
