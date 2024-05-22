@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, Course, Campus, Category, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -774,9 +774,17 @@ def request_crud(request, crud_action, status=None, topic_number=None):
 @login_required
 @account_type_required('admin', 'supervisor', 'student')
 def group_application(request, action,topic_number=None):
-    context = {
+    if action == 'review':
+        logged_in_supervisor = Supervisor.objects.get(supervisor=request.user)
+        group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor)
         
-    }
+        selected_action = request.POST.get('action')
+        
+        print(selected_action)
+        
+        context = {
+            'group_application_list': group_application_list,
+        }
     return render(request, 'main/group_application.html', context)
 
 @login_required

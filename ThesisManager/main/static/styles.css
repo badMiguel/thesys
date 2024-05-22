@@ -639,3 +639,23 @@ footer{
         font-weight: 500;
     }
 }
+
+.thesis-application{
+    margin: 3rem 0 ;
+    .thesis-application-container{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .application-detail{
+        display: flex;
+    }
+
+    .application-label{
+        width: 10rem;
+    }
+
+    hr{
+        margin: 1rem 0 2rem 0;
+    }
+}

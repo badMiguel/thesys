@@ -30,9 +30,15 @@ FOR CREATING USERS WITH ELEVATED ACCESS FOR ALLOWING CHANGES
 def create_new_user(request):
     user = get_user_model()
     
-    UnitCoordinator = user.objects.create_user("unitcoordinator", "unitcoordinator", 'unit coordinator')
-    Supervisor = user.objects.create_user("supervisor", "supervisor", 'supervisor')
-    Student = user.objects.create_user("student", "student", 'student')
+    supervisors = ['Bharanidharan Shanmugam', 'Yakub Sebastian', 'Sami Azam', 'Asif Karim']
+    
+    for supervisor in supervisors:
+        Supervisor = user.objects.create_user(supervisor, "supervisor", 'supervisor')
+        
+    
+    # UnitCoordinator = user.objects.create_user("unitcoordinator", "unitcoordinator", 'unit coordinator')
+    # Supervisor = user.objects.create_user("supervisor", "supervisor", 'supervisor')
+    # Student = user.objects.create_user("student", "student", 'student')
     return render(request, 'users/login.html')
 '''
 

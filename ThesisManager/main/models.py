@@ -139,7 +139,7 @@ class ThesisRequestDelete(ThesisBase, ThesisRequestBase):
     def __str__(self):
         return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
            
-class GroupApplication(models.Model):
+class GroupApplicationBase(models.Model):
     STATUS_CHOICES = [
         ('pending', 'pending'),
         ('accepted', 'accepted'),
@@ -152,7 +152,17 @@ class GroupApplication(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, verbose_name='Status', default='pending')
 
     class Meta:
+        abstract = True
+
+# For supervisors
+class GroupApplication(GroupApplicationBase):
+    class Meta:
         unique_together = ('thesis', 'group')
     
     def __str__(self):
         return f'{self.group} - {self.thesis}'
+    
+# For students
+class GroupApplicationStatus(GroupApplicationBase):
+    def __str__(self):
+        return f'{self.group} - {self.status} - {self.thesis}'

@@ -5,6 +5,32 @@
 {% block main_body %}
     {% if user.account_type == 'supervisor' %}
         <h1>View Thesis Applications</h1>
+        <p>Showing thesis applications that is under your name: {{ user.username }}</p>
+        <ul class="thesis-application">
+            {% for group_application in group_application_list %}
+                <li class="thesis-application-container">
+                    <div class="application-detail">
+                        <p class="application-label"><strong>Applicant Name:</strong></p>
+                        <p>{{ group_application.group|title }}</p>
+                    </div>
+                    <div class="application-detail">
+                        <p class="application-label"><strong>Applied For:</strong></p>
+                        <p>{{ group_application.thesis.topic_number|title }} - {{ group_application.thesis.title|title }}</p>
+                    </div>
+                    <div class="application-detail">
+                        <p class="application-label"><strong>Application Date:</strong></p> 
+                        <p>{{ group_application.application_date }}</p>
+                    </div>
+                </li>
+                <form class="accept-or-reject" action="" method="post">
+                    {% csrf_token %}
+                    <button class='accept-or-reject-button' type="submit" name="action" value="accept">Accept</button>
+                    <button class='accept-or-reject-button' type="submit" name="action" value="reject">Reject</button>
+                </form>
+                <hr>                
+            {% endfor %}
+        </ul>
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
     {% elif user.account_type == 'student' %}
         <h1>View Your Applications</h1>
     {% endif %}
