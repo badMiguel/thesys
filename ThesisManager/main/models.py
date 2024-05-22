@@ -5,14 +5,8 @@ from users.models import CustomUser
 # Create your models here.
 
 class Campus(models.Model):
-    CAMPUS_CHOICES = [
-        ('Casuarina', 'Casuarina'),
-        ('Sydney', 'Sydney'),
-        ('External', 'External'),
-    ]
     campus = models.CharField(
         max_length=20,
-        choices=CAMPUS_CHOICES,
         verbose_name='Campus Name',
         primary_key=True,
     )
@@ -21,20 +15,8 @@ class Campus(models.Model):
         return self.campus
 
 class Course(models.Model):
-    COURSE_CHOICES = [
-        ('Chemical Engineering', 'Chemical Engineering'),
-        ('Civil and Structural Engineering', 'Civil and Structural Engineering'),
-        ('Electrical and Electronics Engineering', 'Electrical and Electronics Engineering'),
-        ('Mechanical Engineering', 'Mechanical Engineering'),
-        ('Computer Science', 'Computer Science'),
-        ('Cyber Security', 'Cyber Security'),
-        ('Data Science', 'Data Science'),
-        ('Information Systems and Data Science', 'Information Systems and Data Science'),
-        ('Software Engineering', 'Software Engineering'),
-    ]  
     course = models.CharField(
         max_length=50,
-        choices=COURSE_CHOICES,
         verbose_name='Course Name',
         primary_key=True,
     )
@@ -43,14 +25,8 @@ class Course(models.Model):
         return self.course
     
 class Category(models.Model):
-    CATEGORY_CHOICES = [
-        ('Artificial Intelligence, Machine Learning and Data Science', 'Artificial Intelligence, Machine Learning and Data Science'),
-        ('Biomedical Engineering and Health Informatics', 'Biomedical Engineering and Health Informatics'),
-        ('Cyber Security', 'Cyber Security'),
-    ]
     category = models.CharField(
         max_length=100,
-        choices=CATEGORY_CHOICES,
         verbose_name='Category Name',
         primary_key=True,
     )
@@ -59,15 +35,8 @@ class Category(models.Model):
         return self.category
     
 class Supervisor(models.Model):
-    SUPERVISOR_CHOICES = [
-        ('Bharanidharan Shanmugam', 'Bharanidharan Shanmugam'), 
-        ('Yakub Sebastian', 'Yakub Sebastian'), 
-        ('Sami Azam', 'Sami Azam'), 
-        ('Asif Karim', 'Asif Karim'),
-    ]
     supervisor = models.CharField(
         max_length=50,
-        choices=SUPERVISOR_CHOICES,
         verbose_name='Supervisor Name',
         primary_key=True,
     )

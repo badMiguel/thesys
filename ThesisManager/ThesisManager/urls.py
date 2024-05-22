@@ -60,6 +60,10 @@ urlpatterns = [
     path("thesis/application/<str:action>/", views.group_application, name='group_application'),
     path("thesis/application/<str:action>/<int:topic_number>/", views.group_application, name='group_application'),
     
+    # CRUD for entity (supervisor, campus, course, category)
+    path("<str:crud_action_entity>/<str:entity>", views.crud_entity, name='crud_entity'),
+    path("<str:crud_action_entity>/<str:entity>/<str:name>/", views.crud_entity, name='crud_entity'),
+    
     # Troubleshooting and adding default data to models
     # path('test/', views.data_retrieval_test), # for troubleshooting purposes
     # path('add_prev_data/', views.add_previous_data), # add previous given data

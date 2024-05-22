@@ -9,7 +9,14 @@
             <p>Thesis does not exist on our database.</p>
         {% else %}
             <h1 class="succes-heading">Success!</h1>
-            <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis {% if rejected_thesis_request is True %}request{% endif %}.</p>
+            {% if crud_entity is True %}
+                <p class="success-caption">Action: <strong>{{ crud_action_entity|title }}</strong> - <strong>{{ entity|title }}</strong> is successful.</p>
+                {% if crud_action_entity == 'add' %}
+                    <p>{{ object_created|title }} successfully added in the database.</p>
+                {% endif %}
+            {% else %}
+                <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis {% if rejected_thesis_request is True %}request{% endif %}.</p>
+            {% endif %}
             <div class="success-data">
                 {% if type == 'modified' or type == 'modify' or modify is True %}
                     {% with thesis.campus.all as campus_list %}
@@ -47,7 +54,8 @@
                     {% endwith %}
                     {% endwith %}
                     {% endwith %}
-                {% elif delete is True %}
+                {% elif crud_entity is True %}
+                    
                 {% else %}
                     {% include "main/thesis_details_template.html" %}
                 {% endif %}

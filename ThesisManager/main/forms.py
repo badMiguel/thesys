@@ -1,5 +1,5 @@
 from django import forms
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, Campus, Category, Course, Supervisor
 
 class ThesisFormBase(forms.ModelForm):    
     class Meta:
@@ -47,3 +47,42 @@ class ThesisRequestFormDelete(ThesisFormBase):
     class Meta(ThesisForm.Meta): 
         model = ThesisRequestDelete
 
+class CampusForm(forms.ModelForm):
+    class Meta:
+        model = Campus
+        
+        fields = ['campus']
+
+        labels = {'campus': 'Campus'}
+
+        widgets = {'campus': forms.TextInput(attrs={'class': 'field', 'placeholder': 'Enter campus name'}),}
+        
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        
+        fields = ['category']
+
+        labels = {'category': 'Category'}
+
+        widgets = {'category': forms.TextInput(attrs={'class': 'field', 'placeholder': 'Enter category name'}),}
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        
+        fields = ['course']
+
+        labels = {'course': 'Course'}
+
+        widgets = {'course': forms.TextInput(attrs={'class': 'field', 'placeholder': 'Enter course name'}),}
+
+class SupervisorForm(forms.ModelForm):
+    class Meta:
+        model = Supervisor
+        
+        fields = ['supervisor']
+
+        labels = {'supervisor': 'Supervisor'}
+
+        widgets = {'supervisor': forms.TextInput(attrs={'class': 'field', 'placeholder': 'Enter supervisor name'}),}

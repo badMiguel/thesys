@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, Course, Campus, Category, Supervisor
-from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete
+from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm
 from .decorators import account_type_required
 from users.models import CustomUser
 
@@ -780,10 +780,76 @@ def group_application(request, action,topic_number=None):
     return render(request, 'main/group_application.html', context)
 
 @login_required
+@account_type_required('admin', 'unit coordinator')
+# CRUD for entity (supervisor, campus, course, category)
+def crud_entity(request, crud_action_entity, entity, name=None):
+    entity_model_form_list = {
+        'campus': (Campus, CampusForm),
+        'category': (Category, CategoryForm),
+        'course': (Course, CourseForm),
+        'supervisor': (Supervisor, SupervisorForm)
+    }
+    
+    model, form_entity = entity_model_form_list[entity]
+
+    if crud_action_entity == 'add':
+        if request.method == 'POST':
+            form = form_entity(request.POST)
+            if form.is_valid():
+                cleaned_data = form.cleaned_data[entity]
+                form.save()
+                if entity == 'campus':
+                    created_entity_object = model.objects.get(campus = cleaned_data)
+                elif entity == 'category':
+                    created_entity_object = model.objects.get(category = cleaned_data)
+                elif entity == 'course':
+                    created_entity_object = model.objects.get(course = cleaned_data)
+                elif entity == 'supervisor':
+                    created_entity_object = model.objects.get(supervisor = cleaned_data)
+
+                context = {
+                    'crud_action_entity': crud_action_entity,
+                    'object_created': created_entity_object,
+                    'crud_entity': True,
+                    'entity': entity,
+                    'page_title': f'{crud_action_entity} {entity}'
+                }
+                
+                return render(request, 'main/success.html', context)
+        else:
+            form = form_entity
+            
+        context = {
+            'form': form,
+            'crud_action_entity': crud_action_entity,
+            'entity': entity,
+        }
+        
+        return render(request, 'main/CRUD_entity.html', context)
+    
+    if not name:
+        if entity == 'campus':
+            entity_to_crud = Campus.objects.all()
+        
+        context = {
+            'crud_action_entity': crud_action_entity,
+            'entity': entity,
+            
+        }
+        return render(request, 'main/CRUD_entity.html', context)
+    
+    
+    context = {
+        'crud_action_entity': crud_action_entity,
+        'entity': entity,
+    }
+    return render(request, 'main/CRUD_entity.html', context)
+
+@login_required
 @account_type_required('admin', 'unit coordinator', 'supervisor')
 def admin_settings(request, account_type):
        
-    return render(request, 'main/CRUD_thesis.html')
+    return render(request, 'main/admin_settings.html')
 
 
 
