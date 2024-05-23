@@ -1,5 +1,5 @@
 from django import forms
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, Campus, Category, Course, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, Campus, Category, Course, Supervisor, GroupApplication
 
 class ThesisFormBase(forms.ModelForm):    
     class Meta:
@@ -86,3 +86,8 @@ class SupervisorForm(forms.ModelForm):
         labels = {'supervisor': 'Supervisor'}
 
         widgets = {'supervisor': forms.TextInput(attrs={'class': 'field', 'placeholder': 'Enter supervisor name'}),}
+
+class GroupApplicationForm(forms.ModelForm):
+    class Meta:
+        model = GroupApplication
+        fields = ['thesis', 'group', 'status']
