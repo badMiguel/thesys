@@ -140,24 +140,28 @@ class ThesisRequestDelete(ThesisBase, ThesisRequestBase):
         return f'{str(self.topic_number)} - {self.title} - {self.requested_by}' 
            
 class GroupApplicationBase(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'pending'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')        
+    ]    
     group_application_id = models.AutoField(verbose_name='Group Application ID', primary_key=True)
     thesis = models.ForeignKey(Thesis, on_delete=models.PROTECT, verbose_name='Thesis')
     group = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Group')
     application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, verbose_name='Status', default='pending')
 
     class Meta:
         abstract = True
 
 class GroupApplication(GroupApplicationBase):
-    STATUS_CHOICES = [
-        ('pending', 'pending'),
-        ('accepted', 'accepted'),
-        ('rejected', 'rejected')        
-    ]  
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, verbose_name='Status', default='pending')
     class Meta:
         unique_together = ('thesis', 'group')
     
+    def __str__(self):
+        return f'{self.group} - {self.thesis}'
+        
+class GroupApplicationStatus(GroupApplicationBase):
     def __str__(self):
         return f'{self.group} - {self.thesis}'
         

@@ -426,7 +426,7 @@ footer{
 }
 
 
-.thesis-modify-container, .thesis-modify-container-pending{    
+.thesis-modify-container, .thesis-modify-container-pending, .thesis-application-container{    
     .thesis-title-container {
         display:flex;
         align-items:flex-start;
@@ -642,7 +642,7 @@ footer{
 
 .thesis-application{
     margin: 3rem 0 ;
-    .thesis-application-container{
+    .thesis-application-review-container{
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -665,3 +665,6 @@ footer{
     width: 10rem;
 }
 
+.heading-caption{
+    margin: 0 0 3rem 0;
+}

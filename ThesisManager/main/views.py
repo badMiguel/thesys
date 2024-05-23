@@ -1,11 +1,9 @@
 import random
 import copy
-from django.shortcuts import render, HttpResponseRedirect
-from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, GroupApplicationStatus, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -257,12 +255,7 @@ def thesis_list(request):
     
     context = {
         # for the paginator feature
-        'page_obj': page_obj, # contains various data about the current page
-        'total_pages': total_pages, 
-        'start_num': start_num, # starting number of the thesis in the page
-        'end_num': end_num,
-        'total_theses': total_theses, 
-        'items_per_page': items_per_page, 
+        'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         # for the filter feature
         'supervisor_list': supervisor_count,
         'campus_list': campus_count,
@@ -329,12 +322,7 @@ def modify_or_delete(request, topic_number=None):
             'modify_or_delete_menu': True,
             'new_description': new_description,
             # for the paginator feature
-            'page_obj': page_obj, # contains various data about the current page
-            'total_pages': total_pages, 
-            'start_num': start_num, # starting number of the thesis in the page
-            'end_num': end_num,
-            'total_theses': total_theses, 
-            'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         }
         
         return render(request, "main/modify_or_delete.html", context)
@@ -455,12 +443,7 @@ def review_request(request, request_type=None, topic_number=None):
             'thesis': thesis,
             'new_description': new_description,
             # for the paginator feature
-            'page_obj': page_obj, # contains various data about the current page
-            'total_pages': total_pages, 
-            'start_num': start_num, # starting number of the thesis in the page
-            'end_num': end_num,
-            'total_theses': total_theses, 
-            'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         }
         return render(request, 'main/review_request.html', context)
     else:
@@ -637,12 +620,7 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                     'thesis': thesis,
                     'new_description': new_description,
                     # for the paginator feature
-                    'page_obj': page_obj, # contains various data about the current page
-                    'total_pages': total_pages, 
-                    'start_num': start_num, # starting number of the thesis in the page
-                    'end_num': end_num,
-                    'total_theses': total_theses, 
-                    'items_per_page': items_per_page, 
+                    'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
                 }
             
                 return render(request, 'main/request_crud.html', context)
@@ -830,6 +808,9 @@ def group_application(request, action,topic_number=None):
         }
 
     elif action == 'view':
+        accepted_application = GroupApplication.objects.get(status='accepted')
+        print(accepted_application)
+        
         logged_in_student = CustomUser.objects.get(username = request.user)
         group_application_list = GroupApplication.objects.filter(group__username = logged_in_student)
 
@@ -842,12 +823,7 @@ def group_application(request, action,topic_number=None):
             'group_application_list': group_application_list,
             'new_description': new_description,
             # for the paginator feature
-            'page_obj': page_obj, # contains various data about the current page
-            'total_pages': total_pages, 
-            'start_num': start_num, # starting number of the thesis in the page
-            'end_num': end_num,
-            'total_theses': total_theses, 
-            'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         }
 
     return render(request, 'main/group_application.html', context)
