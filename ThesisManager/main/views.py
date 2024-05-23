@@ -777,7 +777,11 @@ def group_application(request, action,topic_number=None):
     #defining context and group_application_list to avoid unboundlocalerror (reference before assignment)
     context = {}
     group_application_list = GroupApplication.objects.none()
-    
+    info = {
+        "thesis" : "16",
+        "group" : "1",
+        "status" : "pending",
+    }
     if action == 'review':
         logged_in_supervisor = Supervisor.objects.get(supervisor=request.user)
         group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor)
@@ -791,7 +795,7 @@ def group_application(request, action,topic_number=None):
         }
     elif action == "apply":
         if request.method == 'POST':
-            form = GroupApplicationForm(request.POST)
+            form = GroupApplicationForm(info)
             if form.is_valid():
                 form.save()
                 return redirect('main/thesis.html')
