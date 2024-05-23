@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, Course, Campus, Category, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -134,18 +134,51 @@ def thesis_details(request, topic_number):
 
     random_theses = random.sample(remaining_theses, min(2, len(remaining_theses)))
     
+    if request.method == 'POST':
+        thesis_data = Thesis.objects.get(topic_number=topic_number)
+        current_student = request.user
+        
+        application_data = {
+            'thesis': thesis_data,
+            'group': current_student,
+            'status': 'pending',
+        }
+
+        form = GroupApplicationForm(application_data)
+        if form.is_valid():
+            form.save()
+
+            context = {
+                'thesis': current_thesis,
+                'random_theses': random_theses,
+                'successfully_applied': True,
+                'form': form,
+            }
+
+            return render(request, 'main/thesis_details.html', context)
+
+        else:
+            try:
+                application_exists_data = GroupApplication.objects.get(thesis__topic_number = topic_number, group=current_student )
+                application_exists = True
+            except GroupApplication.DoesNotExist:
+               application_exists = False 
+
+            context = {
+                'thesis': current_thesis,
+                'random_theses': random_theses,
+                'successfully_applied': False,
+                'form': form,
+                'application_exists': application_exists,
+            }
+
+            return render(request, 'main/thesis_details.html', context)
     context = {
         'thesis': current_thesis,
         'random_theses': random_theses,
     }
 
     return render(request, 'main/thesis_details.html', context)
-
-@csrf_protect
-def previous_page_view(request):
-    if request.method == 'POST':
-        return redirect('thesis_list')
-
 
 def thesis_list(request):    
     theses = Thesis.objects.all()
@@ -774,34 +807,49 @@ def request_crud(request, crud_action, status=None, topic_number=None):
 @login_required
 @account_type_required('admin', 'supervisor', 'student')
 def group_application(request, action,topic_number=None):
-    #defining context and group_application_list to avoid unboundlocalerror (reference before assignment)
-    context = {}
-    group_application_list = GroupApplication.objects.none()
-    info = {
-        "thesis" : "16",
-        "group" : "1",
-        "status" : "pending",
-    }
     if action == 'review':
         logged_in_supervisor = Supervisor.objects.get(supervisor=request.user)
         group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor)
         
         selected_action = request.POST.get('action')
-        
-        print(selected_action)
-        
+        selected_thesis = request.POST.get('thesis')
+        selected_thesis_group = request.POST.get('student')
+
+        if selected_action == 'accept':
+            group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
+            group_application_data.status = 'accepted'
+            group_application_data.save()
+            
+            GroupApplicationAccepted.objects.create(accepted_application=group_application_data)
+
+        elif selected_action == 'reject':
+            pass
+
         context = {
             'group_application_list': group_application_list,
         }
-    elif action == "apply":
-        if request.method == 'POST':
-            form = GroupApplicationForm(info)
-            if form.is_valid():
-                form.save()
-                return redirect('main/thesis.html')
-    else:
-        form = GroupApplicationForm()
-        context['form'] = form
+
+    elif action == 'view':
+        logged_in_student = CustomUser.objects.get(username = request.user)
+        group_application_list = GroupApplication.objects.filter(group__username = logged_in_student)
+
+        applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
+        new_description = truncate_description(applied_thesis_list)
+
+        page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, group_application_list)
+
+        context = {
+            'group_application_list': group_application_list,
+            'new_description': new_description,
+            # for the paginator feature
+            'page_obj': page_obj, # contains various data about the current page
+            'total_pages': total_pages, 
+            'start_num': start_num, # starting number of the thesis in the page
+            'end_num': end_num,
+            'total_theses': total_theses, 
+            'items_per_page': items_per_page, 
+        }
+
     return render(request, 'main/group_application.html', context)
     
 @login_required

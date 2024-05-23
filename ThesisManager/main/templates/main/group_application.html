@@ -5,7 +5,7 @@
 {% block main_body %}
     {% if user.account_type == 'supervisor' %}
         <h1>View Thesis Applications</h1>
-        <p>Showing thesis applications that is under your name: {{ user.username }}</p>
+        <p>Showing thesis applications that is under your name: {{ user.username|title }}</p>
         <ul class="thesis-application">
             {% for group_application in group_application_list %}
                 <li class="thesis-application-container">
@@ -24,6 +24,8 @@
                 </li>
                 <form class="accept-or-reject" action="" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="thesis" value="{{ group_application.thesis.topic_number }}">
+                    <input type="hidden" name="student" value="{{ group_application.group.username }}">
                     <button class='accept-or-reject-button' type="submit" name="action" value="accept">Accept</button>
                     <button class='accept-or-reject-button' type="submit" name="action" value="reject">Reject</button>
                 </form>
@@ -33,5 +35,46 @@
         <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
     {% elif user.account_type == 'student' %}
         <h1>View Your Applications</h1>
+        <div class='per_page'>
+            <p>Show by:</p>
+            <a href="?items_per_page=5" {% if items_per_page == 5 %}class="active"{% endif %}>5</a>
+            <a href="?items_per_page=10" {% if items_per_page == 10 %}class="active"{% endif %}>10</a>
+            <a href="?items_per_page=20" {% if items_per_page == 20 %}class="active"{% endif %}>20</a>
+            <a href="?items_per_page=50" {% if items_per_page == 50 %}class="active"{% endif %}>50</a>
+        </div>
+        {% if group_application_list %}
+            <p>Showing thesis that you, {{ user.username|title }}, have applied for.</p>
+        {% else %}
+            <p>You currently have no thesis requests.</p>
+        {% endif %}
+        {% for group_application in page_obj %}
+            <a href="{% url 'thesis_details' group_application.thesis.topic_number %}">
+                <div class='thesis-title-container'>
+                    <h3 class="topic_number-edit">{{ group_application.thesis.topic_number }}</h3>
+                    <h3>{{ group_application.thesis.title }}</h3>
+                </div>
+            </a>
+            {% for number, description in new_description.items %}
+                {% if group_application.thesis.topic_number == number %}
+                    <p class='description'>{{ description }}</p>
+                {% endif %}
+            {% endfor %}
+            <p class="status"><strong>Status:</strong> {{ group_application.status|title }}</p>
+            <hr>                 
+        {% endfor %}
+        <div class="thesis-pages">
+            <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+            <form class='quick-links' action="" method="get">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
+                {% endif %}
+                {% for total_pages in total_pages %}                    
+                    <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
+                {% endif %}
+            </form>
+        </div>
     {% endif %}
 {% endblock %}
