@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+
+{% block page_title %}Groups in {{ thesis.title|title }}{% endblock  %}
+
+{% block main_body %}
+    <h1 class="group-thesis-heading">{{ thesis.title|title }}</h1>
+    <p class="heading-caption">Enrolled Students:</p>
+    <section class="group-list-container">
+        {% for group in groups_in_thesis %}
+            <div class="group-container">
+                <p>{{ forloop.counter }}. </p>
+                <p>{{ group.group }}</p>     
+            </div>
+            <div class="group-settings">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove Group</button>
+                </form>
+            </div>
+            <hr class="list-line">
+        {% endfor %}
+    </section>
+{% endblock %}

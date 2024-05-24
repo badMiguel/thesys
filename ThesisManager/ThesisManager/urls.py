@@ -59,6 +59,7 @@ urlpatterns = [
     # Review/view group applications - for students and supervisor
     path("thesis/application/<str:action>/", views.group_application, name='group_application'),
     path("thesis/application/<str:action>/<int:topic_number>/", views.group_application, name='group_application'),
+    path("thesis/<int:topic_number>/groups/", views.groups_thesis, name="groups_thesis"),
     
     # CRUD for entity (supervisor, campus, course, category)
     path("<str:crud_action_entity>/<str:entity>", views.crud_entity, name='crud_entity'),

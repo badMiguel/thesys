@@ -132,12 +132,21 @@ def thesis_details(request, topic_number):
     remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
 
     random_theses = random.sample(remaining_theses, min(2, len(remaining_theses)))
+    thesis_accepted_exists = False
+    thesis_application_exists = False
     
-    thesis_accepted= GroupApplication.objects.filter(group=request.user, status='accepted')
-    if thesis_accepted:
-        thesis_accepted_exists = True
-    else:
-        thesis_accepted_exists = False
+    if request.user.is_authenticated:
+        thesis_accepted= GroupApplication.objects.filter(group=request.user, status='accepted')
+        if thesis_accepted:
+            thesis_accepted_exists = True
+        else:
+            thesis_accepted_exists = False
+
+        thesis_application = GroupApplication.objects.filter(group=request.user, thesis__topic_number=topic_number)
+        if thesis_application:
+            thesis_application_exists = True
+        else:
+            thesis_application_exists = False
      
     if request.method == 'POST':
         thesis_data = Thesis.objects.get(topic_number=topic_number)
@@ -182,6 +191,7 @@ def thesis_details(request, topic_number):
         'thesis': current_thesis,
         'random_theses': random_theses,
         'thesis_accepted_exists': thesis_accepted_exists,
+        'thesis_application_exists': thesis_application_exists, 
     }
 
     return render(request, 'main/thesis_details.html', context)
@@ -1021,7 +1031,17 @@ def admin_settings(request, account_type):
        
     return render(request, 'main/admin_settings.html')
 
-
+@login_required
+@account_type_required('admin', 'unit coordinator', 'supervisor')
+def groups_thesis(request, topic_number):
+    thesis = Thesis.objects.get(topic_number = topic_number)
+    
+    groups_in_thesis = GroupApplication.objects.filter(status='accepted', thesis__topic_number = topic_number)
+    context = {
+        'thesis': thesis,
+        'groups_in_thesis': groups_in_thesis, 
+    } 
+    return render(request, 'main/groups_in_a_thesis.html', context)
 
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 

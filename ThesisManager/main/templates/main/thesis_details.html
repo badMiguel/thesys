@@ -10,36 +10,43 @@
             </li>
         </ul>
         {% if successfully_applied is not True %}
-             {% if application_exists is True %}
-                <p class="error">You have already applied to this thesis.</p>               
-             {% endif %}
+            {% if application_exists is True %}
+                <p class="error"><em>You have already applied to this thesis.</em></p>               
+            {% endif %}
         {% else %}
-            <p class="success">You have successfully applied to this thesis.</p>
+            <p class="success"><em>You have successfully applied to this thesis.</em></p>
+        {% endif %}
+        {% if thesis_application_exists is True %}
+            <p class="warning"><em>You have already applied for this thesis.</em></p>
         {% endif %}
         <div class="bottom-options">
             <div class="crud-bottom-options">
                 {% if user.account_type == 'student' %}
                     <form action="" method="post" class="apply-button-form">
                         {% csrf_token %}
-                        {% if thesis_accepted_exists is False %}
-                            <button type='submit' class="apply-button-student">Apply</button>
-                        {% else %}
+                        {% if thesis_accepted_exists is True %}
+                        {% elif thesis_application_exists is True %}
                             <button type='submit' class="apply-button-student" disabled>Apply</button>
+                            <p class="warning"><em>You have already applied for this thesis.</em></p>
+                        {% else %}
+                            <button type='submit' class="apply-button-student">Apply</button>
                         {% endif %}
                     </form>
                 {% elif user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
                     <a href="{% url 'modify' thesis.topic_number %}">Edit</a>
                     <a href="{% url 'delete_data' thesis.topic_number %}">Delete</a>
+                    <a href="{% url 'groups_thesis' topic_number=thesis.topic_number %}">View Groups</a>
                 {% elif user.account_type == 'supervisor' %}
                     <a href="{% url 'create_request' crud_action='modify' topic_number=thesis.topic_number %}">Edit</a>
                     <a href="{% url 'create_request' crud_action='delete' topic_number=thesis.topic_number %}">Delete</a>
+                    <a href="{% url 'groups_thesis' topic_number=thesis.topic_number %}">View Groups</a>
                 {% endif %}
             </div>
             <a href="{% url 'thesis_list' %}" class="back">Back to Thesis List</a>
         </div>
     {% else %}
         <div class="error_message">
-            <h2>{{ error_message }}</h2>
+            <p>{{ error_message }}</p>
             <p><em>Please input a valid thesis number and try again.</em></p>
         </div>
         <div class="bottom-options">
