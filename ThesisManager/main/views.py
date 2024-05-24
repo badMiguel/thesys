@@ -3,7 +3,7 @@ import copy
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, GroupApplicationStatus, Course, Campus, Category, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -787,41 +787,56 @@ def request_crud(request, crud_action, status=None, topic_number=None):
 def group_application(request, action,topic_number=None):
     if action == 'review':
         logged_in_supervisor = Supervisor.objects.get(supervisor=request.user)
-        group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor)
+        group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor, status='pending')
         
         selected_action = request.POST.get('action')
         selected_thesis = request.POST.get('thesis')
         selected_thesis_group = request.POST.get('student')
-
+         
         if selected_action == 'accept':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'accepted'
             group_application_data.save()
             
-            GroupApplicationAccepted.objects.create(accepted_application=group_application_data)
-
+            accepted_group_application = GroupApplicationAccepted.objects.create(accepted_application=group_application_data)
+                        
+            cancelled_group_application = [application for application in GroupApplication.objects.filter(group__username=selected_thesis_group, status='pending')]
+            for application in cancelled_group_application:
+               application.status = 'cancelled'
+               application.save() 
         elif selected_action == 'reject':
-            pass
+            group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
+            group_application_data.status = 'rejected'
+            group_application_data.save()
 
         context = {
             'group_application_list': group_application_list,
         }
 
     elif action == 'view':
-        accepted_application = GroupApplication.objects.get(status='accepted')
-        print(accepted_application)
-        
         logged_in_student = CustomUser.objects.get(username = request.user)
-        group_application_list = GroupApplication.objects.filter(group__username = logged_in_student)
+        try:
+            accepted_application = [GroupApplication.objects.get(status='accepted', group__username = logged_in_student)]
+            accepted_application_exists = True
+        except GroupApplication.DoesNotExist:
+            accepted_application_exists = False
+            
+        if accepted_application_exists:
+            group_application_list = accepted_application
+            applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
+            new_description = truncate_description(applied_thesis_list)
+        else:
+            group_application_list = GroupApplication.objects.filter(group__username = logged_in_student)
 
-        applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
-        new_description = truncate_description(applied_thesis_list)
+            applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
+            new_description = truncate_description(applied_thesis_list)
 
         page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, group_application_list)
 
         context = {
             'group_application_list': group_application_list,
             'new_description': new_description,
+            'accepted_application_exists': accepted_application_exists,
             # for the paginator feature
             'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         }

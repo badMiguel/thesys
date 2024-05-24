@@ -45,7 +45,11 @@
             </div>
         </div>
         {% if group_application_list %}
-            <p class="heading-caption">Showing the thesis that you, {{ user.username|title }}, have applied for.</p>
+            {% if accepted_application_exists %}
+                <p class="heading-caption">Congratulaations! Your application has been accepted.</p>
+            {% else %}
+                <p class="heading-caption">Showing the thesis that you have applied for.</p>
+            {% endif %}
         {% else %}
             <p>You currently have no thesis requests.</p>
         {% endif %}

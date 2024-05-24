@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Campus, Course, Category, Supervisor, Thesis, GroupApplication, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplicationAccepted
+from .models import Campus, Course, Category, Supervisor, Thesis, GroupApplication, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplicationAccepted 
 
 # Register your models here.
 
