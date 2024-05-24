@@ -158,6 +158,7 @@ class GroupApplicationBase(models.Model):
 class GroupApplication(GroupApplicationBase):
     class Meta:
         unique_together = ('thesis', 'group')
+        ordering = ['status'] 
     
     def __str__(self):
         return f'{self.group} - {self.thesis}'

@@ -220,6 +220,10 @@ footer{
     flex-shrink: 0;
 }
 
+.error-caption{
+    margin: 2rem 0;
+}
+
 .error_message{
     
     padding: 50px 0;
@@ -665,6 +669,6 @@ footer{
     width: 10rem;
 }
 
-.heading-caption{
-    margin: 0 0 3rem 0;
+.heading-caption, .status{
+    margin: 2rem 0;
 }

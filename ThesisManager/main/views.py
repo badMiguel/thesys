@@ -3,6 +3,7 @@ import copy
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.db.models import ProtectedError
 from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
@@ -132,6 +133,12 @@ def thesis_details(request, topic_number):
 
     random_theses = random.sample(remaining_theses, min(2, len(remaining_theses)))
     
+    thesis_accepted= GroupApplication.objects.filter(group=request.user, status='accepted')
+    if thesis_accepted:
+        thesis_accepted_exists = True
+    else:
+        thesis_accepted_exists = False
+     
     if request.method == 'POST':
         thesis_data = Thesis.objects.get(topic_number=topic_number)
         current_student = request.user
@@ -174,6 +181,7 @@ def thesis_details(request, topic_number):
     context = {
         'thesis': current_thesis,
         'random_theses': random_theses,
+        'thesis_accepted_exists': thesis_accepted_exists,
     }
 
     return render(request, 'main/thesis_details.html', context)
@@ -797,13 +805,9 @@ def group_application(request, action,topic_number=None):
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'accepted'
             group_application_data.save()
-            
-            accepted_group_application = GroupApplicationAccepted.objects.create(accepted_application=group_application_data)
-                        
-            cancelled_group_application = [application for application in GroupApplication.objects.filter(group__username=selected_thesis_group, status='pending')]
-            for application in cancelled_group_application:
-               application.status = 'cancelled'
-               application.save() 
+            GroupApplicationAccepted.objects.create(accepted_application=group_application_data) 
+            GroupApplication.objects.filter(group__username=selected_thesis_group, status='pending').delete()
+
         elif selected_action == 'reject':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'rejected'
@@ -960,6 +964,7 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                             'form': form,
                             'crud_action_entity': crud_action_entity,
                             'entity': entity,
+                            'page_title': f'{crud_action_entity} {entity}'
                         }                      
                         
                         return render(request, 'main/CRUD_entity.html', context)
@@ -976,15 +981,28 @@ def crud_entity(request, crud_action_entity, entity, name=None):
             elif crud_action_entity == 'delete':
                 if request.method == 'POST':
                     old_object = copy.copy(entity_object)
-                    entity_object.delete()
-                    
-                    context = {
-                        'crud_action_entity': crud_action_entity,
-                        'entity': entity,
-                        'old_object': old_object,
-                        'crud_entity': True
-                    }
-                    return render(request, 'main/success.html', context)
+                    try:
+                        entity_object.delete()
+                        context = {
+                            'crud_action_entity': crud_action_entity,
+                            'entity': entity,
+                            'old_object': old_object,
+                            'crud_entity': True,
+                            'page_title': f'{crud_action_entity} {entity}'
+                        }
+                        return render(request, 'main/success.html', context)
+                    except ProtectedError:
+                        context = {
+                            'protected_error': True,
+                            'crud_action_entity': crud_action_entity,
+                            'entity': entity,
+                            'old_object': old_object,
+                            'crud_entity': True,
+                            'fail': True,
+                            'page_title': f'{crud_action_entity} {entity}',
+                            'entity_error': True
+                        }
+                        return render(request, 'main/success.html', context)
                 
                 form = form_entity(instance=entity_object)
                 for field in form.fields.values():

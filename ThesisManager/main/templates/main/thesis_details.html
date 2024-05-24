@@ -21,7 +21,11 @@
                 {% if user.account_type == 'student' %}
                     <form action="" method="post" class="apply-button-form">
                         {% csrf_token %}
-                        <button type='submit' class="apply-button-student">Apply</button>
+                        {% if thesis_accepted_exists is False %}
+                            <button type='submit' class="apply-button-student">Apply</button>
+                        {% else %}
+                            <button type='submit' class="apply-button-student" disabled>Apply</button>
+                        {% endif %}
                     </form>
                 {% elif user.account_type == 'admin' or user.account_type == 'unit coordinator' %}
                     <a href="{% url 'modify' thesis.topic_number %}">Edit</a>

@@ -7,7 +7,11 @@
         {% if fail is True %}
             <h1>Sorry.</h1>
             {% if entity_error %}
-                <p>{{ entity|title }} does not exist on our database.</p>
+                {% if protected_error %}
+                    <p class="error-caption">Cannot delete {{ old_object|title }} from {{ entity }} database as it exists in some thesis details.</p>
+                {% else %}
+                    <p class="error-caption">That {{ entity|title }} object does not exist on our database.</p>
+                {% endif %}
             {% else %}
                 <p>Thesis does not exist on our database.</p>
             {% endif %}
