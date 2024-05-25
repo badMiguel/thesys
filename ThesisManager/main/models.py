@@ -158,14 +158,7 @@ class GroupApplicationBase(models.Model):
 class GroupApplication(GroupApplicationBase):
     class Meta:
         unique_together = ('thesis', 'group')
-        ordering = ['status'] 
     
     def __str__(self):
         return f'{self.group} - {self.thesis}'
         
-class GroupApplicationAccepted(models.Model):
-    accepted_application = models.OneToOneField(GroupApplication, verbose_name='Group Application', on_delete=models.CASCADE, primary_key=True, default='')
-
-    def __str__(self):
-        return f'{self.accepted_application.group} - {self.accepted_application.thesis}'
-    

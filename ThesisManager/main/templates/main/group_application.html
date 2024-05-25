@@ -72,7 +72,16 @@
                         <p class='description'>{{ description }}</p>
                     {% endif %}
                 {% endfor %}
-                <p class="status"><strong>Status:</strong> {{ group_application.status|title }}</p>
+                <div class="bottom-options-student">
+                    <p class="status"><strong>Status:</strong> {{ group_application.status|title }}</p>
+                    {% if group_application.status == 'pending' %}
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="thesis" value="{{ group_application.thesis.topic_number }}">
+                            <button type="submit" name="cancel" value="cancel" class="submit-cancel-application">Cancel Application</button>
+                        </form>
+                    {% endif %}
+                </div>
                 <hr class="list-line">                 
             {% endfor %}
             {% if group_application_list and accepted_application_exists is False %}

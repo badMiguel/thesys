@@ -4,20 +4,28 @@
 
 {% block main_body %}
     <h1 class="group-thesis-heading">{{ thesis.title|title }}</h1>
-    <p class="heading-caption">Enrolled Students:</p>
-    <section class="group-list-container">
-        {% for group in groups_in_thesis %}
-            <div class="group-container">
-                <p>{{ forloop.counter }}. </p>
-                <p>{{ group.group }}</p>     
-            </div>
-            <div class="group-settings">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Remove Group</button>
-                </form>
-            </div>
-            <hr class="list-line">
-        {% endfor %}
-    </section>
+    {% if groups_in_thesis_exists is False %}
+        <p class="heading-caption">No students currently enrolled in this thesis.</p>
+    {% else %}
+        <p class="heading-caption">Enrolled Students:</p>
+        <section class="group-list-container">
+            {% for group in groups_in_thesis %}
+                <div class="group-container">
+                    <div class="info-group">
+                        <p class="group-count">{{ forloop.counter }}. </p>
+                        <p>{{ group.group|title }}</p>     
+                    </div>
+                    {% if responsible_supervisor is True %}
+                        <div class="group-settings">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="group" value="{{ group.group }}"  >
+                                <button class="submit-button-remove" type="submit">Remove Group</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
 {% endblock %}

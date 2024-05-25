@@ -4,7 +4,8 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.db.models import ProtectedError
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
+from django.shortcuts import redirect
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -810,13 +811,15 @@ def group_application(request, action,topic_number=None):
         selected_action = request.POST.get('action')
         selected_thesis = request.POST.get('thesis')
         selected_thesis_group = request.POST.get('student')
-         
+        
         if selected_action == 'accept':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'accepted'
             group_application_data.save()
-            GroupApplicationAccepted.objects.create(accepted_application=group_application_data) 
-            GroupApplication.objects.filter(group__username=selected_thesis_group, status='pending').delete()
+            cancelled_application = GroupApplication.objects.filter(group__username=selected_thesis_group, status='pending')
+            for application in cancelled_application:
+                application.status = 'cancelled'
+                application.save()
 
         elif selected_action == 'reject':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
@@ -844,6 +847,17 @@ def group_application(request, action,topic_number=None):
 
             applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
             new_description = truncate_description(applied_thesis_list)
+
+        try:
+            if request.method == 'POST':
+                cancel = request.POST.get('cancel')
+                group_application_information = request.POST.get('thesis')
+                if cancel == 'cancel':
+                    GroupApplication.objects.get(group=logged_in_student, thesis__topic_number = group_application_information).delete()
+
+                    return redirect('group_application', action='view')
+        except GroupApplication.DoesNotExist:
+            application_exists = False
 
         page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, group_application_list)
 
@@ -1035,11 +1049,41 @@ def admin_settings(request, account_type):
 @account_type_required('admin', 'unit coordinator', 'supervisor')
 def groups_thesis(request, topic_number):
     thesis = Thesis.objects.get(topic_number = topic_number)
-    
     groups_in_thesis = GroupApplication.objects.filter(status='accepted', thesis__topic_number = topic_number)
+    groups_in_thesis_exists = False 
+    if groups_in_thesis:
+        groups_in_thesis_exists = True
+    
+    current_supervisor = None
+    try: 
+        current_supervisor = Supervisor.objects.get(supervisor = request.user) 
+        user_is_admin = False
+    except Supervisor.DoesNotExist:
+        user_is_admin = True
+        
+    responsible_supervisor = False
+    if thesis.supervisor == current_supervisor or user_is_admin:
+        responsible_supervisor = True
+    
+    if request.method == 'POST':
+        group = CustomUser.objects.get(username = request.POST.get('group'))
+        removed_group = GroupApplication.objects.get(group=group, thesis__topic_number=topic_number)
+
+        removed_group.status = 'Rejected'
+        removed_group.save()
+
+        cancelled_application = GroupApplication.objects.filter(group__username=group, status='cancelled')
+        for application in cancelled_application:
+            application.status = 'pending'
+            application.save()
+        
+        return redirect('groups_thesis', topic_number=topic_number)
+    
     context = {
         'thesis': thesis,
         'groups_in_thesis': groups_in_thesis, 
+        'groups_in_thesis_exists': groups_in_thesis_exists,
+        'responsible_supervisor': responsible_supervisor,
     } 
     return render(request, 'main/groups_in_a_thesis.html', context)
 

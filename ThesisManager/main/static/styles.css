@@ -489,10 +489,10 @@ footer{
 
 .error{
     color: red;
-    margin: 0.5rem 0 0 0;
+    margin: 0.5rem 0;
 }
 
-.warning{
+.warning, .success{
     margin: 0.5rem 0;
 }
 
@@ -621,18 +621,27 @@ footer{
     }
 }
 
-.object_container{
+.object_container, .group-list-container{
     display: flex;
     flex-direction: column;
     gap: 1rem;
     margin: 0 0 2rem 0;
 
-    .object{
+    .object, .group-container{
         display: flex;
     }
 
-    .object-count{
+    .object-count, .group-count{
         margin: 0 3rem;
+    }
+
+    .info-group{
+        width: 100%;
+        display: flex;
+    }
+
+    .submit-button-remove{
+        width: 10rem;
     }
 
     .object-link{
@@ -665,6 +674,16 @@ footer{
     width: 10rem;
 }
 
-.heading-caption, .status, .menu-header, .group_thesis_heading{
+.heading-caption, .menu-header, .group_thesis_heading{
     margin: 2rem 0;
+}
+
+.bottom-options-student{
+    display: flex;
+    margin: 2rem 0 0 0;
+    justify-content: space-between;
+
+    .submit-cancel-application{
+        width: 12rem;
+    }
 }

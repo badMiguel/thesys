@@ -16,9 +16,6 @@
         {% else %}
             <p class="success"><em>You have successfully applied to this thesis.</em></p>
         {% endif %}
-        {% if thesis_application_exists is True %}
-            <p class="warning"><em>You have already applied for this thesis.</em></p>
-        {% endif %}
         <div class="bottom-options">
             <div class="crud-bottom-options">
                 {% if user.account_type == 'student' %}
