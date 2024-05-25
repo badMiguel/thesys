@@ -125,7 +125,7 @@ footer{
     transform: translateX(-50%);
 }
 
-.supervisor, .category, .courses, .campus, .topic_number, .description_container{
+.supervisor, .category, .courses, .campus , .topic_number, .description_container, .group_taker_limit{
     display: flex;
     padding: 1.5rem 0;
 }

@@ -53,7 +53,7 @@ def paginator(request, thesis):
 
 def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list):
     # Checks the changes made on the values of thesis
-    entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id']
+    entries = ['topic_number', 'title', 'description', 'category_id', 'supervisor_id', 'group_taker_limit']
     thesis_dict = {}
     for key, value in vars(thesis).items():
         if key in entries:
@@ -76,7 +76,7 @@ def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list
     new_course_list= [course for course in thesis.course.all()]
     if new_course_list != old_course_list:
         changed_data['course'] = True
-        
+    print(changed_data)    
     return changed_data
 
 def home(request):
@@ -136,6 +136,13 @@ def thesis_details(request, topic_number):
     thesis_accepted_exists = False
     thesis_application_exists = False
     
+    accepted_application_count = GroupApplication.objects.filter(thesis__topic_number = topic_number, status = 'accepted').count()
+    group_limit = current_thesis.group_taker_limit 
+    
+    max_reached = False
+    if accepted_application_count == group_limit:
+        max_reached = True
+
     if request.user.is_authenticated:
         thesis_accepted= GroupApplication.objects.filter(group=request.user, status='accepted')
         if thesis_accepted:
@@ -148,7 +155,7 @@ def thesis_details(request, topic_number):
             thesis_application_exists = True
         else:
             thesis_application_exists = False
-     
+
     if request.method == 'POST':
         thesis_data = Thesis.objects.get(topic_number=topic_number)
         current_student = request.user
@@ -193,6 +200,9 @@ def thesis_details(request, topic_number):
         'random_theses': random_theses,
         'thesis_accepted_exists': thesis_accepted_exists,
         'thesis_application_exists': thesis_application_exists, 
+        'max_reached': max_reached,
+        'accepted_application_count': accepted_application_count,
+        'group_limit': group_limit, 
     }
 
     return render(request, 'main/thesis_details.html', context)

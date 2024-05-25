@@ -32,13 +32,15 @@ def create_new_user(request):
     
     supervisors = ['Bharanidharan Shanmugam', 'Yakub Sebastian', 'Sami Azam', 'Asif Karim']
     
-    for supervisor in supervisors:
-        Supervisor = user.objects.create_user(supervisor, "supervisor", 'supervisor')
+    # for supervisor in supervisors:
+    #     Supervisor = user.objects.create_user(supervisor, "supervisor", 'supervisor')
         
     
     # UnitCoordinator = user.objects.create_user("unitcoordinator", "unitcoordinator", 'unit coordinator')
     # Supervisor = user.objects.create_user("supervisor", "supervisor", 'supervisor')
     # Student = user.objects.create_user("student", "student", 'student')
+    Student2 = user.objects.create_user("student 2", "student", 'student')
+    Student3 = user.objects.create_user("student 3", "student", 'student')
     return render(request, 'users/login.html')
 '''
 

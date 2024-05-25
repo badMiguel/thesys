@@ -13,7 +13,7 @@
             {% for object in entity_model %}
                 <li class="object">
                     <p class="object-count">{{ forloop.counter }}.</p>
-                    <a class='object-link' href="{% url 'crud_entity' crud_action_entity=crud_action_entity entity=entity name=object %}">{{ object }}</a>
+                    <a class='object-link' href="{% url 'crud_entity' crud_action_entity=crud_action_entity entity=entity name=object %}">{{ object|title }}</a>
                 </li>
             {% endfor %}
         </ul>

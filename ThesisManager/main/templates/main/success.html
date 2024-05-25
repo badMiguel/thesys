@@ -3,82 +3,80 @@
 {% block page_title %}{{ page_title|title }}{% endblock %}
 
 {% block main_body %}
-    <div class="main_body">
-        {% if fail is True %}
-            <h1>Sorry.</h1>
-            {% if entity_error %}
-                {% if protected_error %}
-                    <p class="error-caption">Cannot delete {{ old_object|title }} from {{ entity }} database as it exists in some thesis details.</p>
-                {% else %}
-                    <p class="error-caption">That {{ entity|title }} object does not exist on our database.</p>
-                {% endif %}
+    {% if fail is True %}
+        <h1>Sorry.</h1>
+        {% if entity_error %}
+            {% if protected_error %}
+                <p class="error-caption">Cannot delete {{ old_object|title }} from {{ entity }} database as it exists in some thesis details.</p>
             {% else %}
-                <p>Thesis does not exist on our database.</p>
+                <p class="error-caption">That {{ entity|title }} object does not exist on our database.</p>
             {% endif %}
         {% else %}
-            <h1 class="succes-heading">Success!</h1>
-            {% if crud_entity is True %}
-                <div class="entity-crud">
-                    <p class="success-caption">Action: <strong>{{ crud_action_entity|title }}</strong> - <strong>{{ entity|title }}</strong> is successful.</p>
-                    {% if crud_action_entity == 'add' %}
-                        <p>{{ object_created|title }} successfully added in the database.</p>
-                    {% elif crud_action_entity == 'modify' %}
-                        <p>Successfully modified {{ entity }} name from <span class="old-entity-object">{{ old_object|title }}</span> to <span class="new-entity-object">{{ modified_entity_object|title }}</span>.</p>
-                    {% elif crud_action_entity == 'delete' %}
-                        <p>You have successfully deleted {{ old_object|title }} from {{ entity }} database.</p>
-                    {% endif %}
-                </div>
-            {% else %}
-                <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis {% if rejected_thesis_request is True %}request{% endif %}.</p>
-            {% endif %}
-            <div class="success-data">
-                {% if type == 'modified' or type == 'modify' or modify is True %}
-                    {% with thesis.campus.all as campus_list %}
-                    {% with thesis.course.all as course_list %}
-                        {% include "main/thesis_details_template.html" %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% if request is True %}
-                        <div {% if type == "rejected" %}class="request-details-rejected" 
-                            {% elif type == "accepted" %}class='request-details-accepeted'
-                            {% else %}class='request-details'{% endif %}>
-                            <div class="requested-by-container">
-                                <p class="more_info_request">Requested By:</p>
-                                <p class="request-by">{{ requested_by }}</p>
-                            </div>
-                            <div class="request-date-container">
-                                <p class="more_info_request">Request Date:</p>
-                                <p class="request-date">{{ request_date }}</p>
-                            </div>
-                        </div><hr>                      
-                    {% endif %}
-                    <p class="previous-thesis-data"><strong>Old Thesis Data:</strong></p>
-                    {% with old_thesis_data as thesis %}
-                    {% with old_campus_list as campus_list %}
-                    {% with old_course_list as course_list %}
-                        {% include "main/thesis_details_template.html" %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                {% elif type == 'deleted' or delete is True or rejected_thesis_request is True %}
-                    {% with old_thesis_data as thesis %}
-                    {% with old_campus_list as campus_list %}
-                    {% with old_course_list as course_list %}
-                        {% include "main/thesis_details_template.html" %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                {% elif crud_entity is True %}
-                    
-                {% else %}
-                    {% include "main/thesis_details_template.html" %}
+            <p>Thesis does not exist on our database.</p>
+        {% endif %}
+    {% else %}
+        <h1 class="succes-heading">Success!</h1>
+        {% if crud_entity is True %}
+            <div class="entity-crud">
+                <p class="success-caption">Action: <strong>{{ crud_action_entity|title }}</strong> - <strong>{{ entity|title }}</strong> is successful.</p>
+                {% if crud_action_entity == 'add' %}
+                    <p>{{ object_created|title }} successfully added in the database.</p>
+                {% elif crud_action_entity == 'modify' %}
+                    <p>Successfully modified {{ entity }} name from <span class="old-entity-object">{{ old_object|title }}</span> to <span class="new-entity-object">{{ modified_entity_object|title }}</span>.</p>
+                {% elif crud_action_entity == 'delete' %}
+                    <p>You have successfully deleted {{ old_object|title }} from {{ entity }} database.</p>
                 {% endif %}
             </div>
+        {% else %}
+            <p class="success-caption">You have successfully {% if request is True %}requested to{% endif %} <strong>{{ type }}</strong> the following thesis {% if rejected_thesis_request is True %}request{% endif %}.</p>
         {% endif %}
-        {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
-            <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
-        {% elif user.account_type == 'supervisor' %}
-            <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
-        {% endif %}
-    </div>
+        <div class="success-data">
+            {% if type == 'modified' or type == 'modify' or modify is True %}
+                {% with thesis.campus.all as campus_list %}
+                {% with thesis.course.all as course_list %}
+                    {% include "main/thesis_details_template.html" %}
+                {% endwith %}
+                {% endwith %}
+                {% if request is True %}
+                    <div {% if type == "rejected" %}class="request-details-rejected" 
+                        {% elif type == "accepted" %}class='request-details-accepeted'
+                        {% else %}class='request-details'{% endif %}>
+                        <div class="requested-by-container">
+                            <p class="more_info_request">Requested By:</p>
+                            <p class="request-by">{{ requested_by }}</p>
+                        </div>
+                        <div class="request-date-container">
+                            <p class="more_info_request">Request Date:</p>
+                            <p class="request-date">{{ request_date }}</p>
+                        </div>
+                    </div><hr>                      
+                {% endif %}
+                <p class="previous-thesis-data"><strong>Old Thesis Data:</strong></p>
+                {% with old_thesis_data as thesis %}
+                {% with old_campus_list as campus_list %}
+                {% with old_course_list as course_list %}
+                    {% include "main/thesis_details_template.html" %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+            {% elif type == 'deleted' or delete is True or rejected_thesis_request is True %}
+                {% with old_thesis_data as thesis %}
+                {% with old_campus_list as campus_list %}
+                {% with old_course_list as course_list %}
+                    {% include "main/thesis_details_template.html" %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+            {% elif crud_entity is True %}
+                
+            {% else %}
+                {% include "main/thesis_details_template.html" %}
+            {% endif %}
+        </div>
+    {% endif %}
+    {% if user.account_type == 'unit coordinator' or user.account_type == 'admin' %}
+        <a href="{% url 'CRUD' account_type='coordinator' %}" class="back">Return to Settings</a>
+    {% elif user.account_type == 'supervisor' %}
+        <a href="{% url 'CRUD' account_type='supervisor' %}" class="back">Return to Settings</a>
+    {% endif %}
 {% endblock %}

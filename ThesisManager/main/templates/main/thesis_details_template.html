@@ -67,3 +67,12 @@
         {% endif %}
     </ul>
 </div><hr>
+<div {% if changed_data.group_taker_limit %}class="group_taker_limit changed-highlight"
+    {% else %}class="group_taker_limit"{% endif %}>
+    <p class="more_info">Group Limit:</p>
+    {% if user.account_type == 'student' or user.is_authenticated is False %}
+        <p>{{ accepted_application_count }} out of {{ group_limit }} current enrolled.</p>
+    {% else %}
+        <p>{{ thesis.group_taker_limit }}</p>
+    {% endif %}
+</div><hr>

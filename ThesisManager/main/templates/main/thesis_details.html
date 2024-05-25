@@ -25,6 +25,9 @@
                         {% elif thesis_application_exists is True %}
                             <button type='submit' class="apply-button-student" disabled>Apply</button>
                             <p class="warning"><em>You have already applied for this thesis.</em></p>
+                        {% elif max_reached is True %}
+                            <button type='submit' class="apply-button-student" disabled>Apply</button>
+                            <p class="warning"><em>This thesis dont have any slots anymore.</em></p>
                         {% else %}
                             <button type='submit' class="apply-button-student">Apply</button>
                         {% endif %}
