@@ -71,7 +71,11 @@
     {% else %}class="group_taker_limit"{% endif %}>
     <p class="more_info">Group Limit:</p>
     {% if user.account_type == 'student' or user.is_authenticated is False %}
-        <p>{{ accepted_application_count }} out of {{ group_limit }} current enrolled.</p>
+        {% if group_limit is None %}
+            <p>{{ group_limit }}</p>          
+        {% else %}
+            <p>{{ accepted_application_count }} out of {{ group_limit }} current enrolled.</p>
+        {% endif %}
     {% else %}
         <p>{{ thesis.group_taker_limit }}</p>
     {% endif %}
