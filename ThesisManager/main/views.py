@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.db.models import ProtectedError
 from django.shortcuts import redirect
-from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, Course, Campus, Category, Supervisor
+from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
 from .decorators import account_type_required
 from users.models import CustomUser
@@ -136,7 +136,7 @@ def thesis_details(request, topic_number):
     thesis_accepted_exists = False
     thesis_application_exists = False
     
-    accepted_application_count = GroupApplication.objects.filter(thesis__topic_number = topic_number, status = 'accepted').count()
+    accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number = topic_number, status = 'accepted').count()
     group_limit = current_thesis.group_taker_limit 
     
     max_reached = False
@@ -144,13 +144,13 @@ def thesis_details(request, topic_number):
         max_reached = True
 
     if request.user.is_authenticated:
-        thesis_accepted= GroupApplication.objects.filter(group=request.user, status='accepted')
+        thesis_accepted= GroupApplicationAccepted.objects.filter(group=request.user, status='accepted')
         if thesis_accepted:
             thesis_accepted_exists = True
         else:
             thesis_accepted_exists = False
 
-        thesis_application = GroupApplication.objects.filter(group=request.user, thesis__topic_number=topic_number)
+        thesis_application = GroupApplicationAccepted.objects.filter(group=request.user, thesis__topic_number=topic_number)
         if thesis_application:
             thesis_application_exists = True
         else:
@@ -430,7 +430,7 @@ def modify_or_delete(request, topic_number=None):
                     }
                     return render(request, 'main/success.html', context)
                 except ProtectedError:
-                    groups_enrolled = GroupApplication.objects.filter(thesis=thesis)
+                    groups_enrolled = GroupApplicationAccepted.objects.filter(thesis=thesis)
                                         
                     context = {
                         'group_error': True,
@@ -839,6 +839,7 @@ def group_application(request, action,topic_number=None):
             for application in cancelled_application:
                 application.status = 'cancelled'
                 application.save()
+            GroupApplicationAccepted.objects.create(group = group_application_data.group, status = 'accepted', thesis = group_application_data.thesis)
 
         elif selected_action == 'reject':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
@@ -1068,7 +1069,7 @@ def admin_settings(request, account_type):
 @account_type_required('admin', 'unit coordinator', 'supervisor')
 def groups_thesis(request, topic_number):
     thesis = Thesis.objects.get(topic_number = topic_number)
-    groups_in_thesis = GroupApplication.objects.filter(status='accepted', thesis__topic_number = topic_number)
+    groups_in_thesis = GroupApplicationAccepted.objects.filter(thesis__topic_number = topic_number)
     groups_in_thesis_exists = False 
     if groups_in_thesis:
         groups_in_thesis_exists = True
@@ -1095,6 +1096,8 @@ def groups_thesis(request, topic_number):
         for application in cancelled_application:
             application.status = 'pending'
             application.save()
+        
+        GroupApplicationAccepted.objects.get(group=removed_group.group, thesis = removed_group.thesis).delete()
         
         return redirect('groups_thesis', topic_number=topic_number)
     
