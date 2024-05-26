@@ -11,6 +11,16 @@
             {% else %}
                 <p class="error-caption">That {{ entity|title }} object does not exist on our database.</p>
             {% endif %}
+        {% elif group_error %}
+            <p class="error-caption">Cannot delete thesis titled "{{ thesis.title|title }}" as the following groups are enrolled in it:</p>
+            <section class="group-list-container">
+                {% for group in groups_enrolled %}
+                    <div class="group-container">
+                        <p class="group-count">{{ forloop.counter }}. </p>
+                        <p>{{ group.group|title }}</p>     
+                    </div>
+                {% endfor %}
+            </section>
         {% else %}
             <p>Thesis does not exist on our database.</p>
         {% endif %}

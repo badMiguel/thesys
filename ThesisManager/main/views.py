@@ -410,26 +410,35 @@ def modify_or_delete(request, topic_number=None):
                 
             elif modify_or_delete == 'Delete':
                 try:
-                    ThesisRequestDelete.objects.get(topic_number=topic_number).delete()
-                    reqeust_delete = True
-                except ThesisRequestDelete.DoesNotExist:
-                    reqeust_delete = False
-                try:
-                    ThesisRequestModify.objects.get(topic_number=topic_number).delete()
-                    reqeust_modify = True
-                except ThesisRequestModify.DoesNotExist:
-                    reqeust_modify = False
-
-                thesis.delete()
-                
-                context = {
-                    'thesis': thesis,
-                    'old_thesis_data': old_thesis_data,
-                    'old_campus_list': old_campus_list,
-                    'old_course_list': old_course_list,
-                    'type': 'deleted',
-                }
-                return render(request, 'main/success.html', context)
+                    thesis.delete()
+                    try:
+                        ThesisRequestDelete.objects.get(topic_number=topic_number).delete()
+                        reqeust_delete = True
+                    except ThesisRequestDelete.DoesNotExist:
+                        reqeust_delete = False
+                    try:
+                        ThesisRequestModify.objects.get(topic_number=topic_number).delete()
+                        reqeust_modify = True
+                    except ThesisRequestModify.DoesNotExist:
+                        reqeust_modify = False
+                    context = {
+                        'thesis': thesis,
+                        'old_thesis_data': old_thesis_data,
+                        'old_campus_list': old_campus_list,
+                        'old_course_list': old_course_list,
+                        'type': 'deleted',
+                    }
+                    return render(request, 'main/success.html', context)
+                except ProtectedError:
+                    groups_enrolled = GroupApplication.objects.filter(thesis=thesis)
+                                        
+                    context = {
+                        'group_error': True,
+                        'fail': True,
+                        'thesis': thesis,
+                        'groups_enrolled': groups_enrolled,
+                    }
+                    return render(request, 'main/success.html', context)
 
         else:
             if modify_or_delete == 'Modify':
