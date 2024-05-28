@@ -62,13 +62,12 @@ class ThesisBase(models.Model):
 
     group_taker_limit = models.IntegerField(
         validators=[
-            MinValueValidator(1),
+            MinValueValidator(0),
             MaxValueValidator(20),
         ], 
         verbose_name='Number Limit of group takers', 
         null = True,
         blank=True,
-        default=0,
     )
 
     class Meta:

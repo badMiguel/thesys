@@ -71,8 +71,8 @@
     {% else %}class="group_taker_limit"{% endif %}>
     <p class="more_info">Group Limit:</p>
     {% if user.account_type == 'student' or user.is_authenticated is False %}
-        {% if group_limit is None %}
-            <p>{{ group_limit }}</p>          
+        {% if group_limit is None or group_limit == 0 %}
+            <p>None</p>          
         {% else %}
             <p>{{ accepted_application_count }} out of {{ group_limit }} students currently enrolled.</p>
         {% endif %}
