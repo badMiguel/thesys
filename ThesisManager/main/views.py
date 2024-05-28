@@ -566,7 +566,7 @@ def review_request(request, request_type=None, topic_number=None):
                                      
                     thesis_to_review.delete()                    
 
-                    thesis_to_display = old_thesis_data
+                    thesis_to_display = thesis_to_modify
                     type = 'modified'
                     modify = True
                     

@@ -67,7 +67,8 @@ class ThesisBase(models.Model):
         ], 
         verbose_name='Number Limit of group takers', 
         null = True,
-        blank=True
+        blank=True,
+        default=0,
     )
 
     class Meta:
