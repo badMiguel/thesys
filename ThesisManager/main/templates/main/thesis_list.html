@@ -85,20 +85,24 @@
                 <hr class="list-line">
                 {% endfor %}
             </ul>
-            <div class="thesis-pages">
-                <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
-                <form class='quick-links' action="" method="get">
-                    {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
-                    {% endif %}
-                    {% for total_pages in total_pages %}                    
-                        <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
-                    {% endif %}
-                </form>
-            </div>
+            {% if no_thesis is True %}
+                <p>Sorry, there are no thesis that exist with that filter.</p> 
+            {% else %}
+                <div class="thesis-pages">
+                    <p class='current'>Showing {{ start_num }} to {{ end_num }} of {{ total_theses }} theses.</p>
+                    <form class='quick-links' action="" method="get">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Previous</a>
+                        {% endif %}
+                        {% for total_pages in total_pages %}                    
+                            <a href="?page={{ total_pages }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">{{ total_pages }}</a>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}&items_per_page={{ items_per_page }}{{ filter_supervisor }}{{ filter_course }}{{ filter_category }}{{ filter_campus }}">Next</a>
+                        {% endif %}
+                    </form>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock  %}

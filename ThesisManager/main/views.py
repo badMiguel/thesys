@@ -3,7 +3,7 @@ import copy
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.db.models import ProtectedError
+from django.db.models import ProtectedError, Q
 from django.shortcuts import redirect
 from .models import Thesis, ThesisRequestAdd, ThesisRequestModify, ThesisRequestDelete, GroupApplication, GroupApplicationAccepted, Course, Campus, Category, Supervisor
 from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, ThesisRequestFormDelete, CampusForm, CategoryForm, CourseForm, SupervisorForm, GroupApplicationForm
@@ -257,12 +257,28 @@ def thesis_list(request):
     selected_campus = request.GET.getlist('campus')
     selected_course = request.GET.getlist('course')
     selected_category = request.GET.getlist('category')
-    filter_supervisor = ''
-    filter_campus = ''
-    filter_course= ''
-    filter_category=''
+    filter_supervisor = filter_campus =filter_course=filter_category=''
+    
+    user_filters = {
+        'supervisor': selected_supervisor,
+        'campus': selected_campus,
+        'course': selected_course,
+        'category': selected_category,
+    }    
+    
+    filter_query = Q()
+    
+    for filter_key, filter_value in user_filters.items():
+        if filter_value:
+            filter_query &= Q(**{f"{filter_key}__in": filter_value})
+             
+    theses = Thesis.objects.filter(filter_query)
+
+    no_thesis = False
+    if not theses:
+        no_thesis = True
+    
     if selected_supervisor:
-        theses = Thesis.objects.filter(supervisor__in = selected_supervisor)
         '''
             changes the url of the page to filter the list
             this fixes the issue where the the filter thesis is not stored
@@ -271,18 +287,16 @@ def thesis_list(request):
         '''
         filter_supervisor = "&".join([f'&supervisor={supervisor}' for supervisor in selected_supervisor])
     if selected_campus:
-        theses = Thesis.objects.filter(campus__in = selected_campus)
         filter_campus = '&'.join([f'&campus={campus}' for campus in selected_campus])
     if selected_course:
-        theses = Thesis.objects.filter(course__in = selected_course)
         filter_course = '&'.join([f'&course={course}' for course in selected_course])
     if selected_category:
-        theses = Thesis.objects.filter(category__in = selected_category)
         filter_category = '&'.join([f'&category={category}' for category in selected_category])
 
     page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, theses)
     
     context = {
+        'no_thesis': no_thesis,
         # for the paginator feature
         'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
         # for the filter feature
