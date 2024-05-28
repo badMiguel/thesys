@@ -139,13 +139,17 @@
                                     <p class="error">{{ error }}</p>
                                 {% endfor %}
                             {% endif %}
-                        {% elif field == form.topic_number %}
+                        {% elif field == form.topic_number or field == form.supervisor %}
                             <div class="field-container-no-error">
                                 <div class="field-label">
                                     {{ field.label }}
                                 </div>
                                 <div class="field-input">
-                                    {{ selected_thesis.topic_number}}
+                                    {% if field == form.topic_number %}
+                                        {{ selected_thesis.topic_number }}
+                                    {% else %}
+                                        {{ selected_thesis.supervisor }}
+                                    {% endif %}
                                 </div>
                                 <div class="field-input-uneditable">
                                     {{ field }}
