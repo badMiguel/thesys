@@ -150,7 +150,7 @@ def thesis_details(request, topic_number):
         else:
             thesis_accepted_exists = False
 
-        thesis_application = GroupApplicationAccepted.objects.filter(group=request.user, thesis__topic_number=topic_number)
+        thesis_application = GroupApplication.objects.filter(group=request.user, thesis__topic_number=topic_number)
         if thesis_application:
             thesis_application_exists = True
         else:
@@ -174,7 +174,9 @@ def thesis_details(request, topic_number):
                 'thesis': current_thesis,
                 'random_theses': random_theses,
                 'successfully_applied': True,
+                'group_limit': group_limit,
                 'form': form,
+                'accepted_application_count': accepted_application_count,
             }
 
             return render(request, 'main/thesis_details.html', context)
@@ -192,6 +194,8 @@ def thesis_details(request, topic_number):
                 'successfully_applied': False,
                 'form': form,
                 'application_exists': application_exists,
+                'group_limit': group_limit,
+                'accepted_application_count': accepted_application_count,
             }
 
             return render(request, 'main/thesis_details.html', context)
@@ -631,6 +635,7 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 thesis_request = form.save(commit=False)     
                 thesis_request.requested_by = CustomUser.objects.get(username=request.user.username)
                 thesis_request.request_type = crud_action
+                thesis_request.supervisor = Supervisor.objects.get(supervisor=request.user)
                 thesis_request.save()
 
                 form.save_m2m()

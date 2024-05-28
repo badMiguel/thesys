@@ -39,6 +39,9 @@ class ThesisRequestFormAdd(ThesisFormBase):
         self.topic_number_exist()
         return self.cleaned_data['topic_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields['supervisor']
 class ThesisRequestFormModify(ThesisFormBase):
     class Meta(ThesisForm.Meta): 
         model = ThesisRequestModify
