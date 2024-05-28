@@ -77,6 +77,10 @@
             <p>{{ accepted_application_count }} out of {{ group_limit }} students currently enrolled.</p>
         {% endif %}
     {% else %}
-        <p>{{ thesis.group_taker_limit }}</p>
+        {% if group_limit == 0 %}
+            <p>None</p> 
+        {% else %}
+            <p>{{ thesis.group_taker_limit }}</p>
+        {% endif %}
     {% endif %}
 </div><hr>
