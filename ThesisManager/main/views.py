@@ -646,7 +646,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
     elif crud_action == 'modify' or crud_action == 'delete':
         if topic_number is None:
             if status is None:
-                thesis = Thesis.objects.all()
+                supervisor = Supervisor.objects.get(supervisor=request.user)
+                thesis = Thesis.objects.filter(supervisor=supervisor)
 
                 new_description = truncate_description(thesis)
                                 
