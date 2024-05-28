@@ -861,6 +861,15 @@ def group_application(request, action,topic_number=None):
                 application.save()
             GroupApplicationAccepted.objects.create(group = group_application_data.group, status = 'accepted', thesis = group_application_data.thesis)
 
+            accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number = selected_thesis, status = 'accepted').count()
+            thesis = Thesis.objects.get(topic_number = selected_thesis)
+            group_limit = thesis.group_taker_limit 
+            if accepted_application_count == group_limit:
+                remaining_applications = GroupApplication.objects.filter(thesis__topic_number=selected_thesis, status='pending')
+                for application in remaining_applications:
+                    application.status = 'cancelled'
+                    application.save()
+
         elif selected_action == 'reject':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'rejected'
