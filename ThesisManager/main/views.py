@@ -10,33 +10,35 @@ from .forms import ThesisForm, ThesisRequestFormAdd, ThesisRequestFormModify, Th
 from .decorators import account_type_required
 from users.models import CustomUser
 
+
 def truncate_description(thesis):
     new_description = {}
-            
-    for item in thesis:     
-        # truncates words longer than 250 characters 
+
+    for item in thesis:
+        # truncates words longer than 250 characters
         # i.e. only shows 250 character of the  thesis description
         description = item.description
         word_count = description.split()
         if len(description) > 230:
             description = ''.join(description[:230])
-            
+
             punctuation = ['.', ',', '/', ';', ':', ' ']
             if description[-1] in punctuation:
                 description = description[:-1] + '...'
             else:
                 description = description + '...'
-                
+
             new_description[item.topic_number] = description
-        
+
         else:
             new_description[item.topic_number] = description
-            
+
     return new_description
+
 
 def paginator(request, thesis):
     # gets the thesis per page. default value = 5
-    items_per_page = int(request.GET.get('items_per_page', 5))    
+    items_per_page = int(request.GET.get('items_per_page', 5))
 
     # use built-in tool of django for paginating the theses
     page = Paginator(thesis, items_per_page)
@@ -48,8 +50,9 @@ def paginator(request, thesis):
     start_num = (page_obj.number - 1) * items_per_page + 1
     end_num = min(start_num + items_per_page - 1, page_obj.paginator.count)
     total_theses = len(thesis)
-    
+
     return page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses
+
 
 def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list):
     # Checks the changes made on the values of thesis
@@ -57,43 +60,45 @@ def changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list
     thesis_dict = {}
     for key, value in vars(thesis).items():
         if key in entries:
-            thesis_dict[key] = value 
+            thesis_dict[key] = value
 
     old_thesis_dict = {}
     for key, value in vars(old_thesis_data).items():
         if key in entries:
-            old_thesis_dict[key] = value 
+            old_thesis_dict[key] = value
 
     changed_data = {}
     for key, value in thesis_dict.items():
-        if thesis_dict[key] != old_thesis_dict[key]: 
+        if thesis_dict[key] != old_thesis_dict[key]:
             changed_data[key] = True
-    
-    new_campus_list= [campus for campus in thesis.campus.all()]
+
+    new_campus_list = [campus for campus in thesis.campus.all()]
     if new_campus_list != old_campus_list:
         changed_data['campus'] = True
-        
-    new_course_list= [course for course in thesis.course.all()]
+
+    new_course_list = [course for course in thesis.course.all()]
     if new_course_list != old_course_list:
         changed_data['course'] = True
-    print(changed_data)    
+    print(changed_data)
     return changed_data
+
 
 def home(request):
     theses = Thesis.objects.all()
-    
+
     available_thesis = len(theses)
     available_supervisor = []
-    
+
     for thesis in theses:
         available_supervisor.append(thesis.supervisor)
-    
+
     context = {
         'available_thesis': available_thesis,
         'available_supervisor': len(set(available_supervisor))
     }
-    
+
     return render(request, 'main/home.html', context)
+
 
 def about_us(request):
     students = [
@@ -102,18 +107,19 @@ def about_us(request):
         {'name': 'Mark Joshua Tayco', 'number': 'S368036'},
         {'name': 'Agnes Juliana Javier', 'number': 'S364240'},
     ]
-    
+
     context = {
-        'students':students
+        'students': students
     }
-    
+
     return render(request, "main/about_us.html", context)
+
 
 def thesis_details(request, topic_number):
     theses = Thesis.objects.all()
 
     current_thesis = None
-    
+
     for thesis in theses:
         if thesis.topic_number == topic_number:
             current_thesis = thesis
@@ -127,24 +133,24 @@ def thesis_details(request, topic_number):
             'error_message': error_message,
             'random_theses': random_theses
         }
-    
+
         return render(request, 'main/thesis_details.html', context)
-    
+
     remaining_theses = [thesis for thesis in theses if thesis.topic_number != topic_number]
 
     random_theses = random.sample(remaining_theses, min(2, len(remaining_theses)))
     thesis_accepted_exists = False
     thesis_application_exists = False
-    
-    accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number = topic_number, status = 'accepted').count()
-    group_limit = current_thesis.group_taker_limit 
-    
+
+    accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number=topic_number, status='accepted').count()
+    group_limit = current_thesis.group_taker_limit
+
     max_reached = False
     if accepted_application_count == group_limit:
         max_reached = True
 
     if request.user.is_authenticated:
-        thesis_accepted= GroupApplicationAccepted.objects.filter(group=request.user, status='accepted')
+        thesis_accepted = GroupApplicationAccepted.objects.filter(group=request.user, status='accepted')
         if thesis_accepted:
             thesis_accepted_exists = True
         else:
@@ -159,7 +165,7 @@ def thesis_details(request, topic_number):
     if request.method == 'POST':
         thesis_data = Thesis.objects.get(topic_number=topic_number)
         current_student = request.user
-        
+
         application_data = {
             'thesis': thesis_data,
             'group': current_student,
@@ -183,10 +189,10 @@ def thesis_details(request, topic_number):
 
         else:
             try:
-                application_exists_data = GroupApplication.objects.get(thesis__topic_number = topic_number, group=current_student )
+                application_exists_data = GroupApplication.objects.get(thesis__topic_number=topic_number, group=current_student)
                 application_exists = True
             except GroupApplication.DoesNotExist:
-               application_exists = False 
+                application_exists = False
 
             context = {
                 'thesis': current_thesis,
@@ -203,23 +209,24 @@ def thesis_details(request, topic_number):
         'thesis': current_thesis,
         'random_theses': random_theses,
         'thesis_accepted_exists': thesis_accepted_exists,
-        'thesis_application_exists': thesis_application_exists, 
+        'thesis_application_exists': thesis_application_exists,
         'max_reached': max_reached,
         'accepted_application_count': accepted_application_count,
-        'group_limit': group_limit, 
+        'group_limit': group_limit,
     }
 
     return render(request, 'main/thesis_details.html', context)
 
-def thesis_list(request):    
+
+def thesis_list(request):
     theses = Thesis.objects.all()
-    
+
     # created a separate list for different filter categories
     supervisor_list = []
     campus_list = []
     course_list = []
     category_list = []
-    
+
     for thesis in theses:
         # appends each category in the list
         campus_list_specific = []
@@ -232,7 +239,7 @@ def thesis_list(request):
             course_list_specific.append(course)
         course_list.append(course_list_specific)
         category_list.append(thesis.category)
-        
+
     new_description = truncate_description(theses)
 
     # extraccts the specific names e.g. <Campus: External> will extract External
@@ -243,7 +250,7 @@ def thesis_list(request):
 
     # add the number of thesis with a the filter tag
     supervisor_count = {}
-    campus_count = {}    
+    campus_count = {}
     course_count = {}
     category_count = {}
     for supervisor in sorted(list(set(supervisor_names))):
@@ -254,34 +261,34 @@ def thesis_list(request):
         course_count[course] = course_names.count(course)
     for category in sorted(list(set(category_names))):
         category_count[category] = category_names.count(category)
-    
+
     # retrieves the value of supervisor, campus, and coure when users interacts with filter
     # updates theses shown depending on the value set by the user
     selected_supervisor = request.GET.getlist('supervisor')
     selected_campus = request.GET.getlist('campus')
     selected_course = request.GET.getlist('course')
     selected_category = request.GET.getlist('category')
-    filter_supervisor = filter_campus =filter_course=filter_category=''
-    
+    filter_supervisor = filter_campus = filter_course = filter_category = ''
+
     user_filters = {
         'supervisor': selected_supervisor,
         'campus': selected_campus,
         'course': selected_course,
         'category': selected_category,
-    }    
-    
+    }
+
     filter_query = Q()
-    
+
     for filter_key, filter_value in user_filters.items():
         if filter_value:
             filter_query &= Q(**{f"{filter_key}__in": filter_value})
-             
+
     theses = Thesis.objects.filter(filter_query)
 
     no_thesis = False
     if not theses:
         no_thesis = True
-    
+
     if selected_supervisor:
         '''
             changes the url of the page to filter the list
@@ -298,11 +305,11 @@ def thesis_list(request):
         filter_category = '&'.join([f'&category={category}' for category in selected_category])
 
     page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, theses)
-    
+
     context = {
         'no_thesis': no_thesis,
         # for the paginator feature
-        'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
+        'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page,
         # for the filter feature
         'supervisor_list': supervisor_count,
         'campus_list': campus_count,
@@ -317,12 +324,13 @@ def thesis_list(request):
         'filter_campus': filter_campus,
         'filter_course': filter_course,
         'filter_category': filter_category,
-        # new shortened thesis description    
-        'new_description': new_description,   
+        # new shortened thesis description
+        'new_description': new_description,
     }
 
     return render(request, 'main/thesis_list.html', context)
-       
+
+
 @login_required
 @account_type_required('admin', 'unit coordinator')
 # functions for creating new data
@@ -332,7 +340,7 @@ def create_data(request):
         if form.is_valid():
             form_data = form.cleaned_data
             form.save()
-            thesis = Thesis.objects.get(topic_number = form_data['topic_number'])
+            thesis = Thesis.objects.get(topic_number=form_data['topic_number'])
             context = {
                 'type': 'created',
                 'thesis': thesis,
@@ -341,15 +349,16 @@ def create_data(request):
             return render(request, 'main/success.html', context)
     else:
         form = ThesisForm()
-    
+
     context = {
         'form': form,
     }
     return render(request, 'main/create.html', context)
 
+
 @login_required
 @account_type_required('admin', 'unit coordinator')
-#Delete data
+# Delete data
 def modify_or_delete(request, topic_number=None):
     if topic_number is None:
         if request.path == '/thesis/modify/':
@@ -358,9 +367,9 @@ def modify_or_delete(request, topic_number=None):
             modify_or_delete = 'Delete'
 
         thesis = Thesis.objects.all()
-        
+
         new_description = truncate_description(thesis)
-            
+
         page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
 
         context = {
@@ -369,9 +378,9 @@ def modify_or_delete(request, topic_number=None):
             'modify_or_delete_menu': True,
             'new_description': new_description,
             # for the paginator feature
-            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page,
         }
-        
+
         return render(request, "main/modify_or_delete.html", context)
     else:
         if request.path[:15] == '/thesis/modify/':
@@ -385,20 +394,20 @@ def modify_or_delete(request, topic_number=None):
             old_thesis_data = copy.copy(thesis)
             old_thesis_campus = copy.copy(thesis.campus.all())
             old_thesis_course = copy.copy(thesis.course.all())
-            old_campus_list= [campus for campus in old_thesis_campus]
-            old_course_list= [course for course in old_thesis_course]
-               
+            old_campus_list = [campus for campus in old_thesis_campus]
+            old_course_list = [course for course in old_thesis_course]
+
         except Thesis.DoesNotExist:
             return render(request, 'main/success.html', {'fail': True})
-               
+
         if request.method == 'POST':
             if modify_or_delete == 'Modify':
                 form = ThesisForm(request.POST, instance=thesis)
                 if form.is_valid() and form.has_changed():
-                    form.save()                
-                    
+                    form.save()
+
                     changed_data = changed_data_check(thesis, old_thesis_data, old_campus_list, old_course_list)
-                                                                                                        
+
                     context = {
                         'type': 'modified',
                         'page_title': 'Successfully Edited ' + form.cleaned_data['title'],
@@ -412,10 +421,10 @@ def modify_or_delete(request, topic_number=None):
                         'changed_data': changed_data,
                     }
                     return render(request, 'main/success.html', context)
-                    
+
                 elif not form.has_changed():
-                    form = ThesisForm(instance = thesis)
-                    
+                    form = ThesisForm(instance=thesis)
+
                     context = {
                         'thesis': thesis,
                         'form': form,
@@ -423,9 +432,9 @@ def modify_or_delete(request, topic_number=None):
                         'modify_or_delete': modify_or_delete,
                         'error': True
                     }
-                        
+
                     return render(request, "main/modify_or_delete.html", context)
-                
+
             elif modify_or_delete == 'Delete':
                 try:
                     thesis.delete()
@@ -449,7 +458,7 @@ def modify_or_delete(request, topic_number=None):
                     return render(request, 'main/success.html', context)
                 except ProtectedError:
                     groups_enrolled = GroupApplicationAccepted.objects.filter(thesis=thesis)
-                                        
+
                     context = {
                         'group_error': True,
                         'fail': True,
@@ -460,22 +469,22 @@ def modify_or_delete(request, topic_number=None):
 
         else:
             if modify_or_delete == 'Modify':
-                form = ThesisForm(instance = thesis)
-            elif modify_or_delete =='Delete':
-                form = ThesisForm(instance = thesis)
+                form = ThesisForm(instance=thesis)
+            elif modify_or_delete == 'Delete':
+                form = ThesisForm(instance=thesis)
                 for field in form.fields.values():
                     field.widget.attrs['readonly'] = True
                     field.widget.attrs['disabled'] = True
 
-            
         context = {
             'thesis': thesis,
             'form': form,
             'modify_or_delete_menu': False,
             'modify_or_delete': modify_or_delete,
         }
-            
+
         return render(request, "main/modify_or_delete.html", context)
+
 
 @login_required
 @account_type_required('admin', 'unit coordinator')
@@ -491,7 +500,7 @@ def review_request(request, request_type=None, topic_number=None):
             return render(request, 'main/review_request.html', context)
 
         new_description = truncate_description(thesis)
-            
+
         page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
 
         context = {
@@ -499,7 +508,7 @@ def review_request(request, request_type=None, topic_number=None):
             'thesis': thesis,
             'new_description': new_description,
             # for the paginator feature
-            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page,
         }
         return render(request, 'main/review_request.html', context)
     else:
@@ -512,9 +521,9 @@ def review_request(request, request_type=None, topic_number=None):
                 modify = True
             elif request_type == 'delete':
                 thesis_to_review = ThesisRequestDelete.objects.get(topic_number=topic_number)
-                
+
             selected_action = request.POST.get('action')
-            
+
             thesis_to_review_data = {
                 'topic_number': thesis_to_review.topic_number,
                 'title': thesis_to_review.title,
@@ -523,61 +532,61 @@ def review_request(request, request_type=None, topic_number=None):
                 'supervisor': thesis_to_review.supervisor,
                 'group_taker_limit': thesis_to_review.group_taker_limit,
             }
-            
+
             thesis_to_review_data_copy = copy.copy(thesis_to_review_data)
             thesis_to_review_data_campus = copy.copy(thesis_to_review.campus.all())
             thesis_to_review_data_course = copy.copy(thesis_to_review.course.all())
-            
+
             old_thesis_data = None
             changed_data = None
             delete = None
             old_campus_list = None
             old_course_list = None
-            
+
             try:
                 old_thesis = Thesis.objects.get(topic_number=topic_number)
                 old_thesis_data = copy.copy(old_thesis)
                 old_thesis_campus = copy.copy(old_thesis.campus.all())
                 old_thesis_course = copy.copy(old_thesis.course.all())
-                old_campus_list= [campus for campus in old_thesis_campus]
-                old_course_list= [course for course in old_thesis_course]
+                old_campus_list = [campus for campus in old_thesis_campus]
+                old_course_list = [course for course in old_thesis_course]
                 old_thesis_exists = True
-                               
+
                 changed_data = changed_data_check(thesis_to_review, old_thesis_data, old_campus_list, old_course_list)
-                
+
             except Thesis.DoesNotExist:
                 old_thesis_exists = False
-                
+
             if selected_action == 'accept':
                 if request_type == 'create':
-                    thesis_to_create = Thesis.objects.create(**thesis_to_review_data)    
-                    thesis_to_create.campus.add(*Campus.objects.filter(campus__in = thesis_to_review_data_campus)),
-                    thesis_to_create.course.add(*Course.objects.filter(course__in = thesis_to_review_data_course)),
+                    thesis_to_create = Thesis.objects.create(**thesis_to_review_data)
+                    thesis_to_create.campus.add(*Campus.objects.filter(campus__in=thesis_to_review_data_campus)),
+                    thesis_to_create.course.add(*Course.objects.filter(course__in=thesis_to_review_data_course)),
 
-                    thesis_to_review.delete()                    
+                    thesis_to_review.delete()
                     type = 'accepted'
                     thesis_to_display = thesis_to_create
-                    
+
                 elif request_type == 'modify':
                     old_thesis.delete()
                     thesis_to_modify = Thesis.objects.create(**thesis_to_review_data)
-                    thesis_to_modify.campus.add(*Campus.objects.filter(campus__in = thesis_to_review_data_campus)),
-                    thesis_to_modify.course.add(*Course.objects.filter(course__in = thesis_to_review_data_course)),
-                                     
-                    thesis_to_review.delete()                    
+                    thesis_to_modify.campus.add(*Campus.objects.filter(campus__in=thesis_to_review_data_campus)),
+                    thesis_to_modify.course.add(*Course.objects.filter(course__in=thesis_to_review_data_course)),
+
+                    thesis_to_review.delete()
 
                     thesis_to_display = thesis_to_modify
                     type = 'modified'
                     modify = True
-                    
+
                 elif request_type == 'delete':
                     old_thesis.delete()
                     thesis_to_review.delete()
-                              
+
                     thesis_to_display = old_thesis_data
                     type = 'deleted'
                     delete = True
-                                            
+
                 context = {
                     'thesis': thesis_to_display,
                     'requested_by': thesis_to_review.requested_by,
@@ -589,23 +598,23 @@ def review_request(request, request_type=None, topic_number=None):
                     'old_thesis_data': old_thesis_data,
                     'old_campus_list': old_campus_list,
                     'old_course_list': old_course_list,
-                    'changed_data': changed_data,                            
+                    'changed_data': changed_data,
                 }
                 return render(request, 'main/success.html', context)
-            
+
             elif selected_action == 'reject':
                 thesis_to_review.delete()
-                
+
                 context = {
                     'rejected_thesis_request': True,
                     'type': 'rejected',
                     'old_thesis_data': thesis_to_review_data_copy,
-                    'old_course_list': thesis_to_review_data_course,                    
+                    'old_course_list': thesis_to_review_data_course,
                     'old_campus_list': thesis_to_review_data_campus,
                 }
-                
+
                 return render(request, 'main/success.html', context)
-            
+
         except Exception as e:
             context = {
                 'error': True,
@@ -613,34 +622,35 @@ def review_request(request, request_type=None, topic_number=None):
                 'error_message': e
             }
             return render(request, 'main/account_error.html', context)
-                
+
         context = {
             'request': True,
             'review_menu': False,
             'thesis': thesis_to_review,
             'modify_review': modify,
-            'old_thesis_exists':old_thesis_exists,
+            'old_thesis_exists': old_thesis_exists,
             'old_thesis_data': old_thesis_data,
             'changed_data': changed_data,
         }
         return render(request, 'main/review_request.html', context)
-        
+
+
 @login_required
 @account_type_required('admin', 'supervisor')
 def request_crud(request, crud_action, status=None, topic_number=None):
     if crud_action == 'create':
-        if request.method =='POST':
+        if request.method == 'POST':
             form = ThesisRequestFormAdd(request.POST)
             if form.is_valid():
-                thesis_request = form.save(commit=False)     
+                thesis_request = form.save(commit=False)
                 thesis_request.requested_by = CustomUser.objects.get(username=request.user.username)
                 thesis_request.request_type = crud_action
                 thesis_request.supervisor = Supervisor.objects.get(supervisor=request.user)
                 thesis_request.save()
 
                 form.save_m2m()
-                requested_thesis = ThesisRequestAdd.objects.get(topic_number =form.cleaned_data['topic_number'])
-               
+                requested_thesis = ThesisRequestAdd.objects.get(topic_number=form.cleaned_data['topic_number'])
+
                 context = {
                     'request': True,
                     'request_type': 'create',
@@ -651,17 +661,17 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 }
 
                 return render(request, 'main/success.html', context)
-            
+
         else:
             form = ThesisRequestFormAdd()
-                
+
         context = {
             'request': True,
             'request_type': 'create',
             'form': form
-        } 
+        }
         return render(request, 'main/request_crud.html', context)
-    
+
     elif crud_action == 'modify' or crud_action == 'delete':
         if topic_number is None:
             if status is None:
@@ -669,20 +679,20 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 thesis = Thesis.objects.filter(supervisor=supervisor)
 
                 new_description = truncate_description(thesis)
-                                
+
                 page_obj, total_pages, start_num, end_num, total_pages, items_per_page, total_theses = paginator(request, thesis)
-                
+
                 context = {
                     'request_type': crud_action,
                     'menu': True,
                     'thesis': thesis,
                     'new_description': new_description,
                     # for the paginator feature
-                    'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
+                    'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page,
                 }
-            
+
                 return render(request, 'main/request_crud.html', context)
-            
+
             else:
                 pass
                 '''
@@ -701,25 +711,25 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 
                 return render(request, 'main/request_crud.html', context)
                 '''
-        
+
         else:
             if request.path[:23] == '/thesis/request/modify/':
                 modify_or_delete = 'modify'
             elif request.path[:23] == '/thesis/request/delete/':
                 modify_or_delete = 'delete'
-            
+
             exists_in_database = False
-            thesis_exists = Thesis.objects.filter(topic_number = topic_number).exists()
+            thesis_exists = Thesis.objects.filter(topic_number=topic_number).exists()
             if thesis_exists:
-                exists_in_database = True            
-            
+                exists_in_database = True
+
             thesis = Thesis.objects.get(topic_number=topic_number)
             old_thesis_data = copy.copy(thesis)
             old_thesis_campus = copy.copy(old_thesis_data.campus.all())
             old_thesis_course = copy.copy(old_thesis_data.course.all())
-            old_campus_list= [campus for campus in old_thesis_campus]
-            old_course_list= [course for course in old_thesis_course]
-            
+            old_campus_list = [campus for campus in old_thesis_campus]
+            old_course_list = [course for course in old_thesis_course]
+
             try:
                 request_modify_exists = ThesisRequestModify.objects.get(topic_number=topic_number)
                 request_exists_modify = True
@@ -730,8 +740,8 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                 request_delete_exists = ThesisRequestDelete.objects.get(topic_number=topic_number)
                 request_exists_delete = True
             except ThesisRequestDelete.DoesNotExist:
-                request_exists_delete = False 
-                
+                request_exists_delete = False
+
             initial_form_data = {
                 'topic_number': thesis.topic_number,
                 'title': thesis.title,
@@ -744,30 +754,29 @@ def request_crud(request, crud_action, status=None, topic_number=None):
             }
 
             if request.method == 'POST':
-                if modify_or_delete == 'modify':  
+                if modify_or_delete == 'modify':
                     if request_exists_modify:
                         request_modify_exists.delete()
-                        
+
                     if request_exists_delete:
                         request_delete_exists.delete()
-                        
+
                     form = ThesisRequestFormModify(request.POST, initial=initial_form_data)
                     if form.is_valid() and form.has_changed():
-                        thesis_request = form.save(commit=False)     
+                        thesis_request = form.save(commit=False)
                         thesis_request.requested_by = CustomUser.objects.get(username=request.user.username)
                         if exists_in_database:
                             thesis_request.request_type = crud_action
                         else:
                             thesis_request.request_type = 'add'
-                                     
-                        thesis_request.save()            
-                        form.save_m2m()                       
-                                           
-                        requested_thesis = ThesisRequestModify.objects.get(topic_number =form.cleaned_data['topic_number'])
-                
+
+                        thesis_request.save()
+                        form.save_m2m()
+
+                        requested_thesis = ThesisRequestModify.objects.get(topic_number=form.cleaned_data['topic_number'])
+
                         changed_data = changed_data_check(requested_thesis, old_thesis_data, old_campus_list, old_course_list)
 
-                            
                         context = {
                             'request': True,
                             'request_type': 'modify',
@@ -781,10 +790,10 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                             'changed_data': changed_data,
                         }
 
-                        return render(request, 'main/success.html', context)    
-                    elif form.has_changed() is not True:                   
+                        return render(request, 'main/success.html', context)
+                    elif form.has_changed() is not True:
                         form = ThesisRequestFormModify(initial=initial_form_data)
-                        
+
                         context = {
                             'request_exists_modify': request_exists_modify,
                             'request_exists_delete': request_exists_delete,
@@ -793,22 +802,22 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                             'selected_thesis': thesis,
                             'no_change': True,
                         }
-                            
-                        return render(request, 'main/request_crud.html',context)
+
+                        return render(request, 'main/request_crud.html', context)
                 elif modify_or_delete == 'delete':
                     form = ThesisRequestFormDelete(initial_form_data)
                     for field in form.fields.values():
                         field.widget.attrs['readonly'] = True
                         field.widget.attrs['disabled'] = True
                     if form.is_valid():
-                        thesis_request = form.save(commit=False)     
+                        thesis_request = form.save(commit=False)
                         thesis_request.requested_by = CustomUser.objects.get(username=request.user.username)
                         thesis_request.request_type = crud_action
                         thesis_request.save()
-                
+
                         form.save_m2m()
-                        
-                        requested_thesis = ThesisRequestDelete.objects.get(topic_number =form.cleaned_data['topic_number'])
+
+                        requested_thesis = ThesisRequestDelete.objects.get(topic_number=form.cleaned_data['topic_number'])
 
                         context = {
                             'request': True,
@@ -818,7 +827,7 @@ def request_crud(request, crud_action, status=None, topic_number=None):
                             'requested_by': requested_thesis.requested_by,
                             'request_date': requested_thesis.request_date,
                         }
-                        
+
                         return render(request, 'main/success.html', context)
 
             else:
@@ -840,17 +849,18 @@ def request_crud(request, crud_action, status=None, topic_number=None):
             }
             return render(request, 'main/request_crud.html', context)
 
+
 @login_required
 @account_type_required('admin', 'supervisor', 'student')
-def group_application(request, action,topic_number=None):
+def group_application(request, action, topic_number=None):
     if action == 'review':
         logged_in_supervisor = Supervisor.objects.get(supervisor=request.user)
         group_application_list = GroupApplication.objects.filter(thesis__supervisor=logged_in_supervisor, status='pending')
-        
+
         selected_action = request.POST.get('action')
         selected_thesis = request.POST.get('thesis')
         selected_thesis_group = request.POST.get('student')
-        
+
         if selected_action == 'accept':
             group_application_data = GroupApplication.objects.get(thesis__topic_number=selected_thesis, group__username=selected_thesis_group)
             group_application_data.status = 'accepted'
@@ -859,11 +869,11 @@ def group_application(request, action,topic_number=None):
             for application in cancelled_application:
                 application.status = 'cancelled'
                 application.save()
-            GroupApplicationAccepted.objects.create(group = group_application_data.group, status = 'accepted', thesis = group_application_data.thesis)
+            GroupApplicationAccepted.objects.create(group=group_application_data.group, status='accepted', thesis=group_application_data.thesis)
 
-            accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number = selected_thesis, status = 'accepted').count()
-            thesis = Thesis.objects.get(topic_number = selected_thesis)
-            group_limit = thesis.group_taker_limit 
+            accepted_application_count = GroupApplicationAccepted.objects.filter(thesis__topic_number=selected_thesis, status='accepted').count()
+            thesis = Thesis.objects.get(topic_number=selected_thesis)
+            group_limit = thesis.group_taker_limit
             if accepted_application_count == group_limit:
                 remaining_applications = GroupApplication.objects.filter(thesis__topic_number=selected_thesis, status='pending')
                 for application in remaining_applications:
@@ -880,21 +890,21 @@ def group_application(request, action,topic_number=None):
         }
 
     elif action == 'view':
-        logged_in_student = CustomUser.objects.get(username = request.user)
+        logged_in_student = CustomUser.objects.get(username=request.user)
         try:
-            accepted_application = [GroupApplication.objects.get(status='accepted', group__username = logged_in_student)]
+            accepted_application = [GroupApplication.objects.get(status='accepted', group__username=logged_in_student)]
             accepted_application_exists = True
         except GroupApplication.DoesNotExist:
             accepted_application_exists = False
-            
+
         if accepted_application_exists:
             group_application_list = accepted_application
-            applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
+            applied_thesis_list = Thesis.objects.filter(topic_number__in=[group_application.thesis.topic_number for group_application in group_application_list])
             new_description = truncate_description(applied_thesis_list)
         else:
-            group_application_list = GroupApplication.objects.filter(group__username = logged_in_student)
+            group_application_list = GroupApplication.objects.filter(group__username=logged_in_student)
 
-            applied_thesis_list = Thesis.objects.filter(topic_number__in = [group_application.thesis.topic_number for group_application in group_application_list])
+            applied_thesis_list = Thesis.objects.filter(topic_number__in=[group_application.thesis.topic_number for group_application in group_application_list])
             new_description = truncate_description(applied_thesis_list)
 
         try:
@@ -902,7 +912,7 @@ def group_application(request, action,topic_number=None):
                 cancel = request.POST.get('cancel')
                 group_application_information = request.POST.get('thesis')
                 if cancel == 'cancel':
-                    GroupApplication.objects.get(group=logged_in_student, thesis__topic_number = group_application_information).delete()
+                    GroupApplication.objects.get(group=logged_in_student, thesis__topic_number=group_application_information).delete()
 
                     return redirect('group_application', action='view')
         except GroupApplication.DoesNotExist:
@@ -915,11 +925,12 @@ def group_application(request, action,topic_number=None):
             'new_description': new_description,
             'accepted_application_exists': accepted_application_exists,
             # for the paginator feature
-            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page, 
+            'page_obj': page_obj, 'total_pages': total_pages, 'start_num': start_num, 'end_num': end_num, 'total_theses': total_theses, 'items_per_page': items_per_page,
         }
 
     return render(request, 'main/group_application.html', context)
-    
+
+
 @login_required
 @account_type_required('admin', 'unit coordinator')
 # CRUD for entity (supervisor, campus, course, category)
@@ -930,7 +941,7 @@ def crud_entity(request, crud_action_entity, entity, name=None):
         'course': (Course, CourseForm),
         'supervisor': (Supervisor, SupervisorForm)
     }
-    
+
     model, form_entity = entity_model_form_list[entity]
 
     if crud_action_entity == 'add':
@@ -940,13 +951,13 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                 cleaned_data = form.cleaned_data[entity]
                 form.save()
                 if entity == 'campus':
-                    created_entity_object = model.objects.get(campus = cleaned_data)
+                    created_entity_object = model.objects.get(campus=cleaned_data)
                 elif entity == 'category':
-                    created_entity_object = model.objects.get(category = cleaned_data)
+                    created_entity_object = model.objects.get(category=cleaned_data)
                 elif entity == 'course':
-                    created_entity_object = model.objects.get(course = cleaned_data)
+                    created_entity_object = model.objects.get(course=cleaned_data)
                 elif entity == 'supervisor':
-                    created_entity_object = model.objects.get(supervisor = cleaned_data)
+                    created_entity_object = model.objects.get(supervisor=cleaned_data)
 
                 context = {
                     'crud_action_entity': crud_action_entity,
@@ -955,23 +966,23 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                     'entity': entity,
                     'page_title': f'{crud_action_entity} {entity}'
                 }
-                
+
                 return render(request, 'main/success.html', context)
         else:
             form = form_entity
-            
+
         context = {
             'form': form,
             'crud_action_entity': crud_action_entity,
             'entity': entity,
         }
-        
+
         return render(request, 'main/CRUD_entity.html', context)
-    
+
     elif crud_action_entity == 'modify' or crud_action_entity == 'delete':
         if not name:
             entity_model = model.objects.all()
-            
+
             context = {
                 'crud_action_entity': crud_action_entity,
                 'entity': entity,
@@ -979,17 +990,17 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                 'menu': True,
             }
             return render(request, 'main/CRUD_entity.html', context)
-        
+
         else:
             try:
                 if entity == 'campus':
-                    entity_object = model.objects.get(campus = name)
+                    entity_object = model.objects.get(campus=name)
                 elif entity == 'category':
-                    entity_object = model.objects.get(category = name)
+                    entity_object = model.objects.get(category=name)
                 elif entity == 'course':
-                    entity_object = model.objects.get(course = name)
+                    entity_object = model.objects.get(course=name)
                 elif entity == 'supervisor':
-                    entity_object = model.objects.get(supervisor = name)
+                    entity_object = model.objects.get(supervisor=name)
             except model.DoesNotExist:
                 context = {
                     'entity_error': True,
@@ -1000,26 +1011,26 @@ def crud_entity(request, crud_action_entity, entity, name=None):
 
             if crud_action_entity == 'modify':
                 if request.method == 'POST':
-                        
+
                     form = form_entity(request.POST)
                     if form.is_valid() and form.has_changed():
                         old_object = copy.copy(name)
-                        form.save()          
+                        form.save()
                         cleaned_data = form.cleaned_data
-                                            
+
                         if entity == 'campus':
-                            modified_entity_object = model.objects.get(campus = cleaned_data['campus'])
-                            model.objects.get(campus = name).delete()
+                            modified_entity_object = model.objects.get(campus=cleaned_data['campus'])
+                            model.objects.get(campus=name).delete()
                         elif entity == 'category':
-                            modified_entity_object = model.objects.get(category = cleaned_data['category'])
-                            model.objects.get(category = name).delete()
+                            modified_entity_object = model.objects.get(category=cleaned_data['category'])
+                            model.objects.get(category=name).delete()
                         elif entity == 'course':
-                            modified_entity_object = model.objects.get(course = cleaned_data['course'])
-                            model.objects.get(course = name).delete()
+                            modified_entity_object = model.objects.get(course=cleaned_data['course'])
+                            model.objects.get(course=name).delete()
                         elif entity == 'supervisor':
-                            modified_entity_object = model.objects.get(supervisor = cleaned_data['supervisor'])
-                            model.objects.get(supervisor = name).delete()
-                                      
+                            modified_entity_object = model.objects.get(supervisor=cleaned_data['supervisor'])
+                            model.objects.get(supervisor=name).delete()
+
                         context = {
                             'old_object': old_object,
                             'crud_action_entity': crud_action_entity,
@@ -1031,20 +1042,20 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                         return render(request, 'main/success.html', context)
                     elif not form.has_changed():
                         form = form_entity(instance=entity_object)
-                        
+
                         context = {
                             'no_change': True,
                             'form': form,
                             'crud_action_entity': crud_action_entity,
                             'entity': entity,
                             'page_title': f'{crud_action_entity} {entity}'
-                        }                      
-                        
+                        }
+
                         return render(request, 'main/CRUD_entity.html', context)
-                
-                else:                        
+
+                else:
                     form = form_entity(instance=entity_object)
-                        
+
                 context = {
                     'crud_action_entity': crud_action_entity,
                     'entity': entity,
@@ -1076,7 +1087,7 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                             'entity_error': True
                         }
                         return render(request, 'main/success.html', context)
-                
+
                 form = form_entity(instance=entity_object)
                 for field in form.fields.values():
                     field.widget.attrs['readonly'] = True
@@ -1088,34 +1099,36 @@ def crud_entity(request, crud_action_entity, entity, name=None):
                 }
                 return render(request, 'main/CRUD_entity.html', context)
 
+
 @login_required
 @account_type_required('admin', 'unit coordinator', 'supervisor')
 def admin_settings(request, account_type):
-       
+
     return render(request, 'main/admin_settings.html')
+
 
 @login_required
 @account_type_required('admin', 'unit coordinator', 'supervisor')
 def groups_thesis(request, topic_number):
-    thesis = Thesis.objects.get(topic_number = topic_number)
-    groups_in_thesis = GroupApplicationAccepted.objects.filter(thesis__topic_number = topic_number)
-    groups_in_thesis_exists = False 
+    thesis = Thesis.objects.get(topic_number=topic_number)
+    groups_in_thesis = GroupApplicationAccepted.objects.filter(thesis__topic_number=topic_number)
+    groups_in_thesis_exists = False
     if groups_in_thesis:
         groups_in_thesis_exists = True
-    
+
     current_supervisor = None
-    try: 
-        current_supervisor = Supervisor.objects.get(supervisor = request.user) 
+    try:
+        current_supervisor = Supervisor.objects.get(supervisor=request.user)
         user_is_admin = False
     except Supervisor.DoesNotExist:
         user_is_admin = True
-        
+
     responsible_supervisor = False
     if thesis.supervisor == current_supervisor or user_is_admin:
         responsible_supervisor = True
-    
+
     if request.method == 'POST':
-        group = CustomUser.objects.get(username = request.POST.get('group'))
+        group = CustomUser.objects.get(username=request.POST.get('group'))
         removed_group = GroupApplication.objects.get(group=group, thesis__topic_number=topic_number)
 
         removed_group.status = 'Rejected'
@@ -1125,18 +1138,19 @@ def groups_thesis(request, topic_number):
         for application in cancelled_application:
             application.status = 'pending'
             application.save()
-        
-        GroupApplicationAccepted.objects.get(group=removed_group.group, thesis = removed_group.thesis).delete()
-        
+
+        GroupApplicationAccepted.objects.get(group=removed_group.group, thesis=removed_group.thesis).delete()
+
         return redirect('groups_thesis', topic_number=topic_number)
-    
+
     context = {
         'thesis': thesis,
-        'groups_in_thesis': groups_in_thesis, 
+        'groups_in_thesis': groups_in_thesis,
         'groups_in_thesis_exists': groups_in_thesis_exists,
         'responsible_supervisor': responsible_supervisor,
-    } 
+    }
     return render(request, 'main/groups_in_a_thesis.html', context)
+
 
 '''       
 FUNCTION FOR INSERTING SAMPLE DATA TO MODELS.PY 
